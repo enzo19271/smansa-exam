@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Panel Guru — E-EXAM</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+  <style>
+    :root { --primary: #1a56db; --accent: #f59e0b; --bg: #f0f4ff; }
+    body { background: var(--bg); font-family: 'Segoe UI', sans-serif; }
+    .navbar { background: #065f46; }
+    .navbar-brand { font-weight: 700; color: #fff !important; }
+    .navbar-brand span { color: var(--accent); }
+
+    #login-gate { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .login-card { border: none; border-radius: 18px; box-shadow: 0 8px 32px rgba(0,0,0,.12); max-width: 380px; width: 100%; }
+
+    #guru-content { display: none; }
+    .panel-card { border: none; border-radius: 16px; box-shadow: 0 2px 12px rgba(26,86,219,.10); }
+    .soal-item { border: 1px solid #e2e8f0; border-radius: 12px; padding: 1rem; margin-bottom: .75rem; background:#fff; }
+    .soal-item .soal-num { font-weight: 700; color: var(--primary); }
+    .jawaban-badge { font-size: .75rem; font-weight: 700; }
+    .key-display {
+      background: linear-gradient(135deg, #065f46, #047857);
+      color: #fff; border-radius: 14px; padding: 1.25rem;
+    }
+    .key-code {
+      font-family: monospace; font-size: 1.6rem; font-weight: 800;
+      letter-spacing: .2em; background: rgba(255,255,255,.15);
+      border-radius: 10px; padding: .5rem 1rem; display: inline-block;
+    }
+    #toast-guru { position: fixed; bottom: 1.5rem; right: 1rem; z-index: 9999; min-width: 250px; }
+
+    /* Soal editor */
+    .opsi-row { display: flex; gap: .5rem; align-items: center; margin-bottom: .5rem; }
+    .opsi-letter { width: 32px; height: 32px; border-radius: 8px; background: #e8f0fe; display:flex; align-items:center; justify-content:center; font-weight:700; color:var(--primary); flex-shrink:0; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar px-3 py-2">
+  <a href="index.html" class="navbar-brand"><i class="bi bi-arrow-left me-2"></i>E<span>-EXAM</span> <small class="text-white-50 ms-2">Guru</small></a>
+  <button class="btn btn-sm btn-outline-light ms-auto d-none" id="btn-logout" onclick="logout()">
+    <i class="bi bi-box-arrow-right me-1"></i>Keluar
+  </button>
+</nav>
+
+<!-- LOGIN GATE -->
+<div id="login-gate">
+  <div class="login-card bg-white p-4 mx-3">
+    <div class="text-center mb-4">
+      <div style="font-size:2.5rem">👨‍🏫</div>
+      <h5 class="fw-bold mt-2 mb-0">Login Guru</h5>
+      <p class="text-muted small">Masukkan Key Guru yang diberikan admin</p>
+    </div>
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Guru Key</label>
+      <input type="text" id="inp-guru-key" class="form-control" placeholder="Masukkan key guru..."
+             style="font-family:monospace; letter-spacing:.1em"
+             onkeydown="if(event.key==='Enter') loginGuru()"/>
+      <div id="login-error" class="text-danger small mt-1 d-none"><i class="bi bi-x-circle me-1"></i>Key tidak valid.</div>
+    </div>
+    <button class="btn btn-success w-100" onclick="loginGuru()" id="btn-login">
+      <span id="btn-login-text"><i class="bi bi-unlock me-2"></i>Masuk</span>
+      <span id="btn-login-load" class="d-none"><span class="spinner-border spinner-border-sm me-2"></span>Memeriksa...</span>
+    </button>
+    <div class="text-center mt-3">
+      <a href="index.html" class="text-muted small">← Kembali ke Beranda</a>
+    </div>
+  </div>
+</div>
+
+<!-- GURU CONTENT -->
+<div id="guru-content" class="container py-4 pb-5" style="max-width:800px">
+
+  <!-- Guru info -->
+  <div class="key-display mb-4">
+    <div class="d-flex align-items-center gap-3 flex-wrap">
+      <i class="bi bi-person-badge" style="font-size:2rem; opacity:.8"></i>
+      <div class="flex-grow-1">
+        <div class="fw-bold fs-5" id="guru-nama">—</div>
+        <div style="opacity:.8; font-size:.85rem">Mengajar: <span id="guru-mapel">—</span> | Kelas: <span id="guru-kelas">—</span></div>
+      </div>
+      <div class="text-center">
+        <div style="opacity:.7; font-size:.7rem; text-transform:uppercase; letter-spacing:.1em">Key Ujian</div>
+        <div class="key-code" id="guru-key-display">—</div>
+        <div style="opacity:.7; font-size:.7rem; margin-top:.25rem">Bagikan ke siswa</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="panel-card bg-white p-4">
+    <ul class="nav nav-tabs mb-4" id="guruTab">
+      <li class="nav-item"><a class="nav-link active" href="#" onclick="showTab('soal',this)"><i class="bi bi-pencil-square me-1"></i>Kelola Soal</a></li>
+      <li class="nav-item"><a class="nav-link" href="#" onclick="showTab('hasil',this)"><i class="bi bi-bar-chart me-1"></i>Hasil Ujian</a></li>
+    </ul>
+
+    <!-- TAB: SOAL -->
+    <div id="tab-soal">
+      <!-- Pilih kelas -->
+      <div class="d-flex gap-2 align-items-center mb-3 flex-wrap">
+        <label class="fw-semibold small mb-0">Kelas:</label>
+        <div id="kelas-tabs" class="d-flex gap-2"></div>
+        <button class="btn btn-primary btn-sm ms-auto" onclick="tambahSoal()"><i class="bi bi-plus me-1"></i>Tambah Soal</button>
+        <button class="btn btn-success btn-sm" onclick="simpanSemuaSoal()"><i class="bi bi-cloud-upload me-1"></i>Simpan</button>
+      </div>
+
+      <div id="soal-container">
+        <div class="text-center text-muted py-4">Pilih kelas dan klik "Tambah Soal" untuk mulai.</div>
+      </div>
+    </div>
+
+    <!-- TAB: HASIL -->
+    <div id="tab-hasil" class="d-none">
+      <h6 class="fw-bold mb-3">Hasil Ujian Siswamu</h6>
+      <div class="table-responsive"><table class="table table-hover align-middle table-sm">
+        <thead><tr><th>Nama</th><th>Kelas</th><th>Nilai</th><th>Benar</th><th>Total</th><th>Waktu</th></tr></thead>
+        <tbody id="tbody-hasil"><tr><td colspan="6" class="text-center text-muted">Memuat...</td></tr></tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast-guru" class="toast align-items-center text-bg-success border-0" role="alert">
+  <div class="d-flex">
+    <div class="toast-body" id="toast-msg-guru"></div>
+    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+let guruKey   = "";
+let guruInfo  = null;   // { id, nama, mapel_id, kelas, guru_key }
+let activKelas = null;
+let soalDraft = {};     // { kelas: [ soal objects ] }
+
+function toast(msg, type="success") {
+  const el = document.getElementById("toast-guru");
+  el.className = `toast align-items-center text-bg-${type} border-0`;
+  document.getElementById("toast-msg-guru").textContent = msg;
+  bootstrap.Toast.getOrCreateInstance(el).show();
+}
+
+// ── LOGIN ────────────────────────────────────────────────────────────────────
+async function loginGuru() {
+  const key = document.getElementById("inp-guru-key").value.trim();
+  if (!key) return;
+  document.getElementById("btn-login-text").classList.add("d-none");
+  document.getElementById("btn-login-load").classList.remove("d-none");
+  document.getElementById("login-error").classList.add("d-none");
+
+  try {
+    // Verify via admin API — but we actually just try to load guru list with this key as guru_key
+    // We use a small trick: call /api/hasil with x-guru-key; if 200 = valid
+    const res  = await fetch("/api/hasil", { headers: { "x-guru-key": key } });
+    if (res.ok) {
+      guruKey = key;
+      sessionStorage.setItem("guru_key", key);
+      // Get guru info from admin side isn't available without admin key
+      // So we'll get it via verify-key endpoint with a dummy lookup
+      // Instead, store key and show the panel. Load guru profile via soal
+      await loadGuruProfile();
+    } else {
+      document.getElementById("login-error").classList.remove("d-none");
+    }
+  } catch {
+    document.getElementById("login-error").textContent = "Kesalahan jaringan.";
+    document.getElementById("login-error").classList.remove("d-none");
+  }
+  document.getElementById("btn-login-text").classList.remove("d-none");
+  document.getElementById("btn-login-load").classList.add("d-none");
+}
+
+async function loadGuruProfile() {
+  // We need to find guru info. Since we don't have admin key,
+  // we'll embed a special "whoami" endpoint behavior in /api/soal
+  // For now, call /api/soal POST with action=whoami
+  try {
+    const res = await fetch("/api/soal", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-guru-key": guruKey },
+      body: JSON.stringify({ action: "whoami" }),
+    });
+    const json = await res.json();
+    if (json.guru) {
+      guruInfo = json.guru;
+      showGuruPanel();
+    } else {
+      // fallback: show with limited info
+      guruInfo = { nama: "Guru", mapel_id: "—", kelas: [10,11,12], guru_key: guruKey };
+      showGuruPanel();
+    }
+  } catch {
+    guruInfo = { nama: "Guru", mapel_id: "—", kelas: [10,11,12], guru_key: guruKey };
+    showGuruPanel();
+  }
+}
+
+function showGuruPanel() {
+  document.getElementById("login-gate").style.display = "none";
+  document.getElementById("guru-content").style.display = "block";
+  document.getElementById("btn-logout").classList.remove("d-none");
+
+  document.getElementById("guru-nama").textContent       = guruInfo.nama;
+  document.getElementById("guru-mapel").textContent      = guruInfo.mapel_id;
+  document.getElementById("guru-kelas").textContent      = (guruInfo.kelas||[]).join(", ");
+  document.getElementById("guru-key-display").textContent = guruInfo.guru_key || guruKey;
+
+  // Build kelas tabs
+  const ct = document.getElementById("kelas-tabs");
+  ct.innerHTML = "";
+  (guruInfo.kelas || [10,11,12]).forEach((k,i) => {
+    const btn = document.createElement("button");
+    btn.className = `btn btn-sm ${i===0?"btn-primary":"btn-outline-primary"}`;
+    btn.textContent = `Kelas ${k}`;
+    btn.onclick = () => selectKelas(k, btn);
+    ct.appendChild(btn);
+    if (i === 0) selectKelas(k, btn);
+  });
+
+  loadHasilGuru();
+}
+
+function selectKelas(k, btn) {
+  activKelas = k;
+  document.querySelectorAll("#kelas-tabs .btn").forEach(b => {
+    b.className = "btn btn-sm btn-outline-primary";
+  });
+  btn.className = "btn btn-sm btn-primary";
+  loadSoalKelas(k);
+}
+
+// ── Soal ─────────────────────────────────────────────────────────────────────
+async function loadSoalKelas(k) {
+  if (!guruInfo) return;
+  const mapelId = guruInfo.mapel_id;
+  try {
+    const res  = await fetch(`/api/soal?mapel_id=${mapelId}&kelas=${k}`, {
+      headers: { "x-guru-key": guruKey },
+    });
+    // Note: public GET strips jawaban — but guru needs it, so we use POST with action=get_full
+    // For simplicity, we use the admin-level fetch approach
+    let soalFull = await res.json();
+    // We need full soal with answers. Use POST whoami-style:
+    const res2 = await fetch("/api/soal", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-guru-key": guruKey },
+      body: JSON.stringify({ action: "get_full", mapel_id: mapelId, kelas: k }),
+    });
+    if (res2.ok) {
+      const j = await res2.json();
+      if (j.soal) soalFull = j.soal;
+    }
+    soalDraft[k] = soalFull.map(s => ({...s}));
+    renderSoalEditor(k);
+  } catch {
+    soalDraft[k] = [];
+    renderSoalEditor(k);
+  }
+}
+
+function renderSoalEditor(k) {
+  const container = document.getElementById("soal-container");
+  const list = soalDraft[k] || [];
+  if (!list.length) {
+    container.innerHTML = `<div class="text-center text-muted py-4">Belum ada soal untuk kelas ${k}. Klik <strong>Tambah Soal</strong>.</div>`;
+    return;
+  }
+  container.innerHTML = list.map((s,i) => `
+    <div class="soal-item" id="si-${i}">
+      <div class="d-flex align-items-center mb-2">
+        <span class="soal-num me-2">Soal ${i+1}</span>
+        <button class="btn btn-danger btn-sm ms-auto" onclick="hapusSoal(${i})"><i class="bi bi-trash"></i></button>
+      </div>
+      <textarea class="form-control form-control-sm mb-2" rows="2" placeholder="Pertanyaan soal..."
+        onchange="soalDraft[${k}][${i}].pertanyaan=this.value">${s.pertanyaan||""}</textarea>
+      ${["A","B","C","D"].map(l => `
+        <div class="opsi-row">
+          <div class="opsi-letter">${l}</div>
+          <input type="text" class="form-control form-control-sm flex-grow-1" placeholder="Opsi ${l}"
+            value="${(s.opsi||{})[l]||""}"
+            onchange="if(!soalDraft[${k}][${i}].opsi) soalDraft[${k}][${i}].opsi={}; soalDraft[${k}][${i}].opsi['${l}']=this.value"/>
+          <div class="form-check ms-1">
+            <input class="form-check-input" type="radio" name="jwb_${i}" value="${l}"
+              ${(s.jawaban===l)?"checked":""}
+              onchange="soalDraft[${k}][${i}].jawaban='${l}'"/>
+            <label class="form-check-label small text-success">✓</label>
+          </div>
+        </div>`).join("")}
+    </div>`).join("");
+}
+
+function tambahSoal() {
+  if (!activKelas) { toast("Pilih kelas terlebih dahulu","warning"); return; }
+  if (!soalDraft[activKelas]) soalDraft[activKelas] = [];
+  soalDraft[activKelas].push({
+    id: "s" + Date.now(),
+    pertanyaan: "",
+    opsi: { A:"", B:"", C:"", D:"" },
+    jawaban: "A",
+  });
+  renderSoalEditor(activKelas);
+  document.getElementById("soal-container").lastElementChild?.scrollIntoView({behavior:"smooth"});
+}
+
+function hapusSoal(idx) {
+  if (!confirm("Hapus soal ini?")) return;
+  soalDraft[activKelas].splice(idx, 1);
+  renderSoalEditor(activKelas);
+}
+
+async function simpanSemuaSoal() {
+  if (!activKelas || !guruInfo) return;
+  const soal = soalDraft[activKelas] || [];
+  // Validate
+  for (let i = 0; i < soal.length; i++) {
+    if (!soal[i].pertanyaan?.trim()) { toast(`Soal ${i+1} belum ada pertanyaan`,"warning"); return; }
+    if (!soal[i].jawaban) { toast(`Soal ${i+1} belum dipilih jawaban benar`,"warning"); return; }
+  }
+  try {
+    const res = await fetch("/api/soal", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-guru-key": guruKey },
+      body: JSON.stringify({
+        action: "save_all",
+        mapel_id: guruInfo.mapel_id,
+        kelas: activKelas,
+        soal,
+      }),
+    });
+    const json = await res.json();
+    if (json.ok) toast(`${soal.length} soal berhasil disimpan`,"success");
+    else toast(json.error||"Gagal menyimpan","danger");
+  } catch { toast("Kesalahan jaringan","danger"); }
+}
+
+// ── Hasil ─────────────────────────────────────────────────────────────────────
+async function loadHasilGuru() {
+  try {
+    const res  = await fetch("/api/hasil", { headers: { "x-guru-key": guruKey } });
+    const data = await res.json();
+    const tbody = document.getElementById("tbody-hasil");
+    if (!data.length) { tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Belum ada hasil</td></tr>'; return; }
+    tbody.innerHTML = data.slice().reverse().map(h => `
+      <tr>
+        <td>${h.nama}</td>
+        <td>${h.kelas}</td>
+        <td><span class="badge ${h.nilai>=70?"bg-success":"bg-danger"}">${h.nilai}</span></td>
+        <td>${h.benar}</td>
+        <td>${h.total}</td>
+        <td class="text-muted small">${new Date(h.waktu).toLocaleString("id-ID")}</td>
+      </tr>`).join("");
+  } catch {}
+}
+
+function logout() {
+  sessionStorage.removeItem("guru_key");
+  location.reload();
+}
+
+// Tab navigation
+function showTab(name, el) {
+  event.preventDefault();
+  ["soal","hasil"].forEach(t => document.getElementById(`tab-${t}`).classList.add("d-none"));
+  document.getElementById(`tab-${name}`).classList.remove("d-none");
+  document.querySelectorAll("#guruTab .nav-link").forEach(a => a.classList.remove("active"));
+  el.classList.add("active");
+  if (name === "hasil") loadHasilGuru();
+}
+
+// Auto-login
+window.addEventListener("DOMContentLoaded", () => {
+  const k = sessionStorage.getItem("guru_key");
+  if (k) { document.getElementById("inp-guru-key").value = k; loginGuru(); }
+});
+</script>
+</body>
+</html>

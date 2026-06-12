@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Ujian — E-EXAM</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+  <style>
+    :root { --primary: #1a56db; --accent: #f59e0b; --answered: #16a34a; --bg: #f0f4ff; }
+    body { background: var(--bg); font-family: 'Segoe UI', sans-serif; }
+
+    /* TOP BAR */
+    .exam-topbar {
+      background: var(--primary); color: #fff; padding: .6rem 1rem;
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .exam-topbar .timer {
+      background: rgba(255,255,255,.15); border-radius: 8px;
+      padding: .3rem .8rem; font-weight: 700; font-family: monospace; font-size: 1rem;
+    }
+    .exam-topbar .timer.warning { background: #dc2626; animation: blink 1s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.5} }
+
+    /* PROGRESS */
+    .soal-progress { font-size: .8rem; opacity: .85; }
+
+    /* QUESTION CARD */
+    .q-card { border: none; border-radius: 16px; box-shadow: 0 4px 20px rgba(26,86,219,.10); }
+    .q-number {
+      width: 40px; height: 40px; border-radius: 10px; background: var(--primary);
+      color: #fff; display: flex; align-items: center; justify-content: center;
+      font-weight: 700; flex-shrink: 0;
+    }
+    .option-label {
+      display: flex; align-items: flex-start; gap: .75rem;
+      border: 2px solid #e2e8f0; border-radius: 12px; padding: .75rem 1rem;
+      cursor: pointer; transition: all .15s; margin-bottom: .6rem;
+    }
+    .option-label:hover { border-color: var(--primary); background: #e8f0fe; }
+    .option-label.selected { border-color: var(--primary); background: #e8f0fe; }
+    input[type=radio] { display: none; }
+    .option-letter {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: #e2e8f0; display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: .85rem; flex-shrink: 0; transition: all .15s;
+    }
+    .option-label.selected .option-letter { background: var(--primary); color: #fff; }
+
+    /* NOMOR SOAL GRID */
+    .nomor-grid { display: flex; flex-wrap: wrap; gap: .4rem; }
+    .nomor-btn {
+      width: 36px; height: 36px; border-radius: 8px; border: 2px solid #cbd5e1;
+      background: #fff; font-weight: 600; font-size: .8rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; transition: all .15s;
+    }
+    .nomor-btn.current { border-color: var(--primary); color: var(--primary); }
+    .nomor-btn.answered { background: var(--answered); border-color: var(--answered); color: #fff; }
+
+    /* SUBMIT */
+    #btn-selesai { background: #dc2626; border: none; font-weight: 700; }
+    #btn-selesai:hover { background: #b91c1c; }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="exam-topbar">
+  <div>
+    <div class="fw-bold" style="font-size:.9rem" id="tb-mapel">—</div>
+    <div class="soal-progress" id="tb-progress">Soal 1 dari …</div>
+  </div>
+  <div class="timer" id="timer">00:00</div>
+</div>
+
+<!-- MAIN -->
+<div class="container py-3" style="max-width:640px">
+
+  <!-- Nomor soal -->
+  <div class="bg-white rounded-3 p-3 mb-3 shadow-sm">
+    <p class="text-muted small mb-2 fw-semibold">Navigasi Soal</p>
+    <div class="nomor-grid" id="nomor-grid"></div>
+  </div>
+
+  <!-- Question -->
+  <div class="q-card bg-white p-4 mb-3" id="q-card">
+    <div class="d-flex gap-3 align-items-start mb-3">
+      <div class="q-number" id="q-num">1</div>
+      <p class="mb-0 fw-semibold" id="q-text" style="font-size:1rem; line-height:1.6">Memuat soal...</p>
+    </div>
+    <div id="q-options"></div>
+  </div>
+
+  <!-- Navigation -->
+  <div class="d-flex gap-2 mb-3">
+    <button class="btn btn-outline-primary flex-fill" id="btn-prev" onclick="navigate(-1)">
+      <i class="bi bi-chevron-left me-1"></i>Sebelumnya
+    </button>
+    <button class="btn btn-primary flex-fill" id="btn-next" onclick="navigate(1)">
+      Berikutnya<i class="bi bi-chevron-right ms-1"></i>
+    </button>
+  </div>
+  <button class="btn btn-danger w-100 py-2" id="btn-selesai" onclick="konfirmasiSelesai()">
+    <i class="bi bi-send-check me-2"></i>Selesai & Kumpulkan Jawaban
+  </button>
+</div>
+
+<!-- Modal konfirmasi -->
+<div class="modal fade" id="modalSelesai" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 rounded-4">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold">Kumpulkan Jawaban?</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p id="modal-summary" class="text-muted"></p>
+        <div class="alert alert-warning small"><i class="bi bi-exclamation-triangle me-1"></i>Setelah dikumpulkan, jawaban tidak dapat diubah.</div>
+      </div>
+      <div class="modal-footer border-0 pt-0">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Periksa Lagi</button>
+        <button class="btn btn-danger" id="btn-confirm-submit" onclick="submitUjian()">Kumpulkan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal loading submit -->
+<div class="modal fade" id="modalLoading" tabindex="-1" data-bs-backdrop="static">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content border-0 rounded-4 text-center p-4">
+      <div class="spinner-border text-primary mx-auto mb-3"></div>
+      <p class="mb-0 fw-semibold">Mengumpulkan jawaban...</p>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const mapelId   = sessionStorage.getItem("exam_mapel_id");
+const mapelNama = sessionStorage.getItem("exam_mapel_nama");
+const kelasMain = sessionStorage.getItem("siswa_kelas_main");
+const nama      = sessionStorage.getItem("siswa_nama");
+const kelas     = sessionStorage.getItem("siswa_kelas");
+
+if (!mapelId || !nama) location.href = "index.html";
+
+document.getElementById("tb-mapel").textContent = mapelNama || mapelId;
+
+let soalList   = [];
+let jawaban    = {};   // { soal_id: "A" }
+let current    = 0;
+let timerSecs  = 0;
+let timerInterval;
+
+// ── Load soal ──────────────────────────────────────────────────────────────
+async function loadSoal() {
+  try {
+    const res  = await fetch(`/api/soal?mapel_id=${mapelId}&kelas=${kelasMain}`);
+    soalList   = await res.json();
+    if (!soalList.length) {
+      document.getElementById("q-text").textContent = "Soal belum tersedia untuk ujian ini.";
+      return;
+    }
+    // Timer: 2 minutes per soal
+    timerSecs = soalList.length * 120;
+    startTimer();
+    buildNomorGrid();
+    renderSoal(0);
+  } catch {
+    document.getElementById("q-text").textContent = "Gagal memuat soal. Periksa koneksi internet.";
+  }
+}
+
+// ── Timer ──────────────────────────────────────────────────────────────────
+function startTimer() {
+  timerInterval = setInterval(() => {
+    timerSecs--;
+    const m = String(Math.floor(timerSecs / 60)).padStart(2, "0");
+    const s = String(timerSecs % 60).padStart(2, "0");
+    const el = document.getElementById("timer");
+    el.textContent = `${m}:${s}`;
+    if (timerSecs <= 60) el.classList.add("warning");
+    if (timerSecs <= 0) { clearInterval(timerInterval); submitUjian(); }
+  }, 1000);
+}
+
+// ── Render soal ────────────────────────────────────────────────────────────
+function renderSoal(idx) {
+  current = idx;
+  const s = soalList[idx];
+  document.getElementById("q-num").textContent  = idx + 1;
+  document.getElementById("q-text").textContent = s.pertanyaan;
+  document.getElementById("tb-progress").textContent = `Soal ${idx + 1} dari ${soalList.length}`;
+
+  const opts = document.getElementById("q-options");
+  opts.innerHTML = "";
+  ["A","B","C","D"].forEach(letter => {
+    const selected = jawaban[s.id] === letter;
+    const div = document.createElement("div");
+    div.className = `option-label${selected ? " selected" : ""}`;
+    div.onclick = () => pilihJawaban(s.id, letter, div);
+    div.innerHTML = `
+      <div class="option-letter">${letter}</div>
+      <div class="pt-1" style="font-size:.95rem">${s.opsi[letter] || "—"}</div>`;
+    opts.appendChild(div);
+  });
+
+  document.getElementById("btn-prev").disabled = idx === 0;
+  document.getElementById("btn-next").disabled = idx === soalList.length - 1;
+  updateNomorGrid();
+}
+
+function pilihJawaban(soalId, letter, el) {
+  jawaban[soalId] = letter;
+  document.querySelectorAll(".option-label").forEach(e => e.classList.remove("selected"));
+  el.classList.add("selected");
+  updateNomorGrid();
+}
+
+function navigate(dir) {
+  const next = current + dir;
+  if (next >= 0 && next < soalList.length) renderSoal(next);
+}
+
+// ── Nomor grid ─────────────────────────────────────────────────────────────
+function buildNomorGrid() {
+  const grid = document.getElementById("nomor-grid");
+  grid.innerHTML = "";
+  soalList.forEach((s, i) => {
+    const btn = document.createElement("button");
+    btn.className = "nomor-btn";
+    btn.id = `nb-${i}`;
+    btn.textContent = i + 1;
+    btn.onclick = () => renderSoal(i);
+    grid.appendChild(btn);
+  });
+}
+
+function updateNomorGrid() {
+  soalList.forEach((s, i) => {
+    const btn = document.getElementById(`nb-${i}`);
+    if (!btn) return;
+    btn.classList.toggle("current", i === current);
+    btn.classList.toggle("answered", !!jawaban[s.id]);
+  });
+}
+
+// ── Submit ─────────────────────────────────────────────────────────────────
+function konfirmasiSelesai() {
+  const total    = soalList.length;
+  const dijawab  = Object.keys(jawaban).length;
+  const belum    = total - dijawab;
+  document.getElementById("modal-summary").textContent =
+    `Kamu telah menjawab ${dijawab} dari ${total} soal. ${belum > 0 ? belum + " soal belum dijawab." : "Semua soal sudah dijawab."}`;
+  new bootstrap.Modal(document.getElementById("modalSelesai")).show();
+}
+
+async function submitUjian() {
+  clearInterval(timerInterval);
+  bootstrap.Modal.getInstance(document.getElementById("modalSelesai"))?.hide();
+  new bootstrap.Modal(document.getElementById("modalLoading")).show();
+
+  try {
+    const res = await fetch("/api/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        nama, kelas, mapel_id: mapelId,
+        jawaban,
+      }),
+    });
+    const result = await res.json();
+    sessionStorage.setItem("hasil_ujian", JSON.stringify(result));
+    location.href = "selesai.html";
+  } catch {
+    bootstrap.Modal.getInstance(document.getElementById("modalLoading"))?.hide();
+    alert("Gagal mengumpulkan jawaban. Coba lagi.");
+  }
+}
+
+loadSoal();
+</script>
+</body>
+</html>

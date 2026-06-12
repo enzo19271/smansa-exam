@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Instruksi Ujian — E-EXAM</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+  <style>
+    :root { --primary: #1a56db; --accent: #f59e0b; --bg: #f0f4ff; }
+    body { background: var(--bg); font-family: 'Segoe UI', sans-serif; }
+    .navbar { background: var(--primary); }
+    .navbar-brand { font-weight: 700; color: #fff !important; }
+    .navbar-brand span { color: var(--accent); }
+    .info-card { border: none; border-radius: 16px; box-shadow: 0 4px 20px rgba(26,86,219,.10); }
+    .instr-item {
+      display: flex; gap: 1rem; align-items: flex-start;
+      padding: .9rem 0; border-bottom: 1px solid #e8f0fe;
+    }
+    .instr-item:last-child { border-bottom: none; }
+    .instr-icon {
+      width: 38px; height: 38px; border-radius: 10px; background: #e8f0fe;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--primary); font-size: 1.1rem; flex-shrink: 0;
+    }
+    .student-badge {
+      background: linear-gradient(135deg, var(--primary), #1245b0);
+      color: #fff; border-radius: 14px; padding: 1rem 1.25rem;
+    }
+    #btn-mulai { background: #16a34a; border: none; font-weight: 700; font-size: 1rem; }
+    #btn-mulai:hover { background: #14532d; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar px-3 py-2">
+  <span class="navbar-brand"><i class="bi bi-mortarboard-fill me-2"></i>E<span>-EXAM</span></span>
+</nav>
+
+<div class="container py-4" style="max-width:540px">
+
+  <!-- Student info -->
+  <div class="student-badge mb-4">
+    <div class="d-flex align-items-center gap-3">
+      <i class="bi bi-person-circle" style="font-size:2.2rem; opacity:.8"></i>
+      <div>
+        <div class="fw-bold" style="font-size:1.05rem" id="s-nama">—</div>
+        <div style="opacity:.8; font-size:.85rem">
+          <span id="s-kelas">—</span> &nbsp;|&nbsp; <span id="s-mapel">—</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Instruksi -->
+  <div class="info-card bg-white p-4 mb-4">
+    <h5 class="fw-bold mb-3"><i class="bi bi-list-check text-primary me-2"></i>Instruksi Ujian</h5>
+
+    <div class="instr-item">
+      <div class="instr-icon"><i class="bi bi-clock"></i></div>
+      <div>
+        <div class="fw-semibold">Durasi Ujian</div>
+        <div class="text-muted small">Ujian memiliki batas waktu sesuai ketentuan guru. Pastikan kamu siap sebelum mulai.</div>
+      </div>
+    </div>
+
+    <div class="instr-item">
+      <div class="instr-icon"><i class="bi bi-check2-circle"></i></div>
+      <div>
+        <div class="fw-semibold">Soal Pilihan Ganda</div>
+        <div class="text-muted small">Setiap soal memiliki 4 opsi (A, B, C, D). Pilih satu jawaban yang paling tepat.</div>
+      </div>
+    </div>
+
+    <div class="instr-item">
+      <div class="instr-icon"><i class="bi bi-arrow-left-right"></i></div>
+      <div>
+        <div class="fw-semibold">Navigasi Soal</div>
+        <div class="text-muted small">Kamu dapat berpindah antar soal menggunakan tombol navigasi atau nomor soal.</div>
+      </div>
+    </div>
+
+    <div class="instr-item">
+      <div class="instr-icon"><i class="bi bi-send-check"></i></div>
+      <div>
+        <div class="fw-semibold">Pengumpulan Jawaban</div>
+        <div class="text-muted small">Klik tombol <strong>Selesai & Kumpulkan</strong> ketika sudah selesai. Jawaban tidak dapat diubah setelah dikumpulkan.</div>
+      </div>
+    </div>
+
+    <div class="instr-item">
+      <div class="instr-icon"><i class="bi bi-wifi-off"></i></div>
+      <div>
+        <div class="fw-semibold">Koneksi Internet</div>
+        <div class="text-muted small">Pastikan koneksi internet stabil selama ujian berlangsung.</div>
+      </div>
+    </div>
+
+    <div class="instr-item">
+      <div class="instr-icon"><i class="bi bi-shield-exclamation"></i></div>
+      <div>
+        <div class="fw-semibold">Kejujuran Akademik</div>
+        <div class="text-muted small">Kerjakan secara mandiri. Dilarang bekerja sama atau membuka sumber lain.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Persetujuan -->
+  <div class="form-check mb-4 ms-1">
+    <input class="form-check-input" type="checkbox" id="cb-setuju"/>
+    <label class="form-check-label small" for="cb-setuju">
+      Saya telah membaca instruksi dan siap mengerjakan ujian dengan <strong>jujur dan mandiri</strong>.
+    </label>
+  </div>
+
+  <!-- Tombol mulai -->
+  <button class="btn btn-success w-100 py-2 mb-3" id="btn-mulai" onclick="mulaiUjian()" disabled>
+    <i class="bi bi-play-circle me-2"></i>Mulai Ujian Sekarang
+  </button>
+  <a href="index.html" class="btn btn-outline-secondary w-100">
+    <i class="bi bi-house me-2"></i>Kembali ke Beranda
+  </a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const nama     = sessionStorage.getItem("siswa_nama");
+const kelas    = sessionStorage.getItem("siswa_kelas");
+const mapelId  = sessionStorage.getItem("exam_mapel_id");
+const mapelNm  = sessionStorage.getItem("exam_mapel_nama");
+
+if (!nama || !kelas || !mapelId) location.href = "index.html";
+
+document.getElementById("s-nama").textContent  = nama;
+document.getElementById("s-kelas").textContent = `Kelas ${kelas}`;
+document.getElementById("s-mapel").textContent = mapelNm || mapelId;
+
+document.getElementById("cb-setuju").addEventListener("change", function () {
+  document.getElementById("btn-mulai").disabled = !this.checked;
+});
+
+function mulaiUjian() {
+  location.href = "ujian.html";
+}
+</script>
+</body>
+</html>

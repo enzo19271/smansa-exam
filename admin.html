@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Admin Panel — E-EXAM</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+  <style>
+    :root { --primary: #1a56db; --accent: #f59e0b; --bg: #f0f4ff; }
+    body { background: var(--bg); font-family: 'Segoe UI', sans-serif; }
+    .navbar { background: #1e293b; }
+    .navbar-brand { font-weight: 700; color: #fff !important; }
+    .navbar-brand span { color: var(--accent); }
+
+    /* LOGIN GATE */
+    #login-gate { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .login-card { border: none; border-radius: 18px; box-shadow: 0 8px 32px rgba(0,0,0,.12); max-width: 380px; width: 100%; }
+
+    /* CONTENT */
+    #admin-content { display: none; }
+    .panel-card { border: none; border-radius: 16px; box-shadow: 0 2px 12px rgba(26,86,219,.10); }
+    .nav-tabs .nav-link { font-weight: 600; color: #475569; }
+    .nav-tabs .nav-link.active { color: var(--primary); }
+    .table th { background: #f8faff; font-size: .82rem; text-transform: uppercase; letter-spacing: .05em; }
+    .badge-kelas { font-size: .7rem; }
+    #toast-admin { position: fixed; bottom: 1.5rem; right: 1rem; z-index: 9999; min-width: 250px; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar px-3 py-2">
+  <a href="index.html" class="navbar-brand"><i class="bi bi-arrow-left me-2"></i>E<span>-EXAM</span> <small class="text-white-50 ms-2">Admin</small></a>
+  <button class="btn btn-sm btn-outline-light ms-auto d-none" id="btn-logout" onclick="logout()">
+    <i class="bi bi-box-arrow-right me-1"></i>Keluar
+  </button>
+</nav>
+
+<!-- LOGIN GATE -->
+<div id="login-gate">
+  <div class="login-card bg-white p-4 mx-3">
+    <div class="text-center mb-4">
+      <div style="font-size:2.5rem">🔐</div>
+      <h5 class="fw-bold mt-2 mb-0">Admin Login</h5>
+      <p class="text-muted small">Masukkan ADMIN_KEY untuk mengakses panel</p>
+    </div>
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Admin Key</label>
+      <input type="password" id="inp-admin-key" class="form-control" placeholder="Masukkan admin key..."
+             onkeydown="if(event.key==='Enter') loginAdmin()"/>
+      <div id="login-error" class="text-danger small mt-1 d-none"><i class="bi bi-x-circle me-1"></i>Key tidak valid.</div>
+    </div>
+    <button class="btn btn-primary w-100" onclick="loginAdmin()" id="btn-login">
+      <span id="btn-login-text"><i class="bi bi-unlock me-2"></i>Masuk</span>
+      <span id="btn-login-load" class="d-none"><span class="spinner-border spinner-border-sm me-2"></span>Memeriksa...</span>
+    </button>
+    <div class="text-center mt-3">
+      <a href="index.html" class="text-muted small">← Kembali ke Beranda</a>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN CONTENT -->
+<div id="admin-content" class="container py-4 pb-5" style="max-width:860px">
+  <div class="d-flex align-items-center mb-4">
+    <h4 class="fw-bold mb-0 me-auto"><i class="bi bi-shield-check text-primary me-2"></i>Panel Admin</h4>
+    <span class="badge bg-success">Terautentikasi</span>
+  </div>
+
+  <!-- STATS ROW -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+      <div class="panel-card bg-white p-3 text-center">
+        <div class="fw-bold fs-3 text-primary" id="stat-mapel">—</div>
+        <div class="text-muted small">Mapel</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="panel-card bg-white p-3 text-center">
+        <div class="fw-bold fs-3 text-success" id="stat-guru">—</div>
+        <div class="text-muted small">Guru</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="panel-card bg-white p-3 text-center">
+        <div class="fw-bold fs-3 text-warning" id="stat-hasil">—</div>
+        <div class="text-muted small">Hasil Ujian</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="panel-card bg-white p-3 text-center">
+        <div class="fw-bold fs-3 text-danger" id="stat-rerata">—</div>
+        <div class="text-muted small">Rata-rata Nilai</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="panel-card bg-white p-4">
+    <ul class="nav nav-tabs mb-4" id="adminTab">
+      <li class="nav-item"><a class="nav-link active" href="#" onclick="showTab('mapel',this)"><i class="bi bi-book me-1"></i>Mapel</a></li>
+      <li class="nav-item"><a class="nav-link" href="#" onclick="showTab('guru',this)"><i class="bi bi-people me-1"></i>Guru</a></li>
+      <li class="nav-item"><a class="nav-link" href="#" onclick="showTab('hasil',this)"><i class="bi bi-bar-chart me-1"></i>Hasil Ujian</a></li>
+    </ul>
+
+    <!-- TAB: MAPEL -->
+    <div id="tab-mapel">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 class="fw-bold mb-0">Daftar Mata Pelajaran</h6>
+        <button class="btn btn-primary btn-sm" onclick="showMapelForm()"><i class="bi bi-plus me-1"></i>Tambah Mapel</button>
+      </div>
+      <!-- Form tambah mapel (collapsed by default) -->
+      <div id="mapel-form" class="d-none bg-light rounded-3 p-3 mb-3">
+        <div class="row g-2">
+          <div class="col-6"><input type="text" id="mf-id" class="form-control form-control-sm" placeholder="ID (misal: matematika)"/></div>
+          <div class="col-6"><input type="text" id="mf-nama" class="form-control form-control-sm" placeholder="Nama Mapel"/></div>
+          <div class="col-12">
+            <label class="form-label small fw-semibold mb-1">Kelas tersedia:</label><br>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="mk10" value="10"><label class="form-check-label small" for="mk10">10</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="mk11" value="11"><label class="form-check-label small" for="mk11">11</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="mk12" value="12"><label class="form-check-label small" for="mk12">12</label></div>
+          </div>
+          <div class="col-12 d-flex gap-2">
+            <button class="btn btn-success btn-sm" onclick="saveMapel()"><i class="bi bi-check me-1"></i>Simpan</button>
+            <button class="btn btn-secondary btn-sm" onclick="document.getElementById('mapel-form').classList.add('d-none')">Batal</button>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive"><table class="table table-hover align-middle" id="tbl-mapel">
+        <thead><tr><th>ID</th><th>Nama</th><th>Kelas</th><th>Aksi</th></tr></thead>
+        <tbody id="tbody-mapel"><tr><td colspan="4" class="text-center text-muted">Memuat...</td></tr></tbody>
+      </table></div>
+    </div>
+
+    <!-- TAB: GURU -->
+    <div id="tab-guru" class="d-none">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 class="fw-bold mb-0">Daftar Guru</h6>
+        <button class="btn btn-primary btn-sm" onclick="showGuruForm()"><i class="bi bi-plus me-1"></i>Tambah Guru</button>
+      </div>
+      <!-- Form tambah guru -->
+      <div id="guru-form" class="d-none bg-light rounded-3 p-3 mb-3">
+        <div class="row g-2">
+          <div class="col-6"><input type="text" id="gf-id" class="form-control form-control-sm" placeholder="ID guru (unik)"/></div>
+          <div class="col-6"><input type="text" id="gf-nama" class="form-control form-control-sm" placeholder="Nama Guru"/></div>
+          <div class="col-6">
+            <select id="gf-mapel" class="form-select form-select-sm"><option value="">— Pilih Mapel —</option></select>
+          </div>
+          <div class="col-6"><input type="text" id="gf-key" class="form-control form-control-sm" placeholder="Key Guru (misal: MTK2025)"/></div>
+          <div class="col-12">
+            <label class="form-label small fw-semibold mb-1">Mengajar kelas:</label><br>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="gk10" value="10"><label class="form-check-label small" for="gk10">10</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="gk11" value="11"><label class="form-check-label small" for="gk11">11</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="gk12" value="12"><label class="form-check-label small" for="gk12">12</label></div>
+          </div>
+          <div class="col-12 d-flex gap-2">
+            <button class="btn btn-success btn-sm" onclick="saveGuru()"><i class="bi bi-check me-1"></i>Simpan</button>
+            <button class="btn btn-secondary btn-sm" onclick="document.getElementById('guru-form').classList.add('d-none')">Batal</button>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive"><table class="table table-hover align-middle">
+        <thead><tr><th>ID</th><th>Nama</th><th>Mapel</th><th>Kelas</th><th>Key</th><th>Aksi</th></tr></thead>
+        <tbody id="tbody-guru"><tr><td colspan="6" class="text-center text-muted">Memuat...</td></tr></tbody>
+      </table></div>
+    </div>
+
+    <!-- TAB: HASIL -->
+    <div id="tab-hasil" class="d-none">
+      <h6 class="fw-bold mb-3">Rekap Hasil Ujian</h6>
+      <div class="table-responsive"><table class="table table-hover align-middle table-sm">
+        <thead><tr><th>Nama</th><th>Kelas</th><th>Mapel</th><th>Nilai</th><th>Benar</th><th>Total</th><th>Waktu</th></tr></thead>
+        <tbody id="tbody-hasil"><tr><td colspan="7" class="text-center text-muted">Memuat...</td></tr></tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast-admin" class="toast align-items-center text-bg-primary border-0" role="alert">
+  <div class="d-flex">
+    <div class="toast-body" id="toast-msg"></div>
+    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+let adminKey = "";
+let mapelData = [];
+let guruData  = [];
+
+function toast(msg, type="primary") {
+  const el = document.getElementById("toast-admin");
+  el.className = `toast align-items-center text-bg-${type} border-0`;
+  document.getElementById("toast-msg").textContent = msg;
+  bootstrap.Toast.getOrCreateInstance(el).show();
+}
+
+async function loginAdmin() {
+  const key = document.getElementById("inp-admin-key").value.trim();
+  if (!key) return;
+  document.getElementById("btn-login-text").classList.add("d-none");
+  document.getElementById("btn-login-load").classList.remove("d-none");
+  document.getElementById("login-error").classList.add("d-none");
+
+  try {
+    const res  = await fetch("/api/auth-admin", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ key }),
+    });
+    const json = await res.json();
+    if (json.valid) {
+      adminKey = key;
+      sessionStorage.setItem("admin_key", key);
+      document.getElementById("login-gate").style.display = "none";
+      document.getElementById("admin-content").style.display = "block";
+      document.getElementById("btn-logout").classList.remove("d-none");
+      loadAll();
+    } else {
+      document.getElementById("login-error").classList.remove("d-none");
+    }
+  } catch {
+    document.getElementById("login-error").textContent = "Kesalahan jaringan.";
+    document.getElementById("login-error").classList.remove("d-none");
+  }
+  document.getElementById("btn-login-text").classList.remove("d-none");
+  document.getElementById("btn-login-load").classList.add("d-none");
+}
+
+function logout() {
+  sessionStorage.removeItem("admin_key");
+  location.reload();
+}
+
+// Auto-login if key stored
+window.addEventListener("DOMContentLoaded", () => {
+  const k = sessionStorage.getItem("admin_key");
+  if (k) { document.getElementById("inp-admin-key").value = k; loginAdmin(); }
+});
+
+// ── Load all data ────────────────────────────────────────────────────────────
+async function loadAll() {
+  await Promise.all([loadMapel(), loadGuru(), loadHasil()]);
+}
+
+async function loadMapel() {
+  const res = await fetch("/api/mapel");
+  mapelData = await res.json();
+  document.getElementById("stat-mapel").textContent = mapelData.length;
+  renderMapelTable();
+  // Populate guru mapel select
+  const sel = document.getElementById("gf-mapel");
+  sel.innerHTML = '<option value="">— Pilih Mapel —</option>';
+  mapelData.forEach(m => sel.innerHTML += `<option value="${m.id}">${m.nama}</option>`);
+}
+
+function renderMapelTable() {
+  const tbody = document.getElementById("tbody-mapel");
+  if (!mapelData.length) { tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Belum ada mapel</td></tr>'; return; }
+  tbody.innerHTML = mapelData.map(m => `
+    <tr>
+      <td><code>${m.id}</code></td>
+      <td>${m.nama}</td>
+      <td>${(m.kelas||[]).map(k=>`<span class="badge bg-primary badge-kelas me-1">${k}</span>`).join("")}</td>
+      <td><button class="btn btn-danger btn-sm" onclick="deleteMapel('${m.id}')"><i class="bi bi-trash"></i></button></td>
+    </tr>`).join("");
+}
+
+async function loadGuru() {
+  const res = await fetch("/api/guru", { headers: { "x-admin-key": adminKey } });
+  guruData = await res.json();
+  document.getElementById("stat-guru").textContent = guruData.length;
+  renderGuruTable();
+}
+
+function renderGuruTable() {
+  const tbody = document.getElementById("tbody-guru");
+  if (!guruData.length) { tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Belum ada guru</td></tr>'; return; }
+  tbody.innerHTML = guruData.map(g => `
+    <tr>
+      <td><code>${g.id}</code></td>
+      <td>${g.nama}</td>
+      <td>${g.mapel_id}</td>
+      <td>${(g.kelas||[]).map(k=>`<span class="badge bg-secondary badge-kelas me-1">${k}</span>`).join("")}</td>
+      <td><code class="text-success">${g.guru_key}</code></td>
+      <td><button class="btn btn-danger btn-sm" onclick="deleteGuru('${g.id}')"><i class="bi bi-trash"></i></button></td>
+    </tr>`).join("");
+}
+
+async function loadHasil() {
+  try {
+    const res  = await fetch("/api/hasil", { headers: { "x-admin-key": adminKey } });
+    const data = await res.json();
+    document.getElementById("stat-hasil").textContent = data.length;
+    const avg = data.length ? Math.round(data.reduce((s,h) => s + h.nilai, 0) / data.length) : "—";
+    document.getElementById("stat-rerata").textContent = avg;
+    const tbody = document.getElementById("tbody-hasil");
+    if (!data.length) { tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">Belum ada hasil</td></tr>'; return; }
+    tbody.innerHTML = data.slice().reverse().map(h => `
+      <tr>
+        <td>${h.nama}</td>
+        <td>${h.kelas}</td>
+        <td>${h.mapel_id}</td>
+        <td><span class="badge ${h.nilai>=70?"bg-success":"bg-danger"}">${h.nilai}</span></td>
+        <td>${h.benar}</td>
+        <td>${h.total}</td>
+        <td class="text-muted small">${new Date(h.waktu).toLocaleString("id-ID")}</td>
+      </tr>`).join("");
+  } catch {}
+}
+
+// ── Mapel CRUD ───────────────────────────────────────────────────────────────
+function showMapelForm() { document.getElementById("mapel-form").classList.remove("d-none"); }
+
+async function saveMapel() {
+  const id   = document.getElementById("mf-id").value.trim().toLowerCase().replace(/\s+/g,"_");
+  const nama = document.getElementById("mf-nama").value.trim();
+  const kelas = [10,11,12].filter(k => document.getElementById(`mk${k}`).checked);
+  if (!id||!nama||!kelas.length) { toast("Isi semua field dan pilih minimal 1 kelas","warning"); return; }
+  const res = await fetch("/api/mapel", {
+    method: "POST", headers: { "Content-Type": "application/json", "x-admin-key": adminKey },
+    body: JSON.stringify({ action:"add", mapel:{ id, nama, kelas } }),
+  });
+  const json = await res.json();
+  if (json.ok) { toast("Mapel ditambahkan","success"); document.getElementById("mapel-form").classList.add("d-none"); loadMapel(); }
+  else toast(json.error||"Gagal","danger");
+}
+
+async function deleteMapel(id) {
+  if (!confirm(`Hapus mapel "${id}"?`)) return;
+  await fetch("/api/mapel", {
+    method:"POST", headers:{"Content-Type":"application/json","x-admin-key":adminKey},
+    body: JSON.stringify({action:"delete",mapel:{id}}),
+  });
+  loadMapel();
+}
+
+// ── Guru CRUD ────────────────────────────────────────────────────────────────
+function showGuruForm() { document.getElementById("guru-form").classList.remove("d-none"); }
+
+async function saveGuru() {
+  const id       = document.getElementById("gf-id").value.trim().toLowerCase().replace(/\s+/g,"_");
+  const nama     = document.getElementById("gf-nama").value.trim();
+  const mapel_id = document.getElementById("gf-mapel").value;
+  const guru_key = document.getElementById("gf-key").value.trim();
+  const kelas    = [10,11,12].filter(k => document.getElementById(`gk${k}`).checked);
+  if (!id||!nama||!mapel_id||!guru_key||!kelas.length) { toast("Isi semua field","warning"); return; }
+  const res = await fetch("/api/guru", {
+    method:"POST", headers:{"Content-Type":"application/json","x-admin-key":adminKey},
+    body: JSON.stringify({action:"add", guru:{id,nama,mapel_id,kelas,guru_key}}),
+  });
+  const json = await res.json();
+  if (json.ok) { toast("Guru ditambahkan","success"); document.getElementById("guru-form").classList.add("d-none"); loadGuru(); }
+  else toast(json.error||"Gagal","danger");
+}
+
+async function deleteGuru(id) {
+  if (!confirm(`Hapus guru "${id}"?`)) return;
+  await fetch("/api/guru", {
+    method:"POST", headers:{"Content-Type":"application/json","x-admin-key":adminKey},
+    body: JSON.stringify({action:"delete",guru:{id}}),
+  });
+  loadGuru();
+}
+
+// ── Tab navigation ───────────────────────────────────────────────────────────
+function showTab(name, el) {
+  event.preventDefault();
+  ["mapel","guru","hasil"].forEach(t => document.getElementById(`tab-${t}`).classList.add("d-none"));
+  document.getElementById(`tab-${name}`).classList.remove("d-none");
+  document.querySelectorAll("#adminTab .nav-link").forEach(a => a.classList.remove("active"));
+  el.classList.add("active");
+}
+</script>
+</body>
+</html>
