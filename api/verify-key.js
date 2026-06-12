@@ -1,5 +1,5 @@
 // api/verify-key.js — Verify guru key for a mapel+kelas combo
-const { readFile } = require("./lib/github");
+const { readFile, parseBody } = require("./lib/github");
 
 module.exports = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -9,21 +9,30 @@ module.exports = async (req, res) => {
   if (req.method !== "POST")
     return res.status(405).json({ error: "Method not allowed" });
 
-  const { mapel_id, kelas, key } = req.body;
-  if (!mapel_id || !kelas || !key)
-    return res.status(400).json({ error: "Data tidak lengkap" });
+  try {
+    const body = await parseBody(req);
+    const { mapel_id, kelas, key } = body;
 
-  const { data: guruList } = await readFile("data/guru.json", []);
+    if (!mapel_id || !kelas || !key)
+      return res.status(400).json({ error: "Data tidak lengkap" });
 
-  // Find a guru that teaches this mapel_id AND includes this kelas AND whose key matches
-  const match = guruList.find(
-    (g) =>
-      g.mapel_id === mapel_id &&
-      g.kelas.includes(Number(kelas)) &&
-      g.guru_key === key
-  );
+    const { data: guruList } = await readFile("data/guru.json", []);
+    const list = Array.isArray(guruList) ? guruList : [];
 
-  if (!match) return res.status(401).json({ valid: false, error: "Key tidak valid" });
+    const match = list.find(
+      (g) =>
+        g.mapel_id === mapel_id &&
+        g.kelas.includes(Number(kelas)) &&
+        g.guru_key === key
+    );
 
-  return res.status(200).json({ valid: true, guru_id: match.id, guru_nama: match.nama });
+    if (!match)
+      return res.status(401).json({ valid: false, error: "Key tidak valid" });
+
+    return res.status(200).json({ valid: true, guru_id: match.id, guru_nama: match.nama });
+
+  } catch (err) {
+    console.error("verify-key error:", err.message);
+    return res.status(500).json({ error: err.message });
+  }
 };
