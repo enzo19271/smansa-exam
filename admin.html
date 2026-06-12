@@ -12,12 +12,8 @@
     .navbar { background: #1e293b; }
     .navbar-brand { font-weight: 700; color: #fff !important; }
     .navbar-brand span { color: var(--accent); }
-
-    /* LOGIN GATE */
     #login-gate { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
     .login-card { border: none; border-radius: 18px; box-shadow: 0 8px 32px rgba(0,0,0,.12); max-width: 380px; width: 100%; }
-
-    /* CONTENT */
     #admin-content { display: none; }
     .panel-card { border: none; border-radius: 16px; box-shadow: 0 2px 12px rgba(26,86,219,.10); }
     .nav-tabs .nav-link { font-weight: 600; color: #475569; }
@@ -25,6 +21,7 @@
     .table th { background: #f8faff; font-size: .82rem; text-transform: uppercase; letter-spacing: .05em; }
     .badge-kelas { font-size: .7rem; }
     #toast-admin { position: fixed; bottom: 1.5rem; right: 1rem; z-index: 9999; min-width: 250px; }
+    .api-error { font-size: .78rem; }
   </style>
 </head>
 <body>
@@ -48,7 +45,9 @@
       <label class="form-label fw-semibold">Admin Key</label>
       <input type="password" id="inp-admin-key" class="form-control" placeholder="Masukkan admin key..."
              onkeydown="if(event.key==='Enter') loginAdmin()"/>
-      <div id="login-error" class="text-danger small mt-1 d-none"><i class="bi bi-x-circle me-1"></i>Key tidak valid.</div>
+      <div id="login-error" class="text-danger small mt-1 d-none">
+        <i class="bi bi-x-circle me-1"></i><span id="login-error-msg">Key tidak valid.</span>
+      </div>
     </div>
     <button class="btn btn-primary w-100" onclick="loginAdmin()" id="btn-login">
       <span id="btn-login-text"><i class="bi bi-unlock me-2"></i>Masuk</span>
@@ -109,7 +108,6 @@
         <h6 class="fw-bold mb-0">Daftar Mata Pelajaran</h6>
         <button class="btn btn-primary btn-sm" onclick="showMapelForm()"><i class="bi bi-plus me-1"></i>Tambah Mapel</button>
       </div>
-      <!-- Form tambah mapel (collapsed by default) -->
       <div id="mapel-form" class="d-none bg-light rounded-3 p-3 mb-3">
         <div class="row g-2">
           <div class="col-6"><input type="text" id="mf-id" class="form-control form-control-sm" placeholder="ID (misal: matematika)"/></div>
@@ -120,9 +118,12 @@
             <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="mk11" value="11"><label class="form-check-label small" for="mk11">11</label></div>
             <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="mk12" value="12"><label class="form-check-label small" for="mk12">12</label></div>
           </div>
+          <div id="mapel-form-error" class="col-12 d-none">
+            <div class="alert alert-danger py-1 px-2 mb-0 small api-error" id="mapel-form-error-msg"></div>
+          </div>
           <div class="col-12 d-flex gap-2">
-            <button class="btn btn-success btn-sm" onclick="saveMapel()"><i class="bi bi-check me-1"></i>Simpan</button>
-            <button class="btn btn-secondary btn-sm" onclick="document.getElementById('mapel-form').classList.add('d-none')">Batal</button>
+            <button class="btn btn-success btn-sm" id="btn-save-mapel" onclick="saveMapel()"><i class="bi bi-check me-1"></i>Simpan</button>
+            <button class="btn btn-secondary btn-sm" onclick="closeMapelForm()">Batal</button>
           </div>
         </div>
       </div>
@@ -138,7 +139,6 @@
         <h6 class="fw-bold mb-0">Daftar Guru</h6>
         <button class="btn btn-primary btn-sm" onclick="showGuruForm()"><i class="bi bi-plus me-1"></i>Tambah Guru</button>
       </div>
-      <!-- Form tambah guru -->
       <div id="guru-form" class="d-none bg-light rounded-3 p-3 mb-3">
         <div class="row g-2">
           <div class="col-6"><input type="text" id="gf-id" class="form-control form-control-sm" placeholder="ID guru (unik)"/></div>
@@ -153,9 +153,12 @@
             <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="gk11" value="11"><label class="form-check-label small" for="gk11">11</label></div>
             <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="gk12" value="12"><label class="form-check-label small" for="gk12">12</label></div>
           </div>
+          <div id="guru-form-error" class="col-12 d-none">
+            <div class="alert alert-danger py-1 px-2 mb-0 small api-error" id="guru-form-error-msg"></div>
+          </div>
           <div class="col-12 d-flex gap-2">
-            <button class="btn btn-success btn-sm" onclick="saveGuru()"><i class="bi bi-check me-1"></i>Simpan</button>
-            <button class="btn btn-secondary btn-sm" onclick="document.getElementById('guru-form').classList.add('d-none')">Batal</button>
+            <button class="btn btn-success btn-sm" id="btn-save-guru" onclick="saveGuru()"><i class="bi bi-check me-1"></i>Simpan</button>
+            <button class="btn btn-secondary btn-sm" onclick="closeGuruForm()">Batal</button>
           </div>
         </div>
       </div>
@@ -186,46 +189,72 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+// ── State ────────────────────────────────────────────────────────────────────
 let adminKey = "";
 let mapelData = [];
 let guruData  = [];
 
-function toast(msg, type="primary") {
+// ── Helpers ──────────────────────────────────────────────────────────────────
+function toast(msg, type = "primary") {
   const el = document.getElementById("toast-admin");
   el.className = `toast align-items-center text-bg-${type} border-0`;
   document.getElementById("toast-msg").textContent = msg;
   bootstrap.Toast.getOrCreateInstance(el).show();
 }
 
+function setLoading(btnId, loading) {
+  const btn = document.getElementById(btnId);
+  if (!btn) return;
+  btn.disabled = loading;
+  const icon = btn.querySelector("i");
+  if (loading) {
+    btn.dataset.origHtml = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Menyimpan...';
+  } else if (btn.dataset.origHtml) {
+    btn.innerHTML = btn.dataset.origHtml;
+  }
+}
+
+// ── Auth ─────────────────────────────────────────────────────────────────────
 async function loginAdmin() {
   const key = document.getElementById("inp-admin-key").value.trim();
   if (!key) return;
+
   document.getElementById("btn-login-text").classList.add("d-none");
   document.getElementById("btn-login-load").classList.remove("d-none");
   document.getElementById("login-error").classList.add("d-none");
+  document.getElementById("btn-login").disabled = true;
 
   try {
     const res  = await fetch("/api/auth-admin", {
-      method: "POST", headers: { "Content-Type": "application/json" },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ key }),
     });
     const json = await res.json();
+
     if (json.valid) {
       adminKey = key;
       sessionStorage.setItem("admin_key", key);
       document.getElementById("login-gate").style.display = "none";
       document.getElementById("admin-content").style.display = "block";
       document.getElementById("btn-logout").classList.remove("d-none");
-      loadAll();
+      // Penting: loadAll SETELAH adminKey diset
+      await loadAll();
     } else {
-      document.getElementById("login-error").classList.remove("d-none");
+      const errEl = document.getElementById("login-error");
+      document.getElementById("login-error-msg").textContent =
+        json.error || "Key tidak valid.";
+      errEl.classList.remove("d-none");
     }
-  } catch {
-    document.getElementById("login-error").textContent = "Kesalahan jaringan.";
+  } catch (err) {
+    document.getElementById("login-error-msg").textContent = "Kesalahan jaringan: " + err.message;
     document.getElementById("login-error").classList.remove("d-none");
+  } finally {
+    document.getElementById("btn-login-text").classList.remove("d-none");
+    document.getElementById("btn-login-load").classList.add("d-none");
+    document.getElementById("btn-login").disabled = false;
   }
-  document.getElementById("btn-login-text").classList.remove("d-none");
-  document.getElementById("btn-login-load").classList.add("d-none");
 }
 
 function logout() {
@@ -233,111 +262,177 @@ function logout() {
   location.reload();
 }
 
-// Auto-login if key stored
+// Auto-login jika key tersimpan
 window.addEventListener("DOMContentLoaded", () => {
   const k = sessionStorage.getItem("admin_key");
-  if (k) { document.getElementById("inp-admin-key").value = k; loginAdmin(); }
+  if (k) {
+    document.getElementById("inp-admin-key").value = k;
+    loginAdmin();
+  }
 });
 
-// ── Load all data ────────────────────────────────────────────────────────────
+// ── Load All ─────────────────────────────────────────────────────────────────
 async function loadAll() {
+  // Jalankan paralel tapi pastikan adminKey sudah terisi (sudah diset sebelum dipanggil)
   await Promise.all([loadMapel(), loadGuru(), loadHasil()]);
 }
 
+// ── Mapel ─────────────────────────────────────────────────────────────────────
 async function loadMapel() {
-  const res = await fetch("/api/mapel");
-  mapelData = await res.json();
+  try {
+    const res = await fetch("/api/mapel");
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    mapelData = await res.json();
+    if (!Array.isArray(mapelData)) mapelData = [];
+  } catch (err) {
+    console.error("loadMapel:", err);
+    mapelData = [];
+  }
   document.getElementById("stat-mapel").textContent = mapelData.length;
   renderMapelTable();
-  // Populate guru mapel select
+  // Populate dropdown guru
   const sel = document.getElementById("gf-mapel");
   sel.innerHTML = '<option value="">— Pilih Mapel —</option>';
-  mapelData.forEach(m => sel.innerHTML += `<option value="${m.id}">${m.nama}</option>`);
+  mapelData.forEach(m => {
+    const opt = document.createElement("option");
+    opt.value = m.id;
+    opt.textContent = m.nama;
+    sel.appendChild(opt);
+  });
 }
 
 function renderMapelTable() {
   const tbody = document.getElementById("tbody-mapel");
-  if (!mapelData.length) { tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Belum ada mapel</td></tr>'; return; }
+  if (!mapelData.length) {
+    tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Belum ada mapel</td></tr>';
+    return;
+  }
   tbody.innerHTML = mapelData.map(m => `
     <tr>
-      <td><code>${m.id}</code></td>
-      <td>${m.nama}</td>
+      <td><code>${escHtml(m.id)}</code></td>
+      <td>${escHtml(m.nama)}</td>
       <td>${(m.kelas||[]).map(k=>`<span class="badge bg-primary badge-kelas me-1">${k}</span>`).join("")}</td>
-      <td><button class="btn btn-danger btn-sm" onclick="deleteMapel('${m.id}')"><i class="bi bi-trash"></i></button></td>
+      <td><button class="btn btn-danger btn-sm" onclick="deleteMapel('${escAttr(m.id)}')"><i class="bi bi-trash"></i></button></td>
     </tr>`).join("");
 }
 
+function showMapelForm() {
+  document.getElementById("mf-id").value = "";
+  document.getElementById("mf-nama").value = "";
+  [10,11,12].forEach(k => document.getElementById(`mk${k}`).checked = false);
+  document.getElementById("mapel-form-error").classList.add("d-none");
+  document.getElementById("mapel-form").classList.remove("d-none");
+}
+
+function closeMapelForm() {
+  document.getElementById("mapel-form").classList.add("d-none");
+}
+
+async function saveMapel() {
+  const id   = document.getElementById("mf-id").value.trim().toLowerCase().replace(/\s+/g,"_");
+  const nama = document.getElementById("mf-nama").value.trim();
+  const kelas = [10,11,12].filter(k => document.getElementById(`mk${k}`).checked);
+
+  const errEl = document.getElementById("mapel-form-error");
+  const errMsg = document.getElementById("mapel-form-error-msg");
+  errEl.classList.add("d-none");
+
+  if (!id || !nama || !kelas.length) {
+    errMsg.textContent = "Isi semua field dan pilih minimal 1 kelas.";
+    errEl.classList.remove("d-none");
+    return;
+  }
+
+  setLoading("btn-save-mapel", true);
+  try {
+    const res = await fetch("/api/mapel", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-admin-key": adminKey },
+      body: JSON.stringify({ action: "add", mapel: { id, nama, kelas } }),
+    });
+    const json = await res.json();
+    if (json.ok) {
+      toast("Mapel berhasil ditambahkan ✓", "success");
+      closeMapelForm();
+      await loadMapel();
+    } else {
+      errMsg.textContent = json.error || "Gagal menyimpan.";
+      errEl.classList.remove("d-none");
+    }
+  } catch (err) {
+    errMsg.textContent = "Kesalahan jaringan: " + err.message;
+    errEl.classList.remove("d-none");
+  } finally {
+    setLoading("btn-save-mapel", false);
+  }
+}
+
+async function deleteMapel(id) {
+  if (!confirm(`Hapus mapel "${id}"?`)) return;
+  try {
+    const res = await fetch("/api/mapel", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-admin-key": adminKey },
+      body: JSON.stringify({ action: "delete", mapel: { id } }),
+    });
+    const json = await res.json();
+    if (json.ok) { toast("Mapel dihapus", "secondary"); await loadMapel(); }
+    else toast(json.error || "Gagal menghapus", "danger");
+  } catch (err) {
+    toast("Kesalahan jaringan: " + err.message, "danger");
+  }
+}
+
+// ── Guru ──────────────────────────────────────────────────────────────────────
 async function loadGuru() {
-  const res = await fetch("/api/guru", { headers: { "x-admin-key": adminKey } });
-  guruData = await res.json();
+  try {
+    const res = await fetch("/api/guru", {
+      headers: { "x-admin-key": adminKey },
+    });
+    if (!res.ok) {
+      const json = await res.json().catch(() => ({}));
+      throw new Error(json.error || `HTTP ${res.status}`);
+    }
+    guruData = await res.json();
+    if (!Array.isArray(guruData)) guruData = [];
+  } catch (err) {
+    console.error("loadGuru:", err);
+    guruData = [];
+  }
   document.getElementById("stat-guru").textContent = guruData.length;
   renderGuruTable();
 }
 
 function renderGuruTable() {
   const tbody = document.getElementById("tbody-guru");
-  if (!guruData.length) { tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Belum ada guru</td></tr>'; return; }
+  if (!guruData.length) {
+    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Belum ada guru</td></tr>';
+    return;
+  }
   tbody.innerHTML = guruData.map(g => `
     <tr>
-      <td><code>${g.id}</code></td>
-      <td>${g.nama}</td>
-      <td>${g.mapel_id}</td>
+      <td><code>${escHtml(g.id)}</code></td>
+      <td>${escHtml(g.nama)}</td>
+      <td>${escHtml(g.mapel_id)}</td>
       <td>${(g.kelas||[]).map(k=>`<span class="badge bg-secondary badge-kelas me-1">${k}</span>`).join("")}</td>
-      <td><code class="text-success">${g.guru_key}</code></td>
-      <td><button class="btn btn-danger btn-sm" onclick="deleteGuru('${g.id}')"><i class="bi bi-trash"></i></button></td>
+      <td><code class="text-success">${escHtml(g.guru_key)}</code></td>
+      <td><button class="btn btn-danger btn-sm" onclick="deleteGuru('${escAttr(g.id)}')"><i class="bi bi-trash"></i></button></td>
     </tr>`).join("");
 }
 
-async function loadHasil() {
-  try {
-    const res  = await fetch("/api/hasil", { headers: { "x-admin-key": adminKey } });
-    const data = await res.json();
-    document.getElementById("stat-hasil").textContent = data.length;
-    const avg = data.length ? Math.round(data.reduce((s,h) => s + h.nilai, 0) / data.length) : "—";
-    document.getElementById("stat-rerata").textContent = avg;
-    const tbody = document.getElementById("tbody-hasil");
-    if (!data.length) { tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">Belum ada hasil</td></tr>'; return; }
-    tbody.innerHTML = data.slice().reverse().map(h => `
-      <tr>
-        <td>${h.nama}</td>
-        <td>${h.kelas}</td>
-        <td>${h.mapel_id}</td>
-        <td><span class="badge ${h.nilai>=70?"bg-success":"bg-danger"}">${h.nilai}</span></td>
-        <td>${h.benar}</td>
-        <td>${h.total}</td>
-        <td class="text-muted small">${new Date(h.waktu).toLocaleString("id-ID")}</td>
-      </tr>`).join("");
-  } catch {}
+function showGuruForm() {
+  document.getElementById("gf-id").value = "";
+  document.getElementById("gf-nama").value = "";
+  document.getElementById("gf-mapel").value = "";
+  document.getElementById("gf-key").value = "";
+  [10,11,12].forEach(k => document.getElementById(`gk${k}`).checked = false);
+  document.getElementById("guru-form-error").classList.add("d-none");
+  document.getElementById("guru-form").classList.remove("d-none");
 }
 
-// ── Mapel CRUD ───────────────────────────────────────────────────────────────
-function showMapelForm() { document.getElementById("mapel-form").classList.remove("d-none"); }
-
-async function saveMapel() {
-  const id   = document.getElementById("mf-id").value.trim().toLowerCase().replace(/\s+/g,"_");
-  const nama = document.getElementById("mf-nama").value.trim();
-  const kelas = [10,11,12].filter(k => document.getElementById(`mk${k}`).checked);
-  if (!id||!nama||!kelas.length) { toast("Isi semua field dan pilih minimal 1 kelas","warning"); return; }
-  const res = await fetch("/api/mapel", {
-    method: "POST", headers: { "Content-Type": "application/json", "x-admin-key": adminKey },
-    body: JSON.stringify({ action:"add", mapel:{ id, nama, kelas } }),
-  });
-  const json = await res.json();
-  if (json.ok) { toast("Mapel ditambahkan","success"); document.getElementById("mapel-form").classList.add("d-none"); loadMapel(); }
-  else toast(json.error||"Gagal","danger");
+function closeGuruForm() {
+  document.getElementById("guru-form").classList.add("d-none");
 }
-
-async function deleteMapel(id) {
-  if (!confirm(`Hapus mapel "${id}"?`)) return;
-  await fetch("/api/mapel", {
-    method:"POST", headers:{"Content-Type":"application/json","x-admin-key":adminKey},
-    body: JSON.stringify({action:"delete",mapel:{id}}),
-  });
-  loadMapel();
-}
-
-// ── Guru CRUD ────────────────────────────────────────────────────────────────
-function showGuruForm() { document.getElementById("guru-form").classList.remove("d-none"); }
 
 async function saveGuru() {
   const id       = document.getElementById("gf-id").value.trim().toLowerCase().replace(/\s+/g,"_");
@@ -345,26 +440,88 @@ async function saveGuru() {
   const mapel_id = document.getElementById("gf-mapel").value;
   const guru_key = document.getElementById("gf-key").value.trim();
   const kelas    = [10,11,12].filter(k => document.getElementById(`gk${k}`).checked);
-  if (!id||!nama||!mapel_id||!guru_key||!kelas.length) { toast("Isi semua field","warning"); return; }
-  const res = await fetch("/api/guru", {
-    method:"POST", headers:{"Content-Type":"application/json","x-admin-key":adminKey},
-    body: JSON.stringify({action:"add", guru:{id,nama,mapel_id,kelas,guru_key}}),
-  });
-  const json = await res.json();
-  if (json.ok) { toast("Guru ditambahkan","success"); document.getElementById("guru-form").classList.add("d-none"); loadGuru(); }
-  else toast(json.error||"Gagal","danger");
+
+  const errEl  = document.getElementById("guru-form-error");
+  const errMsg = document.getElementById("guru-form-error-msg");
+  errEl.classList.add("d-none");
+
+  if (!id || !nama || !mapel_id || !guru_key || !kelas.length) {
+    errMsg.textContent = "Isi semua field dan pilih minimal 1 kelas mengajar.";
+    errEl.classList.remove("d-none");
+    return;
+  }
+
+  setLoading("btn-save-guru", true);
+  try {
+    const res = await fetch("/api/guru", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-admin-key": adminKey },
+      body: JSON.stringify({ action: "add", guru: { id, nama, mapel_id, kelas, guru_key } }),
+    });
+    const json = await res.json();
+    if (json.ok) {
+      toast("Guru berhasil ditambahkan ✓", "success");
+      closeGuruForm();
+      await loadGuru();
+    } else {
+      errMsg.textContent = json.error || "Gagal menyimpan.";
+      errEl.classList.remove("d-none");
+    }
+  } catch (err) {
+    errMsg.textContent = "Kesalahan jaringan: " + err.message;
+    errEl.classList.remove("d-none");
+  } finally {
+    setLoading("btn-save-guru", false);
+  }
 }
 
 async function deleteGuru(id) {
   if (!confirm(`Hapus guru "${id}"?`)) return;
-  await fetch("/api/guru", {
-    method:"POST", headers:{"Content-Type":"application/json","x-admin-key":adminKey},
-    body: JSON.stringify({action:"delete",guru:{id}}),
-  });
-  loadGuru();
+  try {
+    const res = await fetch("/api/guru", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-admin-key": adminKey },
+      body: JSON.stringify({ action: "delete", guru: { id } }),
+    });
+    const json = await res.json();
+    if (json.ok) { toast("Guru dihapus", "secondary"); await loadGuru(); }
+    else toast(json.error || "Gagal menghapus", "danger");
+  } catch (err) {
+    toast("Kesalahan jaringan: " + err.message, "danger");
+  }
 }
 
-// ── Tab navigation ───────────────────────────────────────────────────────────
+// ── Hasil ─────────────────────────────────────────────────────────────────────
+async function loadHasil() {
+  try {
+    const res  = await fetch("/api/hasil", { headers: { "x-admin-key": adminKey } });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    const list = Array.isArray(data) ? data : [];
+    document.getElementById("stat-hasil").textContent = list.length;
+    const avg = list.length ? Math.round(list.reduce((s,h) => s + (h.nilai||0), 0) / list.length) : "—";
+    document.getElementById("stat-rerata").textContent = avg;
+    const tbody = document.getElementById("tbody-hasil");
+    if (!list.length) {
+      tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">Belum ada hasil</td></tr>';
+      return;
+    }
+    tbody.innerHTML = list.slice().reverse().map(h => `
+      <tr>
+        <td>${escHtml(h.nama)}</td>
+        <td>${escHtml(String(h.kelas))}</td>
+        <td>${escHtml(h.mapel_id)}</td>
+        <td><span class="badge ${h.nilai>=70?"bg-success":"bg-danger"}">${h.nilai}</span></td>
+        <td>${h.benar}</td>
+        <td>${h.total}</td>
+        <td class="text-muted small">${new Date(h.waktu).toLocaleString("id-ID")}</td>
+      </tr>`).join("");
+  } catch (err) {
+    console.error("loadHasil:", err);
+  }
+}
+
+// ── Tab navigation ────────────────────────────────────────────────────────────
 function showTab(name, el) {
   event.preventDefault();
   ["mapel","guru","hasil"].forEach(t => document.getElementById(`tab-${t}`).classList.add("d-none"));
@@ -372,6 +529,14 @@ function showTab(name, el) {
   document.querySelectorAll("#adminTab .nav-link").forEach(a => a.classList.remove("active"));
   el.classList.add("active");
 }
+
+// ── XSS helpers ───────────────────────────────────────────────────────────────
+function escHtml(str) {
+  return String(str ?? "")
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+}
+function escAttr(str) { return escHtml(str); }
 </script>
 </body>
 </html>
