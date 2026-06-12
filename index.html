@@ -13,12 +13,13 @@
   
   <style>
     :root {
-      --gradient-primary: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      --gradient-primary: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
       --gradient-accent: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
-      --bg-workspace: #f4f7fe;
+      --bg-workspace: #f8fafc;
       --text-main: #0f172a;
       --text-muted: #64748b;
       --border-color: #e2e8f0;
+      --sidebar-width: 280px;
     }
     
     body { 
@@ -26,19 +27,18 @@
       font-family: 'Plus Jakarta Sans', sans-serif;
       color: var(--text-main);
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
 
     /* NAVBAR */
     .navbar { 
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
-      padding: 1rem 1.5rem;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-color);
+      padding: 0.85rem 1.5rem;
     }
     .navbar-brand { 
       font-weight: 800; 
-      font-size: 1.4rem;
+      font-size: 1.35rem;
       letter-spacing: -0.5px; 
       background: var(--gradient-primary);
       -webkit-background-clip: text;
@@ -49,8 +49,19 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
+    .btn-toggle-menu {
+      border: none;
+      background: #f1f5f9;
+      color: var(--text-main);
+      padding: 0.5rem 0.75rem;
+      border-radius: 10px;
+      transition: all 0.2s;
+    }
+    .btn-toggle-menu:hover {
+      background: #e2e8f0;
+    }
     .portal-tag {
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(139, 92, 246, 0.08) 100%);
       color: #2563eb;
       font-weight: 700;
       font-size: 0.75rem;
@@ -59,145 +70,145 @@
       letter-spacing: 0.5px;
     }
 
+    /* PREMIUM SIDEBAR (OFFCANVAS CUSTOMIZATION) */
+    .offcanvas-sidebar {
+      width: var(--sidebar-width) !important;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-right: 1px solid var(--border-color);
+    }
+    .sidebar-header-title {
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--text-main);
+    }
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.85rem 1rem;
+      color: #475569;
+      font-weight: 600;
+      font-size: 0.92rem;
+      text-decoration: none;
+      border-radius: 12px;
+      transition: all 0.2s ease;
+      margin-bottom: 0.5rem;
+    }
+    .sidebar-link i {
+      font-size: 1.2rem;
+    }
+    .sidebar-link-guru {
+      background: rgba(37, 99, 235, 0.06);
+      color: #2563eb;
+    }
+    .sidebar-link-guru:hover {
+      background: #2563eb;
+      color: #ffffff;
+    }
+    .sidebar-link-admin {
+      background: rgba(15, 23, 42, 0.06);
+      color: #0f172a;
+    }
+    .sidebar-link-admin:hover {
+      background: #0f172a;
+      color: #ffffff;
+    }
+
     /* HERO / HEADER SECTION */
     .hero-container {
       background: #ffffff;
-      border: none;
       border-radius: 24px;
-      padding: 3rem 2.5rem;
-      margin-top: 2.5rem;
-      margin-bottom: 2.5rem;
+      padding: 2.5rem 2rem;
+      margin-top: 2rem;
+      margin-bottom: 2rem;
       position: relative;
       overflow: hidden;
-      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04);
+      box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.02);
+      border: 1px solid var(--border-color);
     }
-    /* Colorful top accent border stylized like modern forms */
     .hero-container::before {
       content: "";
       position: absolute;
       top: 0; left: 0; right: 0;
-      height: 8px;
-      background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899, #f59e0b);
+      height: 6px;
+      background: linear-gradient(90deg, #2563eb, #8b5cf6, #ec4899);
     }
     .hero-container h1 { 
-      font-size: 2.2rem; 
+      font-size: 1.8rem; 
       font-weight: 800; 
       color: var(--text-main);
-      letter-spacing: -1px;
+      letter-spacing: -0.5px;
     }
     .hero-container p { 
       color: var(--text-muted); 
-      font-size: 1.05rem;
-      margin-top: 0.75rem;
+      font-size: 0.95rem;
+      margin-top: 0.5rem;
       font-weight: 500;
     }
 
     /* SECTION TITLE */
     .section-title {
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 1.5px;
+      letter-spacing: 1px;
       color: #475569;
     }
 
     /* MAPEL CARD */
     .card-mapel {
       background: #ffffff;
-      border: 1px solid rgba(226, 232, 240, 0.7); 
-      border-radius: 20px;
+      border: 1px solid rgba(226, 232, 240, 0.8); 
+      border-radius: 18px;
       padding: 1.5rem;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex;
       flex-direction: column;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
     }
     .card-mapel:hover { 
-      transform: translateY(-6px); 
+      transform: translateY(-4px); 
       border-color: transparent;
-      box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.1), 0 10px 10px -5px rgba(59, 130, 246, 0.04); 
+      box-shadow: 0 20px 25px -5px rgba(37, 99, 235, 0.06), 0 10px 10px -5px rgba(37, 99, 235, 0.02); 
     }
     .mapel-icon {
-      width: 52px; height: 52px; 
-      border-radius: 14px;
-      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); 
+      width: 48px; height: 48px; 
+      border-radius: 12px;
+      background: #f1f5f9; 
       display: flex; align-items: center; justify-content: center;
-      font-size: 1.6rem; margin-bottom: 1.25rem;
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+      font-size: 1.5rem; margin-bottom: 1.25rem;
     }
     .card-mapel h6 {
       color: var(--text-main);
       font-weight: 700;
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       line-height: 1.4;
-      letter-spacing: -0.3px;
     }
 
-    /* BADGE KELAS (DOCK PILLS) */
+    /* BADGE KELAS */
     .badge-kelas { 
-      font-size: 0.8rem; 
+      font-size: 0.78rem; 
       font-weight: 600;
       cursor: pointer; 
       background-color: #f8fafc !important;
       color: #475569 !important;
       border: 1px solid var(--border-color);
-      padding: 0.5rem 0.8rem;
-      border-radius: 10px;
-      transition: all 0.2s ease;
+      padding: 0.45rem 0.75rem;
+      border-radius: 8px;
+      transition: all 0.15s ease;
       display: inline-block;
     }
     .badge-kelas:hover {
       background: var(--gradient-primary) !important;
       border-color: transparent;
       color: #ffffff !important;
-      transform: scale(1.05);
-      box-shadow: 0 4px 12px rgba(29, 78, 216, 0.2);
     }
 
     /* SKELETON LOADER PLACEHOLDER */
     .placeholder-glow .placeholder {
       background-color: #e2e8f0;
-      border-radius: 12px;
-    }
-
-    /* FLOATING ACTIONS */
-    .sidebar-float {
-      position: fixed; bottom: 2rem; right: 2rem;
-      display: flex; flex-direction: row; gap: 0.6rem; z-index: 99;
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      padding: 0.6rem;
-      border-radius: 100px;
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-      border: 1px solid rgba(255,255,255,0.6);
-    }
-    .sidebar-float .btn { 
-      border-radius: 100px; 
-      font-size: 0.85rem; 
-      font-weight: 700;
-      padding: 0.6rem 1.2rem;
-      border: none;
-      transition: all 0.2s ease;
-    }
-    .btn-guru-modern {
-      background: var(--gradient-primary);
-      color: #ffffff;
-    }
-    .btn-guru-modern:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(29, 78, 216, 0.3);
-      color: #ffffff;
-    }
-    .btn-admin-modern {
-      background: #0f172a;
-      color: #ffffff;
-    }
-    .btn-admin-modern:hover {
-      background: #1e293b;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.3);
-      color: #ffffff;
+      border-radius: 10px;
     }
 
     /* FOOTER */
@@ -206,8 +217,9 @@
       background: #ffffff; 
       color: var(--text-muted); 
       font-size: 0.85rem; 
-      padding: 2rem 0; 
+      padding: 1.5rem 0; 
       font-weight: 500;
+      margin-top: 3rem;
     }
   </style>
 </head>
@@ -215,78 +227,98 @@
 
 <nav class="navbar navbar-expand-lg sticky-top px-4">
   <div class="container-fluid p-0 d-flex align-items-center">
+    <button class="btn btn-toggle-menu me-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu">
+      <i class="bi bi-list fs-5"></i>
+    </button>
+    
     <span class="navbar-brand"><i class="bi bi-mortarboard-fill me-2 text-primary"></i>E<span>-EXAM</span></span>
-    <div class="ms-auto">
+    
+    <div class="ms-auto d-none d-sm-block">
       <span class="portal-tag">PORTAL ACADEMIC DIGITAL</span>
     </div>
   </div>
 </nav>
 
+<div class="offcanvas offcanvas-start offcanvas-sidebar" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
+  <div class="offcanvas-header border-bottom py-4">
+    <span class="sidebar-header-title" id="sidebarMenuLabel"><i class="bi bi-shield-shaded text-primary me-2"></i>Navigasi Portal</span>
+    <button type="button" class="btn-close text-reset" data-bs-disabled="true" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body p-3">
+    <p class="text-uppercase fw-bold text-muted ps-2 mb-3" style="font-size: 0.7rem; letter-spacing: 1px;">Akses Menu</p>
+    
+    <a href="#" class="sidebar-link active bg-light text-primary mb-3">
+      <i class="bi bi-grid-1x2-fill"></i> Halaman Utama
+    </a>
+    
+    <hr class="text-muted opacity-25">
+    
+    <p class="text-uppercase fw-bold text-muted ps-2 mb-2" style="font-size: 0.7rem; letter-spacing: 1px;">Manajemen</p>
+    <a href="guru.html" class="sidebar-link sidebar-link-guru">
+      <i class="bi bi-person-workspace"></i> Portal Guru
+    </a>
+    <a href="admin.html" class="sidebar-link sidebar-link-admin">
+      <i class="bi bi-shield-lock-fill"></i> Administrator
+    </a>
+  </div>
+</div>
+
 <div class="container">
   <div class="hero-container">
     <h1>Ujian Online Sekolah</h1>
-    <p class="mb-0">Selamat datang di sistem evaluasi digital terpadu. Pastikan koneksi Anda stabil, lalu tentukan mata pelajaran dan tingkatan kelas Anda untuk memulai ujian.</p>
+    <p class="mb-0">Selamat datang di sistem evaluasi digital terpadu. Pastikan koneksi internet Anda stabil, pilih mata pelajaran serta tingkatan kelas Anda untuk memulai sesi ujian.</p>
   </div>
 
   <div class="pb-5">
     <div class="d-flex align-items-center mb-4">
       <div class="me-auto">
-        <h2 class="section-title mb-0"><i class="bi bi-collection-play-fill me-2 text-primary"></i>Daftar Mata Pelajaran</h2>
+        <h2 class="section-title mb-0"><i class="bi bi-journals me-2 text-primary"></i>Daftar Mata Pelajaran</h2>
       </div>
       <div>
-        <span class="badge rounded-pill bg-primary bg-opacity-10 text-primary fw-bold px-3 py-2" id="info-count" style="font-size: 0.85rem;"></span>
+        <span class="badge rounded-pill bg-primary bg-opacity-10 text-primary fw-bold px-3 py-2" id="info-count" style="font-size: 0.82rem;"></span>
       </div>
     </div>
 
     <div class="row g-4" id="mapel-container">
       <div class="col-6 col-md-4 col-lg-3 skeleton-item" id="sk1">
         <div class="card card-mapel">
-          <div class="placeholder-glow"><span class="placeholder col-4 mb-3" style="height:52px;"></span></div>
-          <div class="placeholder-glow"><span class="placeholder col-10 mb-2" style="height:20px;"></span></div>
+          <div class="placeholder-glow"><span class="placeholder col-4 mb-3" style="height:48px;"></span></div>
+          <div class="placeholder-glow"><span class="placeholder col-10 mb-2" style="height:18px;"></span></div>
           <div class="placeholder-glow"><span class="placeholder col-6 mb-3"></span></div>
-          <div class="placeholder-glow"><span class="placeholder col-12" style="height:38px;"></span></div>
+          <div class="placeholder-glow"><span class="placeholder col-12" style="height:34px;"></span></div>
         </div>
       </div>
       <div class="col-6 col-md-4 col-lg-3 skeleton-item" id="sk2">
         <div class="card card-mapel">
-          <div class="placeholder-glow"><span class="placeholder col-4 mb-3" style="height:52px;"></span></div>
-          <div class="placeholder-glow"><span class="placeholder col-10 mb-2" style="height:20px;"></span></div>
+          <div class="placeholder-glow"><span class="placeholder col-4 mb-3" style="height:48px;"></span></div>
+          <div class="placeholder-glow"><span class="placeholder col-10 mb-2" style="height:18px;"></span></div>
           <div class="placeholder-glow"><span class="placeholder col-6 mb-3"></span></div>
-          <div class="placeholder-glow"><span class="placeholder col-12" style="height:38px;"></span></div>
+          <div class="placeholder-glow"><span class="placeholder col-12" style="height:34px;"></span></div>
         </div>
       </div>
       <div class="col-6 col-md-4 col-lg-3 skeleton-item" id="sk3">
         <div class="card card-mapel">
-          <div class="placeholder-glow"><span class="placeholder col-4 mb-3" style="height:52px;"></span></div>
-          <div class="placeholder-glow"><span class="placeholder col-10 mb-2" style="height:20px;"></span></div>
+          <div class="placeholder-glow"><span class="placeholder col-4 mb-3" style="height:48px;"></span></div>
+          <div class="placeholder-glow"><span class="placeholder col-10 mb-2" style="height:18px;"></span></div>
           <div class="placeholder-glow"><span class="placeholder col-6 mb-3"></span></div>
-          <div class="placeholder-glow"><span class="placeholder col-12" style="height:38px;"></span></div>
+          <div class="placeholder-glow"><span class="placeholder col-12" style="height:34px;"></span></div>
         </div>
       </div>
       <div class="col-6 col-md-4 col-lg-3 skeleton-item" id="sk4">
         <div class="card card-mapel">
-          <div class="placeholder-glow"><span class="placeholder col-4 mb-3" style="height:52px;"></span></div>
-          <div class="placeholder-glow"><span class="placeholder col-10 mb-2" style="height:20px;"></span></div>
+          <div class="placeholder-glow"><span class="placeholder col-4 mb-3" style="height:48px;"></span></div>
+          <div class="placeholder-glow"><span class="placeholder col-10 mb-2" style="height:18px;"></span></div>
           <div class="placeholder-glow"><span class="placeholder col-6 mb-3"></span></div>
-          <div class="placeholder-glow"><span class="placeholder col-12" style="height:38px;"></span></div>
+          <div class="placeholder-glow"><span class="placeholder col-12" style="height:34px;"></span></div>
         </div>
       </div>
     </div>
 
-    <div id="empty-state" class="text-center py-5 d-none bg-white border-0 rounded-4 shadow-sm mt-3">
+    <div id="empty-state" class="text-center py-5 d-none bg-white border rounded-4 mt-3">
       <i class="bi bi-inbox display-5 text-muted opacity-40"></i>
       <p class="mt-3 text-muted fw-bold">Belum ada mata pelajaran tersedia.</p>
     </div>
   </div>
-</div>
-
-<div class="sidebar-float">
-  <button class="btn btn-guru-modern" onclick="location.href='guru.html'">
-    <i class="bi bi-person-workspace me-1"></i>Portal Guru
-  </button>
-  <button class="btn btn-admin-modern" onclick="location.href='admin.html'">
-    <i class="bi bi-shield-lock-fill me-1"></i>Admin
-  </button>
 </div>
 
 <footer class="text-center">
@@ -295,7 +327,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-// JavaScript asli dipertahankan secara utuh tanpa modifikasi sistem fungsional
+// JavaScript bawaan dijamin berfungsi penuh dan tidak dimodifikasi sistem logikanya
 const ICONS = {
   default: "📚", matematika: "🔢", ipa: "🔬", ips: "🌍",
   bahasa_indonesia: "🇮🇩", bahasa_inggris: "🗣️", fisika: "⚛️",
@@ -334,8 +366,8 @@ function renderMapel(list) {
       <div class="card card-mapel h-100">
         <div class="mapel-icon">${icon}</div>
         <h6 class="fw-bold mb-1">${m.nama}</h6>
-        <p class="text-muted mb-3" style="font-size:.78rem; font-weight: 500;">Pilih tingkatan:</p>
-        <div class="d-flex flex-wrap shadow-none">${kelasBadges}</div>
+        <p class="text-muted mb-2" style="font-size:.78rem; font-weight: 500;">Pilih tingkatan:</p>
+        <div class="d-flex flex-wrap">${kelasBadges}</div>
       </div>`;
     container.appendChild(col);
   });
