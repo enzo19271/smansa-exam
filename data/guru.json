@@ -7,5 +7,14 @@
       12
     ],
     "guru_key": "Ganteng"
+  },
+  {
+    "id": "002",
+    "nama": "Rizki",
+    "mapel_id": "bg001",
+    "kelas": [
+      12
+    ],
+    "guru_key": "Eaa"
   }
 ]
