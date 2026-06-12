@@ -2,17 +2,15 @@
 
 const BASE = "https://api.github.com";
 
-// Semua env vars dibaca di dalam fungsi (bukan top-level),
-// agar selalu fresh saat dieksekusi di Vercel serverless.
-function getToken()  { return process.env.GITHUB_TOKEN; }
-function getRepo()   { return process.env.GITHUB_REPO; }
-function getBranch() { return process.env.GITHUB_BRANCH || "main"; }
-
 function getHeaders() {
-  const token = getToken();
-  const repo  = getRepo();
-  if (!token) throw new Error("GITHUB_TOKEN env var tidak diset di Vercel");
-  if (!repo)  throw new Error("GITHUB_REPO env var tidak diset di Vercel");
+  const token  = process.env.GITHUB_TOKEN;
+  const repo   = process.env.GITHUB_REPO;
+
+  // Debug: log semua env keys yang tersedia (hapus setelah confirmed bekerja)
+  console.log("[github.js] GITHUB_REPO =", JSON.stringify(repo));
+  console.log("[github.js] GITHUB_TOKEN exists =", !!token);
+  console.log("[github.js] All env keys =", Object.keys(process.env).filter(k => k.startsWith("GITHUB")));
+
   return {
     Authorization: `token ${token}`,
     "Content-Type": "application/json",
@@ -20,6 +18,9 @@ function getHeaders() {
     "User-Agent": "e-exam-app",
   };
 }
+
+function getRepo()   { return process.env.GITHUB_REPO; }
+function getBranch() { return process.env.GITHUB_BRANCH || "main"; }
 
 /** Parse request body — Vercel tidak otomatis parse JSON body */
 async function parseBody(req) {
