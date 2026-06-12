@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Siswa – E-EXAM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link href="../assets/css/style.css" rel="stylesheet" />
+</head>
+<body>
+
+<!-- Sidebar overlay (mobile) -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="app-layout">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="sidebar" id="sidebar">
+
+    <!-- Brand -->
+    <div class="sidebar-brand">
+      <div class="brand-name"><i class="bi bi-mortarboard-fill me-1"></i>E-EXAM</div>
+      <div class="brand-sub">Sistem Ujian Online</div>
+    </div>
+
+    <!-- User info -->
+    <div class="sidebar-user">
+      <div class="user-avatar" id="sidebarAvatar">?</div>
+      <div class="user-info">
+        <div class="name" id="sidebarName">Memuat...</div>
+        <span class="role-badge bg-primary bg-opacity-10 text-primary">Siswa</span>
+      </div>
+    </div>
+
+    <!-- Nav -->
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Menu</div>
+      <a href="dashboard.html" class="nav-link active">
+        <i class="bi bi-speedometer2"></i> Dashboard
+      </a>
+      <a href="ujian.html" class="nav-link">
+        <i class="bi bi-file-earmark-text"></i> Ujian Tersedia
+      </a>
+      <a href="riwayat.html" class="nav-link">
+        <i class="bi bi-clock-history"></i> Riwayat Ujian
+      </a>
+      <a href="nilai.html" class="nav-link">
+        <i class="bi bi-bar-chart"></i> Nilai Saya
+      </a>
+    </nav>
+
+    <!-- Logout -->
+    <div class="sidebar-footer">
+      <button class="btn btn-sm btn-outline-danger w-100" onclick="Auth.logout()">
+        <i class="bi bi-box-arrow-left me-1"></i> Keluar
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- ═══ MAIN CONTENT ═══ -->
+  <div class="main-content">
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="d-flex align-items-center gap-3">
+        <button class="btn btn-sm btn-white d-md-none" id="btnToggleSidebar">
+          <i class="bi bi-list fs-5"></i>
+        </button>
+        <h1 class="page-title">Dashboard</h1>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <span class="text-muted small" id="topbarDate"></span>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content-area">
+
+      <!-- Greeting -->
+      <div class="mb-4">
+        <h5 class="fw-700 mb-0" id="greetingText">Selamat datang!</h5>
+        <p class="text-muted small mb-0" id="greetingSub">Kelas <strong id="kelasLabel">–</strong></p>
+      </div>
+
+      <!-- Stat cards -->
+      <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+          <div class="stat-card">
+            <div class="stat-icon bg-primary bg-opacity-10">
+              <i class="bi bi-file-earmark-text text-primary"></i>
+            </div>
+            <div>
+              <div class="stat-value" id="statUjianHariIni">–</div>
+              <div class="stat-label">Ujian Hari Ini</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="stat-card">
+            <div class="stat-icon bg-success bg-opacity-10">
+              <i class="bi bi-check2-circle text-success"></i>
+            </div>
+            <div>
+              <div class="stat-value" id="statSelesai">–</div>
+              <div class="stat-label">Sudah Dikerjakan</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="stat-card">
+            <div class="stat-icon bg-warning bg-opacity-10">
+              <i class="bi bi-hourglass-split text-warning"></i>
+            </div>
+            <div>
+              <div class="stat-value" id="statBelum">–</div>
+              <div class="stat-label">Belum Dikerjakan</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="stat-card">
+            <div class="stat-icon bg-info bg-opacity-10">
+              <i class="bi bi-trophy text-info"></i>
+            </div>
+            <div>
+              <div class="stat-value" id="statRataRata">–</div>
+              <div class="stat-label">Rata-rata Nilai</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ujian hari ini -->
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <h6 class="fw-700 mb-0">
+          <i class="bi bi-calendar-event text-primary me-2"></i>Ujian Tersedia Hari Ini
+        </h6>
+        <span class="badge bg-primary rounded-pill" id="badgeJumlah">0</span>
+      </div>
+
+      <!-- Loading skeleton -->
+      <div id="loadingState">
+        <div class="ujian-card mb-3">
+          <div class="placeholder-glow">
+            <span class="placeholder col-2 rounded mb-2"></span>
+            <span class="placeholder col-7 rounded d-block mb-2"></span>
+            <span class="placeholder col-4 rounded d-block"></span>
+          </div>
+        </div>
+        <div class="ujian-card mb-3">
+          <div class="placeholder-glow">
+            <span class="placeholder col-3 rounded mb-2"></span>
+            <span class="placeholder col-6 rounded d-block mb-2"></span>
+            <span class="placeholder col-5 rounded d-block"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- List ujian -->
+      <div id="ujianList" class="d-none"></div>
+
+      <!-- Empty state -->
+      <div id="emptyState" class="empty-state d-none">
+        <i class="bi bi-calendar-x"></i>
+        <p class="fw-600 mb-1">Tidak ada ujian hari ini</p>
+        <p class="small">Nikmati waktu luangmu! Ujian berikutnya akan muncul di sini.</p>
+      </div>
+
+    </div><!-- /content-area -->
+  </div><!-- /main-content -->
+</div><!-- /app-layout -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/auth.js"></script>
+<script>
+  // ── Cek session ──
+  const user = Auth.requireRole("siswa");
+  if (!user) throw new Error("stop");
+
+  // ── Isi info user ──
+  document.getElementById("sidebarAvatar").textContent = user.nama.charAt(0).toUpperCase();
+  document.getElementById("sidebarName").textContent   = user.nama;
+  document.getElementById("kelasLabel").textContent    = user.kelas || "–";
+
+  // Greeting berdasarkan jam
+  const hour = new Date().getHours();
+  let greet = "Selamat pagi";
+  if (hour >= 11 && hour < 15) greet = "Selamat siang";
+  else if (hour >= 15 && hour < 18) greet = "Selamat sore";
+  else if (hour >= 18) greet = "Selamat malam";
+  document.getElementById("greetingText").textContent = `${greet}, ${user.nama}!`;
+
+  // Tanggal di topbar
+  const nowDate = new Date();
+  document.getElementById("topbarDate").textContent = nowDate.toLocaleDateString("id-ID", {
+    weekday: "long", day: "numeric", month: "long", year: "numeric"
+  });
+
+  // ── Mobile sidebar toggle ──
+  document.getElementById("btnToggleSidebar").addEventListener("click", () => {
+    document.getElementById("sidebar").classList.toggle("open");
+    document.getElementById("sidebarOverlay").classList.toggle("show");
+  });
+  document.getElementById("sidebarOverlay").addEventListener("click", () => {
+    document.getElementById("sidebar").classList.remove("open");
+    document.getElementById("sidebarOverlay").classList.remove("show");
+  });
+
+  // ── Mapping nama mapel ──
+  const MAPEL_LABEL = {
+    matematika:       "Matematika",
+    fisika:           "Fisika",
+    kimia:            "Kimia",
+    biologi:          "Biologi",
+    bahasa_indonesia: "Bahasa Indonesia",
+    bahasa_inggris:   "Bahasa Inggris",
+    sejarah:          "Sejarah",
+    geografi:         "Geografi",
+    ekonomi:          "Ekonomi",
+    sosiologi:        "Sosiologi",
+    pjok:             "PJOK",
+    pkn:              "PKN",
+    agama:            "Agama",
+  };
+
+  const MAPEL_COLOR = {
+    matematika: "primary",
+    fisika:     "info",
+    kimia:      "success",
+    biologi:    "success",
+    bahasa_indonesia: "warning",
+    bahasa_inggris:   "danger",
+    sejarah:    "secondary",
+  };
+
+  // ── Load ujian ──
+  async function loadUjian() {
+    try {
+      const res  = await fetch(`${CONFIG.API_BASE}/siswa?action=ujian-hari-ini&kelas=${encodeURIComponent(user.kelas)}`);
+      const data = await res.json();
+
+      document.getElementById("loadingState").classList.add("d-none");
+
+      if (!data.success || !data.ujian.length) {
+        document.getElementById("emptyState").classList.remove("d-none");
+        updateStats(0, 0, 0);
+        return;
+      }
+
+      const ujian = data.ujian;
+      document.getElementById("badgeJumlah").textContent = ujian.length;
+      updateStats(ujian.length, 0, ujian.length);
+
+      const list = document.getElementById("ujianList");
+      list.classList.remove("d-none");
+      list.innerHTML = ujian.map(u => renderUjianCard(u)).join("");
+
+    } catch (err) {
+      console.error(err);
+      document.getElementById("loadingState").classList.add("d-none");
+      document.getElementById("ujianList").classList.remove("d-none");
+      document.getElementById("ujianList").innerHTML = `
+        <div class="alert alert-danger">
+          <i class="bi bi-wifi-off me-1"></i> Gagal memuat data ujian. Periksa koneksi dan coba lagi.
+        </div>`;
+    }
+  }
+
+  function renderUjianCard(u) {
+    const label  = MAPEL_LABEL[u.mapel] || u.mapel;
+    const color  = MAPEL_COLOR[u.mapel] || "secondary";
+    const kelasStr = Array.isArray(u.kelas) ? u.kelas.join(", ") : u.kelas;
+
+    return `
+      <div class="ujian-card mb-3 d-flex align-items-start justify-content-between gap-3 flex-wrap">
+        <div>
+          <span class="mapel-tag bg-${color} bg-opacity-10 text-${color}">${label}</span>
+          <div class="ujian-title">${u.judul}</div>
+          <div class="ujian-meta">
+            <span><i class="bi bi-clock"></i>${u.durasi_menit} menit</span>
+            <span><i class="bi bi-people"></i>Kelas ${kelasStr}</span>
+            <span><i class="bi bi-calendar3"></i>${formatTanggal(u.tanggal)}</span>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-2 mt-1">
+          <a href="ujian-kerjakan.html?id=${u.id}" class="btn-mulai">
+            <i class="bi bi-pencil-square"></i> Kerjakan
+          </a>
+        </div>
+      </div>`;
+  }
+
+  function formatTanggal(str) {
+    return new Date(str).toLocaleDateString("id-ID", {
+      day: "numeric", month: "long", year: "numeric"
+    });
+  }
+
+  function updateStats(total, selesai, belum) {
+    document.getElementById("statUjianHariIni").textContent = total;
+    document.getElementById("statSelesai").textContent      = selesai;
+    document.getElementById("statBelum").textContent        = belum;
+    document.getElementById("statRataRata").textContent     = "–";
+  }
+
+  loadUjian();
+</script>
+</body>
+</html>
