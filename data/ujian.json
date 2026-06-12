@@ -1,0 +1,32 @@
+[
+  {
+    "id": "ujian_001",
+    "judul": "Ulangan Harian Matematika",
+    "mapel": "matematika",
+    "kelas": ["10.1", "10.2"],
+    "tanggal": "2026-06-12",
+    "durasi_menit": 60,
+    "status": "aktif",
+    "guru_id": "usr_002"
+  },
+  {
+    "id": "ujian_002",
+    "judul": "UTS Fisika Semester Genap",
+    "mapel": "fisika",
+    "kelas": ["10.1", "10.3"],
+    "tanggal": "2026-06-12",
+    "durasi_menit": 90,
+    "status": "aktif",
+    "guru_id": "usr_002"
+  },
+  {
+    "id": "ujian_003",
+    "judul": "Ulangan Bahasa Indonesia",
+    "mapel": "bahasa_indonesia",
+    "kelas": ["11.3"],
+    "tanggal": "2026-06-12",
+    "durasi_menit": 60,
+    "status": "aktif",
+    "guru_id": "usr_002"
+  }
+]
