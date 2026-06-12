@@ -1,15 +1,20 @@
 // lib/github.js — shared GitHub JSON store helper
 
-const GITHUB_TOKEN  = process.env.GITHUB_TOKEN;
-const GITHUB_REPO   = process.env.GITHUB_REPO;    // e.g. "username/e-exam-data"
-const GITHUB_BRANCH = process.env.GITHUB_BRANCH || "main";
-const BASE          = "https://api.github.com";
+const BASE = "https://api.github.com";
+
+// Semua env vars dibaca di dalam fungsi (bukan top-level),
+// agar selalu fresh saat dieksekusi di Vercel serverless.
+function getToken()  { return process.env.GITHUB_TOKEN; }
+function getRepo()   { return process.env.GITHUB_REPO; }
+function getBranch() { return process.env.GITHUB_BRANCH || "main"; }
 
 function getHeaders() {
-  if (!GITHUB_TOKEN) throw new Error("GITHUB_TOKEN env var tidak diset");
-  if (!GITHUB_REPO)  throw new Error("GITHUB_REPO env var tidak diset");
+  const token = getToken();
+  const repo  = getRepo();
+  if (!token) throw new Error("GITHUB_TOKEN env var tidak diset di Vercel");
+  if (!repo)  throw new Error("GITHUB_REPO env var tidak diset di Vercel");
   return {
-    Authorization: `token ${GITHUB_TOKEN}`,
+    Authorization: `token ${token}`,
     "Content-Type": "application/json",
     Accept: "application/vnd.github.v3+json",
     "User-Agent": "e-exam-app",
@@ -18,7 +23,7 @@ function getHeaders() {
 
 /** Parse request body — Vercel tidak otomatis parse JSON body */
 async function parseBody(req) {
-  if (req.body && typeof req.body === "object") return req.body; // sudah diparsing
+  if (req.body && typeof req.body === "object") return req.body;
   return new Promise((resolve, reject) => {
     let raw = "";
     req.on("data", (chunk) => (raw += chunk));
@@ -30,10 +35,10 @@ async function parseBody(req) {
   });
 }
 
-/** Read a JSON file from the repo. Returns parsed object or default. */
+/** Read a JSON file from the repo. Returns { data, sha }. */
 async function readFile(path, defaultValue = []) {
   const res = await fetch(
-    `${BASE}/repos/${GITHUB_REPO}/contents/${path}?ref=${GITHUB_BRANCH}`,
+    `${BASE}/repos/${getRepo()}/contents/${path}?ref=${getBranch()}`,
     { headers: getHeaders() }
   );
   if (res.status === 404) return { data: defaultValue, sha: null };
@@ -55,10 +60,10 @@ async function writeFile(path, data, sha = null) {
   const body = {
     message: `update ${path}`,
     content,
-    branch: GITHUB_BRANCH,
+    branch: getBranch(),
     ...(sha ? { sha } : {}),
   };
-  const res = await fetch(`${BASE}/repos/${GITHUB_REPO}/contents/${path}`, {
+  const res = await fetch(`${BASE}/repos/${getRepo()}/contents/${path}`, {
     method: "PUT",
     headers: getHeaders(),
     body: JSON.stringify(body),
