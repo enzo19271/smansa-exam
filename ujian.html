@@ -382,7 +382,8 @@ async function loadSoal() {
     soalList = JSON.parse(cachedSoal);
   } else {
     try {
-      const res = await fetch(`/api/soal?mapel_id=${mapelId}&kelas=${kelasMain}`);
+      // Coba dari ujian.json baru, fallback ke soal lama
+      const res = await fetch(`/api/ujian?mapel_id=${mapelId}&kelas=${kelasMain}`);
       soalList  = await res.json();
       if (soalList.length) localStorage.setItem(LS_SOAL, JSON.stringify(soalList));
     } catch {
