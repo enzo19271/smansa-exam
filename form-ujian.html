@@ -245,6 +245,13 @@
         <div id="key-error" class="text-danger small mt-2 d-none fw-semibold">
           <i class="bi bi-x-circle-fill me-1"></i>Key tidak valid atau tidak sesuai kelas/mapel ini.
         </div>
+
+        <!-- Blokir duplikat -->
+        <div id="duplicate-error" class="d-none mt-3 p-3 rounded-3" style="background:#fff1f2; border:1.5px solid #fecdd3;">
+          <div class="fw-bold text-danger mb-1"><i class="bi bi-slash-circle-fill me-1"></i>Ujian Sudah Dikerjakan</div>
+          <div class="small text-danger" id="duplicate-msg"></div>
+          <div class="small text-muted mt-1" id="duplicate-waktu"></div>
+        </div>
       </div>
     </div>
 
@@ -278,10 +285,12 @@ for (let i = 1; i <= 6; i++) {
   subSelect.appendChild(opt);
 }
 
-function setLoading(v) {
+function setLoading(v, msg) {
   document.getElementById("btn-text").classList.toggle("d-none", v);
   document.getElementById("btn-loading").classList.toggle("d-none", !v);
   document.getElementById("btn-submit").disabled = v;
+  if (msg) document.getElementById("btn-loading").innerHTML =
+    `<span class="spinner-border spinner-border-sm me-2" role="status"></span>${msg}`;
 }
 
 async function submitForm() {
@@ -289,41 +298,62 @@ async function submitForm() {
   const subkelas = document.getElementById("inp-subkelas").value;
   const key      = document.getElementById("inp-key").value.trim();
   const keyErr   = document.getElementById("key-error");
+  const dupErr   = document.getElementById("duplicate-error");
 
-  // Validasi visual standard Bootstrap Client-Side
   document.getElementById("inp-nama").classList.toggle("is-invalid", !nama);
   document.getElementById("inp-subkelas").classList.toggle("is-invalid", !subkelas);
   document.getElementById("inp-key").classList.toggle("is-invalid", !key);
-  
   if (!nama || !subkelas || !key) return;
 
   keyErr.classList.add("d-none");
-  setLoading(true);
+  dupErr.classList.add("d-none");
+  setLoading(true, "Memeriksa Token...");
 
   try {
-    const res = await fetch("/api/verify-key", {
+    // Langkah 1: verifikasi key guru
+    const keyRes  = await fetch("/api/verify-key", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ mapel_id: mapelId, kelas: Number(kelas), key }),
     });
-    const json = await res.json();
+    const keyJson = await keyRes.json();
 
-    if (!json.valid) {
+    if (!keyJson.valid) {
       keyErr.classList.remove("d-none");
       document.getElementById("inp-key").classList.add("is-invalid");
       setLoading(false);
       return;
     }
 
-    // Eksekusi penyimpanan sesi pendaftaran siswa secara aman
+    // Langkah 2: cek apakah nama sudah pernah submit ujian ini
+    setLoading(true, "Memeriksa Data Peserta...");
+    const cekRes  = await fetch(
+      `/api/submit?nama=${encodeURIComponent(nama)}&kelas=${encodeURIComponent(subkelas)}&mapel_id=${encodeURIComponent(mapelId)}`
+    );
+    const cekJson = await cekRes.json();
+
+    if (cekJson.sudah) {
+      const tgl = cekJson.waktu
+        ? new Date(cekJson.waktu).toLocaleString("id-ID")
+        : "—";
+      document.getElementById("duplicate-msg").textContent =
+        `Kamu sudah mengerjakan ujian ini dengan nilai ${cekJson.nilai ?? "—"}.`;
+      document.getElementById("duplicate-waktu").textContent =
+        `Dikerjakan pada: ${tgl}. Hubungi guru untuk mengulang.`;
+      dupErr.classList.remove("d-none");
+      setLoading(false);
+      return;
+    }
+
+    // Langkah 3: semua ok → simpan sesi dan lanjut
     sessionStorage.setItem("siswa_nama", nama);
     sessionStorage.setItem("siswa_kelas", subkelas);
     sessionStorage.setItem("siswa_kelas_main", kelas);
-    sessionStorage.setItem("exam_guru_nama", json.guru_nama || "");
+    sessionStorage.setItem("exam_guru_nama", keyJson.guru_nama || "");
     location.href = "instruksi.html";
 
   } catch {
-    keyErr.innerHTML = '<i class="bi bi-exclamation-triangle-fill me-1"></i> Gagal terhubung ke server jaringan. Silakan coba lagi.';
+    keyErr.innerHTML = '<i class="bi bi-exclamation-triangle-fill me-1"></i> Gagal terhubung ke server. Silakan coba lagi.';
     keyErr.classList.remove("d-none");
     setLoading(false);
   }
