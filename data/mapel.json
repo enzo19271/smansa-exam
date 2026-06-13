@@ -1,14 +1,5 @@
 [
   {
-    "id": "mtk001",
-    "nama": "Matematika",
-    "kelas": [
-      10,
-      11,
-      12
-    ]
-  },
-  {
     "id": "bg001",
     "nama": "Biologi",
     "kelas": [
