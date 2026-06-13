@@ -23,11 +23,22 @@
           "D": "asas"
         },
         "jawaban": "A"
+      },
+      {
+        "id": "s1781357916555",
+        "pertanyaan": "sffsf",
+        "opsi": {
+          "A": "sfsfsf",
+          "B": "ssfss",
+          "C": "sffsfsa",
+          "D": "aadww"
+        },
+        "jawaban": "C"
       }
     ],
     "aktif": true,
     "dibuat_at": "2026-06-13T13:31:29.656Z",
     "guru_id": "kenzo",
-    "diupdate_at": "2026-06-13T13:38:31.328Z"
+    "diupdate_at": "2026-06-13T13:38:45.786Z"
   }
 ]
