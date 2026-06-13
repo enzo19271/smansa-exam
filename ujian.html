@@ -391,8 +391,9 @@ async function loadSoal() {
   }
 
   if (!soalList.length) {
-    document.getElementById("q-text").textContent = "Butir soal belum tersedia untuk ujian ini.";
+    document.getElementById("q-text").textContent = `Soal belum tersedia untuk ${mapelNama || mapelId} kelas ${kelasMain}. Hubungi guru kamu.`;
     document.getElementById("tb-progress").textContent = "Tidak ada soal";
+    document.getElementById("btn-selesai").disabled = true;
     return;
   }
 
@@ -530,6 +531,7 @@ async function submitUjian() {
     const res = await fetch("/api/submit", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      // kirim kelas lengkap (10.2) — submit.js akan split sendiri untuk cari file soal
       body: JSON.stringify({ nama, kelas, mapel_id: mapelId, jawaban }),
     });
     const result = await res.json();
