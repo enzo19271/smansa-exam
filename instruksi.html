@@ -299,14 +299,47 @@ const kelas    = sessionStorage.getItem("siswa_kelas");
 const mapelId  = sessionStorage.getItem("exam_mapel_id");
 const mapelNm  = sessionStorage.getItem("exam_mapel_nama");
 
-// Proteksi pengamanan URL bypass paksa
 if (!nama || !kelas || !mapelId) location.href = "index.html";
 
 document.getElementById("s-nama").textContent  = nama;
 document.getElementById("s-kelas").textContent = `Kelas ${kelas}`;
 document.getElementById("s-mapel").textContent = mapelNm || mapelId;
 
-// Event listener pemicu perubahan status disabled tombol submit
+// Cek apakah ada sesi ujian yang belum selesai (jawaban tersimpan di localStorage)
+const kelasMain = sessionStorage.getItem("siswa_kelas_main");
+const LS_JAWABAN = `jawaban_${mapelId}_${kelas}`;
+const LS_TIMER   = `timer_${mapelId}_${kelas}`;
+const savedJawaban = localStorage.getItem(LS_JAWABAN);
+const savedTimer   = localStorage.getItem(LS_TIMER);
+
+if (savedJawaban || savedTimer) {
+  // Inject resume banner before the checkbox
+  const cb = document.getElementById("cb-setuju").closest(".form-check") ||
+             document.getElementById("cb-setuju").parentElement;
+  const banner = document.createElement("div");
+  banner.className = "alert alert-warning d-flex align-items-center gap-2 mb-3 py-2 px-3";
+  banner.style.borderRadius = "12px";
+  banner.innerHTML = `
+    <i class="bi bi-arrow-clockwise fs-5"></i>
+    <div class="flex-grow-1">
+      <strong>Sesi ujian sebelumnya ditemukan.</strong>
+      <div class="small">Klik Lanjutkan untuk melanjutkan dari terakhir kali.</div>
+    </div>
+    <button class="btn btn-sm btn-warning fw-bold" onclick="clearSesi()">Mulai Ulang</button>`;
+  cb.parentElement.insertBefore(banner, cb);
+
+  // Change button text
+  document.getElementById("btn-mulai").innerHTML =
+    '<i class="bi bi-arrow-clockwise me-2"></i>Lanjutkan Ujian';
+}
+
+function clearSesi() {
+  localStorage.removeItem(LS_JAWABAN);
+  localStorage.removeItem(LS_TIMER);
+  localStorage.removeItem(`soal_${mapelId}_${kelasMain}`);
+  location.reload();
+}
+
 document.getElementById("cb-setuju").addEventListener("change", function () {
   document.getElementById("btn-mulai").disabled = !this.checked;
 });
