@@ -3,28 +3,51 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Admin Panel — E-EXAM</title>
+  <title>Admin Panel — Smansanam Exam Portal</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"/>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
   
   <style>
-    :root { --primary: #1a56db; --accent: #f59e0b; --bg: #f0f4ff; }
+    :root { 
+      --primary: #1a56db; 
+      --accent: #f59e0b; 
+      --bg: #f0f4ff; 
+      --slate-dark: #1e293b;
+    }
     body { background: var(--bg); font-family: 'Segoe UI', sans-serif; }
-    .navbar { background: #1e293b; }
-    .navbar-brand { font-weight: 700; color: #fff !important; }
+    
+    /* NAVBAR UNIFORM */
+    .navbar { background: var(--slate-dark); box-shadow: 0 2px 10px rgba(0,0,0,.1); }
+    .navbar-brand { font-weight: 700; color: #fff !important; font-size: 1.2rem; }
     .navbar-brand span { color: var(--accent); }
-    #login-gate { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-    .login-card { border: none; border-radius: 18px; box-shadow: 0 8px 32px rgba(0,0,0,.12); max-width: 380px; width: 100%; }
+    
+    /* LOGIN GATE STYLING (MODERN & CLEAN) */
+    #login-gate { min-height: calc(100vh - 56px); display: flex; align-items: center; justify-content: center; }
+    .login-card { 
+      border: none; 
+      border-radius: 16px; 
+      box-shadow: 0 10px 30px rgba(30, 41, 59, 0.08); 
+      max-width: 400px; 
+      width: 100%; 
+      padding: 2.5rem !important;
+    }
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.15);
+    }
+    
+    /* ADMIN PANEL CONTENT */
     #admin-content { display: none; }
-    .panel-card { border: none; border-radius: 16px; box-shadow: 0 2px 12px rgba(26,86,219,.10); }
-    .nav-tabs .nav-link { font-weight: 600; color: #475569; }
-    .nav-tabs .nav-link.active { color: var(--primary); }
-    .table th { background: #f8faff; font-size: .82rem; text-transform: uppercase; letter-spacing: .05em; }
-    .badge-kelas { font-size: .7rem; }
+    .panel-card { border: none; border-radius: 16px; box-shadow: 0 4px 20px rgba(26,86,219,.06); }
+    .nav-tabs { border-bottom: 2px solid #e2e8f0; }
+    .nav-tabs .nav-link { font-weight: 600; color: #64748b; border: none; padding: 0.75rem 1.2rem; }
+    .nav-tabs .nav-link.active { color: var(--primary); border-bottom: 2px solid var(--primary); background: transparent; }
+    .table th { background: #f8faff; font-size: .82rem; text-transform: uppercase; letter-spacing: .05em; color: #64748b; }
+    .badge-kelas { font-size: .7rem; padding: 4px 8px; }
     #toast-admin { position: fixed; bottom: 1.5rem; right: 1rem; z-index: 9999; min-width: 250px; }
     .api-error { font-size: .78rem; }
 
-    /* RENDER PRINT UNTUK SAVE AS PDF */
+    /* RENDER PRINT UNTUK SAVE AS PDF NATIVE */
     #print-pdf-area { display: none; }
 
     @media print {
@@ -42,154 +65,176 @@
 
 <div id="print-pdf-area"></div>
 
-<nav class="navbar px-3 py-2">
-  <a href="index.html" class="navbar-brand"><i class="bi bi-arrow-left me-2"></i>E<span>-EXAM</span> <small class="text-white-50 ms-2">Admin</small></a>
-  <button class="btn btn-sm btn-outline-light ms-auto d-none" id="btn-logout" onclick="logout()">
-    <i class="bi bi-box-arrow-right me-1"></i>Keluar
+<nav class="navbar px-4 py-25 sticky-top">
+  <a href="index.html" class="navbar-brand">
+    <i class="bi bi-shield-lock-fill text-accent me-2"></i>Smansanam<span> Exam Portal</span>
+    <span class="badge bg-secondary ms-2" style="font-size: 0.65rem; font-weight: 500; background-color: #475569 !important;">Admin</span>
+  </a>
+  <button class="btn btn-sm btn-outline-light ms-auto d-none border-0" id="btn-logout" onclick="logout()">
+    <i class="bi bi-box-arrow-right me-1"></i>Keluar Panel
   </button>
 </nav>
 
 <div id="login-gate">
-  <div class="login-card bg-white p-4 mx-3">
+  <div class="login-card bg-white mx-3">
     <div class="text-center mb-4">
-      <div style="font-size:2.5rem">🔐</div>
-      <h5 class="fw-bold mt-2 mb-0">Admin Login</h5>
-      <p class="text-muted small">Masukkan ADMIN_KEY untuk mengakses panel</p>
+      <div class="mb-2" style="font-size: 3rem;">🔐</div>
+      <h5 class="fw-bold mb-1" style="color: var(--slate-dark);">Otorisasi Admin</h5>
+      <p class="text-muted small">Masukkan ADMIN_KEY untuk membuka kontrol panel</p>
     </div>
+    
     <div class="mb-3">
-      <label class="form-label fw-semibold">Admin Key</label>
-      <input type="password" id="inp-admin-key" class="form-control" placeholder="Masukkan admin key..."
-             onkeydown="if(event.key==='Enter') loginAdmin()"/>
-      <div id="login-error" class="text-danger small mt-1 d-none">
-        <i class="bi bi-x-circle me-1"></i><span id="login-error-msg">Key tidak valid.</span>
+      <label class="form-label small fw-bold text-secondary">Secured Admin Key</label>
+      <div class="input-group">
+        <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-key-fill"></i></span>
+        <input type="password" id="inp-admin-key" class="form-control border-start-0 ps-0" placeholder="Masukkan token akses..."
+               onkeydown="if(event.key==='Enter') loginAdmin()"/>
+      </div>
+      <div id="login-error" class="text-danger small mt-2 d-none">
+        <i class="bi bi-exclamation-triangle-fill me-1"></i><span id="login-error-msg">Akses ditolak. Key salah.</span>
       </div>
     </div>
-    <button class="btn btn-primary w-100" onclick="loginAdmin()" id="btn-login">
-      <span id="btn-login-text"><i class="bi bi-unlock me-2"></i>Masuk</span>
-      <span id="btn-login-load" class="d-none"><span class="spinner-border spinner-border-sm me-2"></span>Memeriksa...</span>
+    
+    <button class="btn btn-primary w-100 py-2 fw-semibold mb-3 shadow-sm" onclick="loginAdmin()" id="btn-login">
+      <span id="btn-login-text"><i class="bi bi-unlock-fill me-2"></i>Masuk Ke Panel</span>
+      <span id="btn-login-load" class="d-none"><span class="spinner-border spinner-border-sm me-2"></span>Memvalidasi...</span>
     </button>
-    <div class="text-center mt-3">
-      <a href="index.html" class="text-muted small">← Kembali ke Beranda</a>
+    
+    <div class="text-center">
+      <a href="index.html" class="text-decoration-none small text-muted"><i class="bi bi-arrow-left me-1"></i>Kembali ke Beranda</a>
     </div>
   </div>
 </div>
 
 <div id="admin-content" class="container py-4 pb-5" style="max-width:860px">
   <div class="d-flex align-items-center mb-4">
-    <h4 class="fw-bold mb-0 me-auto"><i class="bi bi-shield-check text-primary me-2"></i>Panel Admin</h4>
-    <span class="badge bg-success">Terautentikasi</span>
+    <h4 class="fw-bold mb-0 me-auto" style="color: var(--slate-dark);">
+      <i class="bi bi-sliders text-primary me-2"></i>Dashboard Administrasi
+    </h4>
+    <span class="badge bg-success-subtle text-success px-3 py-2 border border-success-subtle rounded-pill fw-semibold" style="font-size: 0.75rem;">
+      <i class="bi bi-patch-check-fill me-1"></i>Sesi Terautentikasi
+    </span>
   </div>
 
   <div class="row g-3 mb-4">
     <div class="col-6 col-md-3">
       <div class="panel-card bg-white p-3 text-center">
         <div class="fw-bold fs-3 text-primary" id="stat-mapel">—</div>
-        <div class="text-muted small">Mapel</div>
+        <div class="text-muted small fw-medium">Mata Pelajaran</div>
       </div>
     </div>
     <div class="col-6 col-md-3">
       <div class="panel-card bg-white p-3 text-center">
         <div class="fw-bold fs-3 text-success" id="stat-guru">—</div>
-        <div class="text-muted small">Guru</div>
+        <div class="text-muted small fw-medium">Tenaga Pengajar</div>
       </div>
     </div>
     <div class="col-6 col-md-3">
       <div class="panel-card bg-white p-3 text-center">
         <div class="fw-bold fs-3 text-warning" id="stat-hasil">—</div>
-        <div class="text-muted small">Hasil Ujian</div>
+        <div class="text-muted small fw-medium">Lembar Selesai</div>
       </div>
     </div>
     <div class="col-6 col-md-3">
       <div class="panel-card bg-white p-3 text-center">
         <div class="fw-bold fs-3 text-danger" id="stat-rerata">—</div>
-        <div class="text-muted small">Rata-rata Nilai</div>
+        <div class="text-muted small fw-medium">Rerata Nilai</div>
       </div>
     </div>
   </div>
 
   <div class="panel-card bg-white p-4">
     <ul class="nav nav-tabs mb-4" id="adminTab">
-      <li class="nav-item"><a class="nav-link active" href="#" onclick="showTab('mapel',this)"><i class="bi bi-book me-1"></i>Mapel</a></li>
-      <li class="nav-item"><a class="nav-link" href="#" onclick="showTab('guru',this)"><i class="bi bi-people me-1"></i>Guru</a></li>
-      <li class="nav-item"><a class="nav-link" href="#" onclick="showTab('hasil',this)"><i class="bi bi-bar-chart me-1"></i>Hasil Ujian</a></li>
+      <li class="nav-item"><a class="nav-link active" href="#" onclick="showTab('mapel',this)"><i class="bi bi-book-half me-1"></i>Mata Pelajaran</a></li>
+      <li class="nav-item"><a class="nav-link" href="#" onclick="showTab('guru',this)"><i class="bi bi-person-workspace me-1"></i>Guru / Penguji</a></li>
+      <li class="nav-item"><a class="nav-link" href="#" onclick="showTab('hasil',this)"><i class="bi bi-clipboard-data-fill me-1"></i>Hasil Ujian</a></li>
     </ul>
 
     <div id="tab-mapel">
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <h6 class="fw-bold mb-0">Daftar Mata Pelajaran</h6>
-        <button class="btn btn-primary btn-sm" onclick="showMapelForm()"><i class="bi bi-plus me-1"></i>Tambah Mapel</button>
+        <h6 class="fw-bold mb-0" style="color: var(--slate-dark);">Daftar Mata Pelajaran Aktif</h6>
+        <button class="btn btn-primary btn-sm px-3 fw-medium" onclick="showMapelForm()"><i class="bi bi-plus-lg me-1"></i>Tambah Mapel</button>
       </div>
-      <div id="mapel-form" class="d-none bg-light rounded-3 p-3 mb-3">
+      <div id="mapel-form" class="d-none bg-light rounded-3 p-3 mb-3 border">
         <div class="row g-2">
-          <div class="col-6"><input type="text" id="mf-id" class="form-control form-control-sm" placeholder="ID (misal: matematika)"/></div>
-          <div class="col-6"><input type="text" id="mf-nama" class="form-control form-control-sm" placeholder="Nama Mapel"/></div>
-          <div class="col-12">
-            <label class="form-label small fw-semibold mb-1">Kelas tersedia:</label><br>
-            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="mk10" value="10"><label class="form-check-label small" for="mk10">10</label></div>
-            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="mk11" value="11"><label class="form-check-label small" for="mk11">11</label></div>
-            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="mk12" value="12"><label class="form-check-label small" for="mk12">12</label></div>
+          <div class="col-6"><input type="text" id="mf-id" class="form-control form-control-sm" placeholder="ID Kode (misal: matematika)"/></div>
+          <div class="col-6"><input type="text" id="mf-nama" class="form-control form-control-sm" placeholder="Nama Mata Pelajaran"/></div>
+          <div class="col-12 my-2">
+            <label class="form-label small fw-bold text-secondary mb-1">Tingkat Kelas Tersedia:</label><br>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="mk10" value="10"><label class="form-check-label small" for="mk10">Kelas X</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="mk11" value="11"><label class="form-check-label small" for="mk11">Kelas XI</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="mk12" value="12"><label class="form-check-label small" for="mk12">Kelas XII</label></div>
           </div>
           <div id="mapel-form-error" class="col-12 d-none">
             <div class="alert alert-danger py-1 px-2 mb-0 small api-error" id="mapel-form-error-msg"></div>
           </div>
           <div class="col-12 d-flex gap-2">
-            <button class="btn btn-success btn-sm" id="btn-save-mapel" onclick="saveMapel()"><i class="bi bi-check me-1"></i>Simpan</button>
-            <button class="btn btn-secondary btn-sm" onclick="closeMapelForm()">Batal</button>
+            <button class="btn btn-success btn-sm px-3" id="btn-save-mapel" onclick="saveMapel()"><i class="bi bi-check-lg me-1"></i>Simpan</button>
+            <button class="btn btn-secondary btn-sm px-3" onclick="closeMapelForm()">Batal</button>
           </div>
         </div>
       </div>
       <div class="table-responsive"><table class="table table-hover align-middle" id="tbl-mapel">
-        <thead><tr><th>ID</th><th>Nama</th><th>Kelas</th><th>Aksi</th></tr></thead>
-        <tbody id="tbody-mapel"><tr><td colspan="4" class="text-center text-muted">Memuat...</td></tr></tbody>
+        <thead><tr><th>ID Kode</th><th>Nama Pelajaran</th><th>Alokasi Kelas</th><th style="width: 80px;">Aksi</th></tr></thead>
+        <tbody id="tbody-mapel"><tr><td colspan="4" class="text-center text-muted py-3">Memuat data...</td></tr></tbody>
       </table></div>
     </div>
 
     <div id="tab-guru" class="d-none">
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <h6 class="fw-bold mb-0">Daftar Guru</h6>
-        <button class="btn btn-primary btn-sm" onclick="showGuruForm()"><i class="bi bi-plus me-1"></i>Tambah Guru</button>
+        <h6 class="fw-bold mb-0" style="color: var(--slate-dark);">Manajemen Akun Guru</h6>
+        <button class="btn btn-primary btn-sm px-3 fw-medium" onclick="showGuruForm()"><i class="bi bi-plus-lg me-1"></i>Registrasi Guru</button>
       </div>
-      <div id="guru-form" class="d-none bg-light rounded-3 p-3 mb-3">
+      <div id="guru-form" class="d-none bg-light rounded-3 p-3 mb-3 border">
         <div class="row g-2">
-          <div class="col-6"><input type="text" id="gf-id" class="form-control form-control-sm" placeholder="ID guru (unik)"/></div>
-          <div class="col-6"><input type="text" id="gf-nama" class="form-control form-control-sm" placeholder="Nama Guru"/></div>
+          <div class="col-6"><input type="text" id="gf-id" class="form-control form-control-sm" placeholder="Username/ID Guru (Unik)"/></div>
+          <div class="col-6"><input type="text" id="gf-nama" class="form-control form-control-sm" placeholder="Nama Lengkap & Gelar"/></div>
           <div class="col-6">
-            <select id="gf-mapel" class="form-select form-select-sm"><option value="">— Pilih Mapel —</option></select>
+            <select id="gf-mapel" class="form-select form-select-sm"><option value="">— Pilih Kompetensi Mapel —</option></select>
           </div>
-          <div class="col-6"><input type="text" id="gf-key" class="form-control form-control-sm" placeholder="Key Guru (misal: MTK2025)"/></div>
-          <div class="col-12">
-            <label class="form-label small fw-semibold mb-1">Mengajar kelas:</label><br>
-            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="gk10" value="10"><label class="form-check-label small" for="gk10">10</label></div>
-            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="gk11" value="11"><label class="form-check-label small" for="gk11">11</label></div>
-            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="gk12" value="12"><label class="form-check-label small" for="gk12">12</label></div>
+          <div class="col-6"><input type="text" id="gf-key" class="form-control form-control-sm" placeholder="Akses Token Guru (ex: BIO_2026)"/></div>
+          <div class="col-12 my-2">
+            <label class="form-label small fw-bold text-secondary mb-1">Mengajar Kelas:</label><br>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="gk10" value="10"><label class="form-check-label small" for="gk10">Kelas X</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="gk11" value="11"><label class="form-check-label small" for="gk11">Kelas XI</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="gk12" value="12"><label class="form-check-label small" for="gk12">Kelas XII</label></div>
           </div>
           <div id="guru-form-error" class="col-12 d-none">
             <div class="alert alert-danger py-1 px-2 mb-0 small api-error" id="guru-form-error-msg"></div>
           </div>
           <div class="col-12 d-flex gap-2">
-            <button class="btn btn-success btn-sm" id="btn-save-guru" onclick="saveGuru()"><i class="bi bi-check me-1"></i>Simpan</button>
-            <button class="btn btn-secondary btn-sm" onclick="closeGuruForm()">Batal</button>
+            <button class="btn btn-success btn-sm px-3" id="btn-save-guru" onclick="saveGuru()"><i class="bi bi-check-lg me-1"></i>Simpan</button>
+            <button class="btn btn-secondary btn-sm px-3" onclick="closeGuruForm()">Batal</button>
           </div>
         </div>
       </div>
       <div class="table-responsive"><table class="table table-hover align-middle">
-        <thead><tr><th>ID</th><th>Nama</th><th>Mapel</th><th>Kelas</th><th>Key</th><th>Aksi</th></tr></thead>
-        <tbody id="tbody-guru"><tr><td colspan="6" class="text-center text-muted">Memuat...</td></tr></tbody>
+        <thead><tr><th>ID/User</th><th>Nama Pengajar</th><th>Bidang Mapel</th><th>Cakupan Kelas</th><th>Token Akses</th><th style="width: 80px;">Aksi</th></tr></thead>
+        <tbody id="tbody-guru"><tr><td colspan="6" class="text-center text-muted py-3">Memuat data...</td></tr></tbody>
       </table></div>
     </div>
 
     <div id="tab-hasil" class="d-none">
       <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-        <h6 class="fw-bold mb-0">Rekap Hasil Ujian</h6>
-        <div class="btn-group btn-group-sm">
-          <button class="btn btn-success fw-bold" onclick="exportAdminExcel()"><i class="bi bi-file-earmark-excel"></i> Excel</button>
-          <button class="btn btn-primary fw-bold" onclick="exportAdminWord()"><i class="bi bi-file-earmark-word"></i> Word</button>
-          <button class="btn btn-danger fw-bold" onclick="exportAdminPdf()"><i class="bi bi-file-earmark-pdf"></i> PDF</button>
+        <h6 class="fw-bold mb-0" style="color: var(--slate-dark);">
+          <i class="bi bi-journal-text text-primary me-2"></i>Rekapitulasi Nilai Siswa
+        </h6>
+        
+        <div class="d-flex gap-2">
+          <button class="btn btn-sm btn-outline-secondary fw-semibold px-3" onclick="exportAdminExcel()">
+            <i class="bi bi-file-earmark-excel text-success me-1"></i> Excel
+          </button>
+          <button class="btn btn-sm btn-outline-secondary fw-semibold px-3" onclick="exportAdminWord()">
+            <i class="bi bi-file-earmark-word text-primary me-1"></i> Word
+          </button>
+          <button class="btn btn-sm btn-outline-secondary fw-semibold px-3" onclick="exportAdminPdf()">
+            <i class="bi bi-file-earmark-pdf text-danger me-1"></i> PDF
+          </button>
         </div>
       </div>
       <div class="table-responsive"><table class="table table-hover align-middle table-sm">
-        <thead><tr><th>Nama</th><th>Kelas</th><th>Mapel</th><th>Nilai</th><th>Benar</th><th>Total</th><th>Waktu</th></tr></thead>
-        <tbody id="tbody-hasil"><tr><td colspan="7" class="text-center text-muted">Memuat...</td></tr></tbody>
+        <thead><tr><th>Nama Siswa</th><th>Kelas</th><th>Mata Pelajaran</th><th>Nilai</th><th>Benar</th><th>Total</th><th>Waktu Penyelesaian</th></tr></thead>
+        <tbody id="tbody-hasil"><tr><td colspan="7" class="text-center text-muted py-3">Memuat data...</td></tr></tbody>
       </table></div>
     </div>
   </div>
@@ -208,12 +253,13 @@
 let adminKey = "";
 let mapelData = [];
 let guruData  = [];
-let rawHasilData = []; // Menyimpan data mentah hasil ujian untuk kebutuhan ekspor
+let rawHasilData = [];
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 function toast(msg, type = "primary") {
   const el = document.getElementById("toast-admin");
-  el.className = `toast align-items-center text-bg-${type === 'success' ? 'success' : type === 'danger' ? 'danger' : 'primary'} border-0`;
+  const bgClass = type === 'success' ? 'success' : type === 'danger' ? 'danger' : 'primary';
+  el.className = `toast align-items-center text-bg-${bgClass} border-0`;
   document.getElementById("toast-msg").textContent = msg;
   bootstrap.Toast.getOrCreateInstance(el).show();
 }
@@ -224,7 +270,7 @@ function setLoading(btnId, loading) {
   btn.disabled = loading;
   if (loading) {
     btn.dataset.origHtml = btn.innerHTML;
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Menyimpan...';
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Memproses...';
   } else if (btn.dataset.origHtml) {
     btn.innerHTML = btn.dataset.origHtml;
   }
@@ -257,11 +303,11 @@ async function loginAdmin() {
       await loadAll();
     } else {
       const errEl = document.getElementById("login-error");
-      document.getElementById("login-error-msg").textContent = json.error || "Key tidak valid.";
+      document.getElementById("login-error-msg").textContent = json.error || "Token akses tidak valid.";
       errEl.classList.remove("d-none");
     }
   } catch (err) {
-    document.getElementById("login-error-msg").textContent = "Kesalahan jaringan: " + err.message;
+    document.getElementById("login-error-msg").textContent = "Masalah Jaringan: " + err.message;
     document.getElementById("login-error").classList.remove("d-none");
   } finally {
     document.getElementById("btn-login-text").classList.remove("d-none");
@@ -283,7 +329,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// ── Load All ─────────────────────────────────────────────────────────────────
+// ── Load Data ─────────────────────────────────────────────────────────────────
 async function loadAll() {
   await Promise.all([loadMapel(), loadGuru(), loadHasil()]);
 }
@@ -302,7 +348,7 @@ async function loadMapel() {
   document.getElementById("stat-mapel").textContent = mapelData.length;
   renderMapelTable();
   const sel = document.getElementById("gf-mapel");
-  sel.innerHTML = '<option value="">— Pilih Mapel —</option>';
+  sel.innerHTML = '<option value="">— Pilih Kompetensi Mapel —</option>';
   mapelData.forEach(m => {
     const opt = document.createElement("option");
     opt.value = m.id;
@@ -314,15 +360,15 @@ async function loadMapel() {
 function renderMapelTable() {
   const tbody = document.getElementById("tbody-mapel");
   if (!mapelData.length) {
-    tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Belum ada mapel</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Belum ada komoditas mapel terdaftar</td></tr>';
     return;
   }
   tbody.innerHTML = mapelData.map(m => `
     <tr>
       <td><code>${escHtml(m.id)}</code></td>
-      <td>${escHtml(m.nama)}</td>
-      <td>${(m.kelas||[]).map(k=>`<span class="badge bg-primary badge-kelas me-1">${k}</span>`).join("")}</td>
-      <td><button class="btn btn-danger btn-sm" onclick="deleteMapel('${escAttr(m.id)}')"><i class="bi bi-trash"></i></button></td>
+      <td class="fw-semibold">${escHtml(m.nama)}</td>
+      <td>${(m.kelas||[]).map(k=>`<span class="badge bg-primary badge-kelas me-1">Kelas ${k}</span>`).join("")}</td>
+      <td><button class="btn btn-light text-danger btn-sm border" onclick="deleteMapel('${escAttr(m.id)}')"><i class="bi bi-trash3-fill"></i></button></td>
     </tr>`).join("");
 }
 
@@ -348,7 +394,7 @@ async function saveMapel() {
   errEl.classList.add("d-none");
 
   if (!id || !nama || !kelas.length) {
-    errMsg.textContent = "Isi semua field dan pilih minimal 1 kelas.";
+    errMsg.textContent = "Mohon lengkapi seluruh kolom formulir dan pilih tingkatan kelas.";
     errEl.classList.remove("d-none");
     return;
   }
@@ -362,15 +408,15 @@ async function saveMapel() {
     });
     const json = await res.json();
     if (json.ok) {
-      toast("Mapel berhasil ditambahkan ✓", "success");
+      toast("Data Mata Pelajaran berhasil diperbarui ✓", "success");
       closeMapelForm();
       await loadMapel();
     } else {
-      errMsg.textContent = json.error || "Gagal menyimpan.";
+      errMsg.textContent = json.error || "Gagal menyimpan entitas.";
       errEl.classList.remove("d-none");
     }
   } catch (err) {
-    errMsg.textContent = "Kesalahan jaringan: " + err.message;
+    errMsg.textContent = "Masalah koneksi: " + err.message;
     errEl.classList.remove("d-none");
   } finally {
     setLoading("btn-save-mapel", false);
@@ -378,7 +424,7 @@ async function saveMapel() {
 }
 
 async function deleteMapel(id) {
-  if (!confirm(`Hapus mapel "${id}"?`)) return;
+  if (!confirm(`Hapus permanen mata pelajaran "${id}"? \nTindakan ini berisiko memutuskan relasi data guru.`)) return;
   try {
     const res = await fetch("/api/mapel", {
       method: "POST",
@@ -386,19 +432,17 @@ async function deleteMapel(id) {
       body: JSON.stringify({ action: "delete", mapel: { id } }),
     });
     const json = await res.json();
-    if (json.ok) { toast("Mapel dihapus", "success"); await loadMapel(); }
-    else toast(json.error || "Gagal menghapus", "danger");
+    if (json.ok) { toast("Mata pelajaran berhasil dihapus", "success"); await loadMapel(); }
+    else toast(json.error || "Gagal melakukan penghapusan", "danger");
   } catch (err) {
-    toast("Kesalahan jaringan: " + err.message, "danger");
+    toast("Masalah koneksi: " + err.message, "danger");
   }
 }
 
 // ── Guru ──────────────────────────────────────────────────────────────────────
 async function loadGuru() {
   try {
-    const res = await fetch("/api/guru", {
-      headers: { "x-admin-key": adminKey },
-    });
+    const res = await fetch("/api/guru", { headers: { "x-admin-key": adminKey } });
     if (!res.ok) {
       const json = await res.json().catch(() => ({}));
       throw new Error(json.error || `HTTP ${res.status}`);
@@ -416,17 +460,17 @@ async function loadGuru() {
 function renderGuruTable() {
   const tbody = document.getElementById("tbody-guru");
   if (!guruData.length) {
-    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Belum ada guru</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted text-secondary">Belum ada akun guru terdaftar</td></tr>';
     return;
   }
   tbody.innerHTML = guruData.map(g => `
     <tr>
       <td><code>${escHtml(g.id)}</code></td>
-      <td>${escHtml(g.nama)}</td>
-      <td>${escHtml(g.mapel_id)}</td>
-      <td>${(g.kelas||[]).map(k=>`<span class="badge bg-secondary badge-kelas me-1">${k}</span>`).join("")}</td>
-      <td><code class="text-success">${escHtml(g.guru_key)}</code></td>
-      <td><button class="btn btn-danger btn-sm" onclick="deleteGuru('${escAttr(g.id)}')"><i class="bi bi-trash"></i></button></td>
+      <td class="fw-semibold">${escHtml(g.nama)}</td>
+      <td><span class="badge bg-light text-dark border px-2">${escHtml(g.mapel_id)}</span></td>
+      <td>${(g.kelas||[]).map(k=>`<span class="badge bg-secondary badge-kelas me-1">Kls ${k}</span>`).join("")}</td>
+      <td><code class="text-success fw-bold">${escHtml(g.guru_key)}</code></td>
+      <td><button class="btn btn-light text-danger btn-sm border" onclick="deleteGuru('${escAttr(g.id)}')"><i class="bi bi-trash3-fill"></i></button></td>
     </tr>`).join("");
 }
 
@@ -456,7 +500,7 @@ async function saveGuru() {
   errEl.classList.add("d-none");
 
   if (!id || !nama || !mapel_id || !guru_key || !kelas.length) {
-    errMsg.textContent = "Isi semua field dan pilih minimal 1 kelas mengajar.";
+    errMsg.textContent = "Mohon isi semua data guru dan tentukan alokasi kelas mengajar.";
     errEl.classList.remove("d-none");
     return;
   }
@@ -470,15 +514,15 @@ async function saveGuru() {
     });
     const json = await res.json();
     if (json.ok) {
-      toast("Guru berhasil ditambahkan ✓", "success");
+      toast("Registrasi Guru berhasil diproses ✓", "success");
       closeGuruForm();
       await loadGuru();
     } else {
-      errMsg.textContent = json.error || "Gagal menyimpan.";
+      errMsg.textContent = json.error || "Gagal mendaftarkan guru.";
       errEl.classList.remove("d-none");
     }
   } catch (err) {
-    errMsg.textContent = "Kesalahan jaringan: " + err.message;
+    errMsg.textContent = "Masalah koneksi: " + err.message;
     errEl.classList.remove("d-none");
   } finally {
     setLoading("btn-save-guru", false);
@@ -486,7 +530,7 @@ async function saveGuru() {
 }
 
 async function deleteGuru(id) {
-  if (!confirm(`Hapus guru "${id}"?`)) return;
+  if (!confirm(`Cabut hak akses dan hapus guru "${id}"?`)) return;
   try {
     const res = await fetch("/api/guru", {
       method: "POST",
@@ -494,14 +538,14 @@ async function deleteGuru(id) {
       body: JSON.stringify({ action: "delete", guru: { id } }),
     });
     const json = await res.json();
-    if (json.ok) { toast("Guru dihapus", "success"); await loadGuru(); }
-    else toast(json.error || "Gagal menghapus", "danger");
+    if (json.ok) { toast("Data Guru berhasil dihapus", "success"); await loadGuru(); }
+    else toast(json.error || "Gagal menghapus data", "danger");
   } catch (err) {
-    toast("Kesalahan jaringan: " + err.message, "danger");
+    toast("Masalah koneksi: " + err.message, "danger");
   }
 }
 
-// ── Hasil ─────────────────────────────────────────────────────────────────────
+// ── Hasil Ujian & Ekspor ──────────────────────────────────────────────────────
 async function loadHasil() {
   try {
     const res  = await fetch("/api/hasil", { headers: { "x-admin-key": adminKey } });
@@ -515,15 +559,15 @@ async function loadHasil() {
     
     const tbody = document.getElementById("tbody-hasil");
     if (!rawHasilData.length) {
-      tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">Belum ada hasil</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-3">Belum ada riwayat ujian terkumpul</td></tr>';
       return;
     }
     tbody.innerHTML = rawHasilData.slice().reverse().map(h => `
       <tr>
-        <td>${escHtml(h.nama)}</td>
-        <td>${escHtml(String(h.kelas))}</td>
-        <td>${escHtml(h.mapel_id)}</td>
-        <td><span class="badge ${h.nilai>=70?"bg-success":"bg-danger"}">${h.nilai}</span></td>
+        <td class="fw-semibold">${escHtml(h.nama)}</td>
+        <td>Kelas ${escHtml(String(h.kelas))}</td>
+        <td><span class="badge bg-light text-dark border">${escHtml(h.mapel_id)}</span></td>
+        <td><span class="badge ${h.nilai>=70?"bg-success-subtle text-success":"bg-danger-subtle text-danger"} border">${h.nilai}</span></td>
         <td>${h.benar}</td>
         <td>${h.total}</td>
         <td class="text-muted small">${new Date(h.waktu).toLocaleString("id-ID")}</td>
@@ -533,13 +577,12 @@ async function loadHasil() {
   }
 }
 
-// ── ENGINE EKSPOR ADVANCED (EXCEL, WORD STABLE BORDER, & PDF NATIVE) ──
 function exportAdminExcel() {
-  if (!rawHasilData.length) { toast("Tidak ada data hasil untuk diekspor!", "danger"); return; }
+  if (!rawHasilData.length) { toast("Tidak ada data rekap untuk diekspor!", "danger"); return; }
   
   const headerInfo = [
-    ["LAPORAN MASTER REKAPITULASI HASIL UJIAN (ADMIN)"],
-    [`Tanggal Unduh: ${new Date().toLocaleString("id-ID")}`],
+    ["SMANSANAM EXAM PORTAL — REKAPITULASI MASTER NILAI"],
+    [`Tanggal Unduh Sistem: ${new Date().toLocaleString("id-ID")}`],
     []
   ];
 
@@ -565,22 +608,21 @@ function exportAdminExcel() {
   ws['!cols'] = colsWidth;
 
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Rekap Admin");
-  XLSX.writeFile(wb, `MASTER-REKAP-EXCEL-${new Date().toISOString().slice(0,10)}.xlsx`);
-  toast("File Excel berhasil diunduh!", "success");
+  XLSX.utils.book_append_sheet(wb, ws, "Master Rekap");
+  XLSX.writeFile(wb, `SMANSANAM-MASTER-REKAP-${new Date().toISOString().slice(0,10)}.xlsx`);
+  toast("Rekap berkas Excel berhasil diunduh!", "success");
 }
 
 function exportAdminWord() {
-  if (!rawHasilData.length) { toast("Tidak ada data hasil untuk diekspor!", "danger"); return; }
-
+  if (!rawHasilData.length) { toast("Tidak ada data rekap untuk diekspor!", "danger"); return; }
   const tgl = new Date().toLocaleString("id-ID", { dateStyle: "long" });
 
   let htmlString = `
     <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
     <head><meta charset="utf-8"></head>
     <body style="font-family: Arial, sans-serif; margin: 30px; color: #333;">
-      <div style="font-size: 16pt; font-weight: bold; text-align: center; color: #1a56db; margin-bottom: 5px;">LAPORAN MASTER DATA HASIL UJIAN E-EXAM</div>
-      <div style="font-size: 11pt; text-align: center; margin-bottom: 25px; color: #666;">Dibuat Otomatis oleh Sistem Admin Panel <br> Tanggal Cetak: ${tgl}</div>
+      <div style="font-size: 16pt; font-weight: bold; text-align: center; color: #1a56db; margin-bottom: 5px;">LAPORAN MASTER DATA REKAPITULASI NILAI SMANSANAM EXAM PORTAL</div>
+      <div style="font-size: 11pt; text-align: center; margin-bottom: 25px; color: #666;">Dicetak Otomatis melalui Sistem Terintegrasi <br> Tanggal Cetak: ${tgl}</div>
       
       <table border="1" cellspacing="0" cellpadding="8" style="width: 100%; border-collapse: collapse; border: 1px solid #000000; font-size: 11pt;">
         <thead>
@@ -622,23 +664,22 @@ function exportAdminWord() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `MASTER-REKAP-WORD-${new Date().toISOString().slice(0,10)}.doc`;
+  a.download = `SMANSANAM-MASTER-REKAP-${new Date().toISOString().slice(0,10)}.doc`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
-  toast("File Word Berhasil Diunduh!", "success");
+  toast("Rekap berkas Word berhasil dibuat!", "success");
 }
 
 function exportAdminPdf() {
-  if (!rawHasilData.length) { toast("Tidak ada data hasil untuk dicetak ke PDF!", "danger"); return; }
-
+  if (!rawHasilData.length) { toast("Tidak ada data hasil untuk dicetak!", "danger"); return; }
   const tgl = new Date().toLocaleString("id-ID", { dateStyle: "long" });
 
   let printContent = `
     <div style="text-align: center; font-family: Arial, sans-serif; margin-bottom: 20px;">
-      <h2 style="margin: 0 0 5px 0; color: #111;">LAPORAN REKAPITULASI HASIL UJIAN MASTER (ADMIN)</h2>
-      <p style="margin: 0; font-size: 11pt; color: #555;">Tanggal Unduh Sistem: <strong>${tgl}</strong></p>
+      <h2 style="margin: 0 0 5px 0; color: #111;">LAPORAN REKAPITULASI HASIL DATA NILAI (ADMIN MASTER)</h2>
+      <p style="margin: 0; font-size: 11pt; color: #555;">Smansanam Exam Portal • Unduh Sistem: <strong>${tgl}</strong></p>
     </div>
     <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 10pt;">
       <thead>
