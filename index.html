@@ -13,12 +13,14 @@
   
   <style>
     :root {
-      --bg-body: #ffffff;
-      --blue-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-      --blue-accent: #2563eb;
-      --text-dark: #000000;
-      --text-muted: #4b5563;
-      --border-color: #000000;
+      --bg-body: #f8fafc;
+      --card-bg: #ffffff;
+      --blue-gradient: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      --blue-accent: #3b82f6;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #cbd5e1;
+      --border-focus: #2563eb;
     }
     
     body { 
@@ -28,37 +30,62 @@
       -webkit-font-smoothing: antialiased;
     }
 
+    /* ANIMATIONS KEYFRAMES */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.2); }
+      70% { box-shadow: 0 0 0 10px rgba(37, 99, 235, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+    }
+
     /* NAVBAR STYLES */
     .navbar { 
       background: #ffffff;
-      border-bottom: 1px solid #e2e8f0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
       padding: 0.85rem 1rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
     }
     .navbar-brand { 
       font-size: 1.25rem;
-      font-weight: 400;
+      font-weight: 500;
       letter-spacing: -0.3px;
       color: var(--text-dark) !important;
     }
     .navbar-brand span { 
       font-style: italic;
-      font-weight: 700;
-      color: #3b82f6;
+      font-weight: 800;
+      background: var(--blue-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
     .btn-menu-burger {
       border: none;
-      background: transparent;
+      background: #f1f5f9;
       color: var(--text-dark);
-      font-size: 1.4rem;
-      padding: 0;
+      font-size: 1.2rem;
+      padding: 0.5rem;
+      border-radius: 10px;
+      transition: all 0.2s ease;
+    }
+    .btn-menu-burger:hover {
+      background: #e2e8f0;
     }
 
-    /* SIDEBAR NAV DRAWER */
+    /* SIDEBAR OFFCANVAS */
     .offcanvas-sidebar {
-      width: 280px !important;
+      width: 290px !important;
       background: #ffffff !important;
-      border-right: 1px solid #e2e8f0;
+      border-right: 1px solid var(--border-color);
     }
     .sidebar-link {
       display: flex;
@@ -74,104 +101,129 @@
       margin-bottom: 0.5rem;
     }
     .sidebar-link:hover, .sidebar-link.active {
-      background: #f1f5f9;
-      color: var(--blue-accent);
+      background: rgba(37, 99, 235, 0.05);
+      color: var(--border-focus);
     }
 
-    /* HERO BANNER GRADIENT */
+    /* HERO GRADIENT BANNER WITH ENTICING ANIMATION */
     .hero-container {
       background: var(--blue-gradient);
-      border-radius: 14px;
-      padding: 2rem 1.5rem;
-      margin-top: 1.25rem;
-      margin-bottom: 1.25rem;
+      border-radius: 18px;
+      padding: 2.2rem 1.8rem;
+      margin-top: 1.5rem;
+      margin-bottom: 1.5rem;
       color: #ffffff;
       position: relative;
       overflow: hidden;
-      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.15);
+      box-shadow: 0 10px 25px -5px rgba(29, 78, 216, 0.3);
+      animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
     }
     .hero-container h1 { 
-      font-size: 1.8rem; 
-      font-weight: 700; 
+      font-size: 1.9rem; 
+      font-weight: 800; 
       margin-bottom: 0.5rem;
+      letter-spacing: -0.5px;
     }
     .hero-container p { 
-      font-size: 0.8rem;
-      line-height: 1.5;
+      font-size: 0.85rem;
+      line-height: 1.6;
       max-width: 65%;
-      opacity: 0.9;
+      opacity: 0.95;
+      font-weight: 400;
     }
     .hero-icon-wrapper {
       position: absolute;
-      right: 1.5rem;
+      right: 2rem;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 4.5rem;
-      opacity: 0.85;
+      font-size: 5rem;
+      opacity: 0.25;
       color: #ffffff;
       line-height: 1;
+      transition: all 0.5s ease;
+    }
+    .hero-container:hover .hero-icon-wrapper {
+      transform: translateY(-50%) scale(1.1) rotate(-5deg);
+      opacity: 0.4;
     }
 
-    /* SEARCH BOX CAPTION */
+    /* SEARCH BOX BARU */
     .search-wrapper {
       position: relative;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.75rem;
+      animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
     }
     .search-input {
       width: 100%;
-      padding: 0.9rem 3rem 0.9rem 1.2rem;
-      background: #ffffff;
+      padding: 0.95rem 3.5rem 0.95rem 1.2rem;
+      background: var(--card-bg);
       border: 1.5px solid var(--border-color);
-      border-radius: 12px;
+      border-radius: 14px;
       font-size: 0.95rem;
       font-weight: 500;
       color: var(--text-dark);
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
     }
     .search-input::placeholder {
-      color: #a0aec0;
+      color: #94a3b8;
     }
     .search-input:focus {
       outline: none;
-      border-color: var(--blue-accent);
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
     }
     .search-wrapper .search-icon {
       position: absolute;
-      right: 1.2rem;
+      right: 1.3rem;
       top: 50%;
       transform: translateY(-50%);
       color: var(--text-dark);
-      font-size: 1.3rem;
+      font-size: 1.25rem;
       pointer-events: none;
+      transition: color 0.2s;
+    }
+    .search-input:focus + .search-icon {
+      color: var(--border-focus);
     }
 
     /* ACCORDION LIST VIEW CARD */
     .card-mapel-row {
-      background: #ffffff;
+      background: var(--card-bg);
       border: 1.5px solid var(--border-color);
-      border-radius: 14px;
+      border-radius: 16px;
       overflow: hidden;
-      margin-bottom: 1rem;
+      margin-bottom: 1.25rem;
       position: relative;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+      animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
     }
-    /* Top Line Blue Gradient Accent */
+    /* Top Line Accent Card */
     .card-mapel-row::before {
       content: "";
       position: absolute;
       top: 0; left: 0; right: 0;
-      height: 6px;
+      height: 5px;
       background: linear-gradient(90deg, #3b82f6 0%, #60a5fa 100%);
     }
+    .card-mapel-row:hover {
+      border-color: #94a3b8;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 20px -8px rgba(0,0,0,0.08);
+    }
     .mapel-header-section {
-      padding: 1.25rem 1.2rem 0.85rem 1.2rem;
+      padding: 1.4rem 1.4rem 1rem 1.4rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
     .mapel-title-area h6 {
-      font-size: 1.4rem;
+      font-size: 1.35rem;
       font-weight: 700;
       color: var(--text-dark);
-      margin-bottom: 0.15rem;
+      margin-bottom: 0.2rem;
+      letter-spacing: -0.3px;
     }
     .mapel-title-area p {
       font-size: 0.85rem;
@@ -180,36 +232,43 @@
       font-weight: 500;
     }
     .mapel-arrow-icon {
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       color: var(--text-dark);
+      transition: transform 0.3s ease;
+    }
+    .card-mapel-row:hover .mapel-arrow-icon {
+      transform: translateY(3px);
     }
 
-    /* KELAS SELECTION BAR (BOTTOM ROW) */
+    /* KELAS SELECTION BAR */
     .kelas-action-bar {
       display: flex;
       border-top: 1px solid var(--border-color);
-      background: #ffffff;
+      background: #fafafa;
     }
     .badge-kelas-btn {
       flex: 1;
       text-align: center;
-      padding: 0.75rem 0.5rem;
-      font-size: 0.75rem;
+      padding: 0.9rem 0.5rem;
+      font-size: 0.78rem;
       font-weight: 800;
       color: var(--text-dark);
       cursor: pointer;
       text-transform: uppercase;
-      transition: background 0.15s;
+      transition: all 0.2s ease;
+      letter-spacing: 0.5px;
+      user-select: none;
     }
     .badge-kelas-btn:not(:last-child) {
       border-right: 1px solid var(--border-color);
     }
     .badge-kelas-btn:hover {
-      background-color: #f1f5f9;
-      color: var(--blue-accent);
+      background-color: rgba(37, 99, 235, 0.06);
+      color: var(--border-focus);
+      animation: pulseGlow 1s ease-in-out infinite;
     }
 
-    /* SKELETON PLACEHOLDER */
+    /* SKELETON LOADER */
     .placeholder-glow .placeholder {
       background-color: #e2e8f0;
       border-radius: 6px;
@@ -220,27 +279,28 @@
       font-size: 0.85rem;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.8px;
       color: var(--text-muted);
-      margin-bottom: 0.75rem;
     }
 
     /* FOOTER */
     footer { 
-      border-top: 1px solid #e2e8f0;
+      border-top: 1px solid var(--border-color);
       background: #ffffff; 
       color: var(--text-muted); 
       font-size: 0.8rem; 
-      padding: 1.25rem 0; 
-      margin-top: 3rem;
+      padding: 1.5rem 0; 
+      margin-top: 4rem;
       font-weight: 500;
     }
 
-    /* RESPONSIVE LAYOUT UNTUK LAYAR HANDPHONE */
+    /* RESPONSIVE LAYOUT SMARTPHONE */
     @media (max-width: 576px) {
-      .hero-container p { max-width: 60%; font-size: 0.72rem; }
-      .hero-icon-wrapper { font-size: 3.8rem; right: 1rem; }
-      .mapel-title-area h6 { font-size: 1.25rem; }
+      .hero-container { padding: 1.75rem 1.25rem; }
+      .hero-container p { max-width: 100%; font-size: 0.78rem; }
+      .hero-icon-wrapper { display: none; } /* Menyembunyikan icon besar di HP agar fokus ke teks */
+      .mapel-title-area h6 { font-size: 1.2rem; }
+      .badge-kelas-btn { padding: 0.8rem 0.25rem; font-size: 0.72rem; }
     }
   </style>
 </head>
@@ -256,25 +316,25 @@
       <span>Smansanam</span> Exam Portal
     </div>
     
-    <div style="width: 24px;"></div>
-  </div>
+    <div style="width: 38px;"></div> </div>
 </nav>
 
 <div class="offcanvas offcanvas-start offcanvas-sidebar" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
   <div class="offcanvas-header border-bottom py-4">
-    <span class="fw-bold text-dark fs-5" id="sidebarMenuLabel"><i class="bi bi-shield-check me-2 text-primary"></i>Navigation</span>
+    <span class="fw-bold text-dark fs-5" id="sidebarMenuLabel"><i class="bi bi-grid-fill me-2 text-primary"></i>Navigation</span>
     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
   </div>
   <div class="offcanvas-body p-3">
     <a href="#" class="sidebar-link active">
-      <i class="bi bi-house-door-fill me-2"></i> Dashboard
+      <i class="bi bi-house-door-fill me-2"></i> Dashboard Utama
     </a>
     <hr class="opacity-25">
+    <p class="text-uppercase fw-bold text-muted px-2" style="font-size:0.7rem; letter-spacing:1px;">Internal Link</p>
     <a href="guru.html" class="sidebar-link">
-      <i class="bi bi-person-badge me-2"></i> Portal Guru
+      <i class="bi bi-person-badge me-2"></i> Portal Akademik Guru
     </a>
     <a href="admin.html" class="sidebar-link">
-      <i class="bi bi-shield-lock me-2"></i> Administrator
+      <i class="bi bi-shield-lock me-2"></i> Administrator System
     </a>
   </div>
 </div>
@@ -284,7 +344,7 @@
     <h1>Selamat Datang,</h1>
     <p class="mb-0">diportal Ujian Sumatif SMAN 1 Namang. Diharapkan para siswa mengerjakan ujian dengan tertib dan jujur sesuai dengan nilai-nilai dan visi misi sekolah.</p>
     <div class="hero-icon-wrapper">
-      <i class="bi bi-mortarboard"></i>
+      <i class="bi bi-mortarboard-fill"></i>
     </div>
   </div>
 
@@ -294,14 +354,14 @@
   </div>
 
   <div class="pb-5">
-    <div class="d-flex align-items-center justify-content-between mb-2">
-      <h2 class="section-title mb-0">Daftar Mata Pelajaran</h2>
-      <span class="badge bg-light text-dark border fw-bold" id="info-count" style="font-size: 0.75rem;"></span>
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <h2 class="section-title mb-0"><i class="bi bi-collection-check me-2 text-primary"></i>Mata Pelajaran Ujian</h2>
+      <span class="badge bg-white text-dark border fw-bold px-2.5 py-1.5" id="info-count" style="font-size: 0.75rem;"></span>
     </div>
 
     <div class="row g-0" id="mapel-container">
       <div class="col-12 skeleton-item" id="sk1">
-        <div class="card-mapel-row" style="height: 130px;">
+        <div class="card-mapel-row" style="height: 125px;">
           <div class="mapel-header-section placeholder-glow">
             <div class="mapel-title-area col-8">
               <span class="placeholder col-6 mb-2 d-block" style="height:24px;"></span>
@@ -313,34 +373,28 @@
       </div>
     </div>
 
-    <div id="empty-state" class="text-center py-5 d-none border rounded-4 mt-2">
-      <i class="bi bi-file-earmark-x display-6 text-muted"></i>
-      <p class="mt-2 text-muted fw-bold mb-0">Mata pelajaran tidak ditemukan.</p>
+    <div id="empty-state" class="text-center py-5 d-none bg-white border rounded-4 mt-2 shadow-sm animation-fade">
+      <i class="bi bi-search-heart display-5 text-muted mb-2 d-block"></i>
+      <h5 class="fw-bold text-dark mb-1" style="font-size:1.1rem">Mapel Tidak Ditemukan</h5>
+      <p class="text-muted small mb-3">Periksa kembali kata kunci pencarian Anda.</p>
+      <button class="btn btn-sm btn-primary rounded-pill px-3" onclick="resetSearch()"><i class="bi bi-arrow-clockwise me-1"></i>Reset Pencarian</button>
     </div>
   </div>
 </div>
 
 <footer class="text-center">
-  <p class="mb-0">© 2026 SMAN 1 Namang — Portal Ujian Resmi</p>
+  <p class="mb-0">© 2026 SMAN 1 Namang — Powered by Smart Portal Engine</p>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-// Logic core internal tidak berubah demi kecocokan API
-const ICONS = {
-  default: "bi-chevron-down",
-  matematika: "bi-chevron-down",
-  ipa: "bi-chevron-down",
-  ips: "bi-chevron-down",
-};
-
 async function loadMapel() {
   try {
     const res = await fetch("/api/mapel");
     const data = await res.json();
     renderMapel(data);
   } catch {
-    // Dummy Data cadangan otomatis jika API lokal belum terhubung agar persis seperti gambar
+    // Data dummy otomatis dimuat jika API backend belum online/lokal
     renderMapel([
       { id: "matematika", nama: "Matematika", guru: "Herlina, S. Pd.", kelas: [10, 11, 12] },
       { id: "biologi", nama: "Biologi", guru: "Herlina, S. Pd.", kelas: [10, 11, 12] },
@@ -355,12 +409,15 @@ function renderMapel(list) {
   const container = document.getElementById("mapel-container");
   const empty     = document.getElementById("empty-state");
 
+  // Bersihkan penampung list lama agar tidak menumpuk saat reset
+  const oldRows = container.querySelectorAll(".item-mapel-row");
+  oldRows.forEach(r => r.remove());
+
   if (!list.length) { empty.classList.remove("d-none"); return; }
 
-  document.getElementById("info-count").textContent = `${list.length} Sesi`;
+  document.getElementById("info-count").textContent = `${list.length} Sesi Ujian`;
 
-  list.forEach(m => {
-    // Generate badge buttons horizontal di baris paling bawah card sesuai gambar target
+  list.forEach((m, index) => {
     const kelasBadges = (m.kelas || [10,11,12]).map(k =>
       `<div class="badge-kelas-btn" onclick="pilihKelas(this,'${m.id}','${m.nama}',${k})">Kelas ${k}</div>`
     ).join("");
@@ -370,6 +427,10 @@ function renderMapel(list) {
     const itemRow = document.createElement("div");
     itemRow.className = "col-12 item-mapel-row";
     itemRow.setAttribute("data-nama", m.nama.toLowerCase());
+    
+    // Menambahkan efek delay stagger animasi CSS murni menggunakan inline style
+    itemRow.style.animationDelay = `${index * 0.08}s`;
+    
     itemRow.innerHTML = `
       <div class="card-mapel-row">
         <div class="mapel-header-section">
@@ -417,6 +478,14 @@ function filterMapel() {
   } else {
     emptyState.classList.add("d-none");
   }
+}
+
+// Fungsi tambahan pembantu untuk mereset pencarian di Android / Browser
+function resetSearch() {
+  const input = document.getElementById("searchMapel");
+  input.value = "";
+  filterMapel();
+  input.focus();
 }
 
 loadMapel();
