@@ -1,1 +1,32 @@
-[]
+[
+  {
+    "id": "ujian_1781357489655",
+    "mapel_id": "bindo",
+    "mapel_nama": "bindo",
+    "kelas": [
+      "10.1",
+      "10.2",
+      "10.3",
+      "10.4",
+      "10.5",
+      "10.6"
+    ],
+    "kunci": "BINDOJAYA",
+    "soal": [
+      {
+        "id": "s1781357482346",
+        "pertanyaan": "Anjayyy",
+        "opsi": {
+          "A": "asa",
+          "B": "sasa",
+          "C": "asas",
+          "D": "asas"
+        },
+        "jawaban": "A"
+      }
+    ],
+    "aktif": true,
+    "dibuat_at": "2026-06-13T13:31:29.656Z",
+    "guru_id": "kenzo"
+  }
+]
