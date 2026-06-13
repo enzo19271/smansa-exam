@@ -7,5 +7,14 @@
       11,
       12
     ]
+  },
+  {
+    "id": "bing",
+    "nama": "Bahasa Inggris",
+    "kelas": [
+      10,
+      11,
+      12
+    ]
   }
 ]
