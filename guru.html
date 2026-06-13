@@ -36,6 +36,7 @@
     .opsi-row { display: flex; gap: .5rem; align-items: center; margin-bottom: .5rem; }
     .opsi-letter { width: 32px; height: 32px; border-radius: 8px; background: #e8f0fe; display:flex; align-items:center; justify-content:center; font-weight:700; color:var(--primary); flex-shrink:0; }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
 
@@ -114,10 +115,15 @@
 
     <!-- TAB: HASIL -->
     <div id="tab-hasil" class="d-none">
-      <h6 class="fw-bold mb-3">Hasil Ujian Siswamu</h6>
+      <div class="d-flex align-items-center mb-3 gap-2 flex-wrap">
+        <h6 class="fw-bold mb-0">Hasil Ujian Siswamu</h6>
+        <button class="btn btn-success btn-sm ms-auto" onclick="exportExcel()">
+          <i class="bi bi-file-earmark-excel me-1"></i>Export Excel
+        </button>
+      </div>
       <div class="table-responsive"><table class="table table-hover align-middle table-sm">
-        <thead><tr><th>Nama</th><th>Kelas</th><th>Nilai</th><th>Benar</th><th>Total</th><th>Waktu</th></tr></thead>
-        <tbody id="tbody-hasil"><tr><td colspan="6" class="text-center text-muted">Memuat...</td></tr></tbody>
+        <thead><tr><th>Nama</th><th>Kelas</th><th>Nilai</th><th>Benar</th><th>Total</th><th>Waktu</th><th>Aksi</th></tr></thead>
+        <tbody id="tbody-hasil"><tr><td colspan="7" class="text-center text-muted">Memuat...</td></tr></tbody>
       </table></div>
     </div>
   </div>
@@ -339,22 +345,86 @@ async function simpanSemuaSoal() {
 }
 
 // ── Hasil ─────────────────────────────────────────────────────────────────────
+let hasilData = []; // cache untuk export
+
 async function loadHasilGuru() {
   try {
     const res  = await fetch("/api/hasil", { headers: { "x-guru-key": guruKey } });
     const data = await res.json();
-    const tbody = document.getElementById("tbody-hasil");
-    if (!data.length) { tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Belum ada hasil</td></tr>'; return; }
-    tbody.innerHTML = data.slice().reverse().map(h => `
-      <tr>
-        <td>${h.nama}</td>
-        <td>${h.kelas}</td>
-        <td><span class="badge ${h.nilai>=70?"bg-success":"bg-danger"}">${h.nilai}</span></td>
-        <td>${h.benar}</td>
-        <td>${h.total}</td>
-        <td class="text-muted small">${new Date(h.waktu).toLocaleString("id-ID")}</td>
-      </tr>`).join("");
+    hasilData  = Array.isArray(data) ? data : [];
+    renderTabelHasil();
   } catch {}
+}
+
+function renderTabelHasil() {
+  const tbody = document.getElementById("tbody-hasil");
+  if (!hasilData.length) {
+    tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">Belum ada hasil</td></tr>';
+    return;
+  }
+  tbody.innerHTML = hasilData.slice().reverse().map(h => `
+    <tr>
+      <td>${h.nama}</td>
+      <td>${h.kelas}</td>
+      <td><span class="badge ${h.nilai>=70?"bg-success":"bg-danger"}">${h.nilai}</span></td>
+      <td>${h.benar}</td>
+      <td>${h.total}</td>
+      <td class="text-muted small">${new Date(h.waktu).toLocaleString("id-ID")}</td>
+      <td>
+        <button class="btn btn-danger btn-sm" onclick="hapusHasil('${h.id}', this)" title="Hapus">
+          <i class="bi bi-trash"></i>
+        </button>
+      </td>
+    </tr>`).join("");
+}
+
+async function hapusHasil(id, btn) {
+  if (!confirm("Hapus data hasil ujian ini?")) return;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+  try {
+    const res = await fetch("/api/hasil", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json", "x-guru-key": guruKey },
+      body: JSON.stringify({ id }),
+    });
+    const json = await res.json();
+    if (json.ok) {
+      hasilData = hasilData.filter(h => h.id !== id);
+      renderTabelHasil();
+      toast("Data berhasil dihapus", "success");
+    } else {
+      toast(json.error || "Gagal menghapus", "danger");
+      btn.disabled = false;
+      btn.innerHTML = '<i class="bi bi-trash"></i>';
+    }
+  } catch {
+    toast("Kesalahan jaringan", "danger");
+    btn.disabled = false;
+    btn.innerHTML = '<i class="bi bi-trash"></i>';
+  }
+}
+
+function exportExcel() {
+  if (!hasilData.length) { toast("Tidak ada data untuk diekspor", "warning"); return; }
+  const rows = hasilData.map(h => ({
+    "Nama Siswa"  : h.nama,
+    "Kelas"       : h.kelas,
+    "Mata Pelajaran": h.mapel_id,
+    "Nilai"       : h.nilai,
+    "Benar"       : h.benar,
+    "Total Soal"  : h.total,
+    "Waktu Ujian" : new Date(h.waktu).toLocaleString("id-ID"),
+  }));
+  const ws  = XLSX.utils.json_to_sheet(rows);
+  // Auto-width kolom
+  const cols = Object.keys(rows[0]).map(k => ({ wch: Math.max(k.length, 14) }));
+  ws["!cols"] = cols;
+  const wb  = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Hasil Ujian");
+  const now = new Date().toISOString().slice(0,10);
+  XLSX.writeFile(wb, `hasil-ujian-${now}.xlsx`);
+  toast("File Excel berhasil diunduh", "success");
 }
 
 function logout() {
