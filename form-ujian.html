@@ -226,11 +226,12 @@
     <div class="d-flex align-items-start gap-3 mb-4">
       <span class="step-badge">2</span>
       <div class="w-100">
-        <label class="form-label mb-1">Pilih Rincian Kelas</label>
-        <select id="inp-subkelas" class="form-select">
-          <option value="">— Pilih sub-kelas kamu —</option>
-        </select>
-        <div class="invalid-feedback"><i class="bi bi-exclamation-circle me-1"></i>Pilih kelas terlebih dahulu.</div>
+        <label class="form-label mb-1">Rincian Kelas</label>
+        <div id="display-subkelas" class="form-control" style="background:#f1f5f9;border:1.5px solid #cbd5e1;display:flex;align-items:center;padding:0.75rem 1rem;">
+          <strong id="subkelas-display">—</strong>
+        </div>
+        <input type="hidden" id="inp-subkelas"/>
+        <div class="invalid-feedback"><i class="bi bi-exclamation-circle me-1"></i>Kelas tidak valid.</div>
       </div>
     </div>
 
@@ -276,14 +277,9 @@ if (!mapelId || !kelas) location.href = "index.html";
 document.getElementById("info-mapel").textContent = mapelNama || mapelId;
 document.getElementById("info-kelas").textContent = `Kelas ${kelas}`;
 
-// Loop otomatis mencetak daftar rincian sub-kelas paralel (X.1 s/d X.6)
-const subSelect = document.getElementById("inp-subkelas");
-for (let i = 1; i <= 6; i++) {
-  const opt = document.createElement("option");
-  opt.value = `${kelas}.${i}`;
-  opt.textContent = `Kelas ${kelas}.${i}`;
-  subSelect.appendChild(opt);
-}
+// Auto-set sub-kelas dari index.html (kelas sudah berupa sub-kelas: 10.1, 10.2, dst)
+document.getElementById("inp-subkelas").value = kelas;
+document.getElementById("subkelas-display").textContent = `Kelas ${kelas}`;
 
 function setLoading(v, msg) {
   document.getElementById("btn-text").classList.toggle("d-none", v);
