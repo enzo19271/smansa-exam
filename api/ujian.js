@@ -14,7 +14,7 @@ module.exports = async (req, res) => {
     // ── GET: List all ujian (guru bisa lihat miliknya saja via filter frontend) ──
     if (req.method === "GET") {
       const { data } = await readFile("data/ujian.json", []);
-      return res.status(200).json(Array.isArray(data) ? data : []);
+      return res.status(200).json({ ujian: Array.isArray(data) ? data : [] });
     }
 
     // ── POST: add / update / delete / get_soal ujian ────────────────────────────
@@ -58,7 +58,7 @@ module.exports = async (req, res) => {
     // ACTION: list — Get all ujian (filter by guru at frontend level)
     // ────────────────────────────────────────────────────────────────────────────
     if (action === "list") {
-      return res.status(200).json(list);
+      return res.status(200).json({ ujian: list });
     }
 
     // ────────────────────────────────────────────────────────────────────────────
