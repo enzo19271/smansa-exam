@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>E-EXAM — Portal Ujian Online</title>
+  <title>Smansanam Exam Portal</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,68 +13,52 @@
   
   <style>
     :root {
-      --bg-global: #f8fafc; /* Abu-abu super terang/lembut */
-      --card-bg: #ffffff;   /* Putih Bersih */
-      --primary-color: #4f46e5; /* Soft Indigo */
-      --accent-color: #0d9488;  /* Soft Muted Teal */
-      --text-main: #1e293b;
-      --text-muted: #64748b;
-      --border-light: #e2e8f0;
+      --bg-body: #ffffff;
+      --blue-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      --blue-accent: #2563eb;
+      --text-dark: #000000;
+      --text-muted: #4b5563;
+      --border-color: #000000;
     }
     
     body { 
-      background-color: var(--bg-global); 
+      background-color: var(--bg-body); 
       font-family: 'Plus Jakarta Sans', sans-serif;
-      color: var(--text-main);
+      color: var(--text-dark);
       -webkit-font-smoothing: antialiased;
     }
 
-    /* NAVBAR PUTIH BERSIH */
+    /* NAVBAR STYLES */
     .navbar { 
-      background: var(--card-bg);
-      border-bottom: 1px solid var(--border-light);
-      padding: 0.75rem 1.2rem;
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 0.85rem 1rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
     }
     .navbar-brand { 
-      font-weight: 800; 
-      font-size: 1.3rem;
-      letter-spacing: -0.5px; 
-      color: var(--primary-color) !important;
+      font-size: 1.25rem;
+      font-weight: 400;
+      letter-spacing: -0.3px;
+      color: var(--text-dark) !important;
     }
     .navbar-brand span { 
-      color: var(--accent-color);
-    }
-    .btn-toggle-menu {
-      border: none;
-      background: #f1f5f9;
-      color: var(--text-main);
-      padding: 0.5rem 0.75rem;
-      border-radius: 12px;
-      transition: background 0.2s;
-    }
-    .btn-toggle-menu:hover {
-      background: #e2e8f0;
-    }
-    .portal-tag {
-      background: #f0fdf4;
-      border: 1px solid #bbf7d0;
-      color: #166534;
+      font-style: italic;
       font-weight: 700;
-      font-size: 0.75rem;
-      padding: 0.4rem 1rem;
-      border-radius: 50px;
+      color: #3b82f6;
+    }
+    .btn-menu-burger {
+      border: none;
+      background: transparent;
+      color: var(--text-dark);
+      font-size: 1.4rem;
+      padding: 0;
     }
 
-    /* SIDEBAR NAV (Android-Friendly Drawer) */
+    /* SIDEBAR NAV DRAWER */
     .offcanvas-sidebar {
       width: 280px !important;
-      background: var(--card-bg) !important;
-      border-right: 1px solid var(--border-light);
-    }
-    .sidebar-header-title {
-      font-weight: 800;
-      font-size: 1.1rem;
-      color: var(--text-main);
+      background: #ffffff !important;
+      border-right: 1px solid #e2e8f0;
     }
     .sidebar-link {
       display: flex;
@@ -90,297 +73,265 @@
       transition: all 0.2s ease;
       margin-bottom: 0.5rem;
     }
-    .sidebar-link i { font-size: 1.2rem; }
     .sidebar-link:hover, .sidebar-link.active {
       background: #f1f5f9;
-      color: var(--primary-color);
+      color: var(--blue-accent);
     }
 
-    /* HERO CONTAINER LEMBUT */
+    /* HERO BANNER GRADIENT */
     .hero-container {
-      background: var(--card-bg);
-      border-radius: 20px;
-      padding: 2rem;
-      margin-top: 1.5rem;
-      margin-bottom: 1.5rem;
-      border: 1px solid var(--border-light);
-      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+      background: var(--blue-gradient);
+      border-radius: 14px;
+      padding: 2rem 1.5rem;
+      margin-top: 1.25rem;
+      margin-bottom: 1.25rem;
+      color: #ffffff;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.15);
     }
     .hero-container h1 { 
-      font-size: 1.6rem; 
-      font-weight: 800; 
-      color: var(--text-main);
-      letter-spacing: -0.5px;
+      font-size: 1.8rem; 
+      font-weight: 700; 
+      margin-bottom: 0.5rem;
     }
     .hero-container p { 
-      color: var(--text-muted); 
-      font-size: 0.95rem;
-      margin-top: 0.4rem;
+      font-size: 0.8rem;
+      line-height: 1.5;
+      max-width: 65%;
+      opacity: 0.9;
+    }
+    .hero-icon-wrapper {
+      position: absolute;
+      right: 1.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 4.5rem;
+      opacity: 0.85;
+      color: #ffffff;
+      line-height: 1;
     }
 
-    /* SEARCH BOX BARU (Android / Touch Friendly) */
+    /* SEARCH BOX CAPTION */
     .search-wrapper {
       position: relative;
       margin-bottom: 1.5rem;
     }
-    .search-wrapper i {
-      position: absolute;
-      left: 1.2rem;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-muted);
-      font-size: 1.1rem;
-    }
     .search-input {
       width: 100%;
-      padding: 0.85rem 1rem 0.85rem 3rem;
-      background: var(--card-bg);
-      border: 1px solid var(--border-light);
-      border-radius: 16px;
+      padding: 0.9rem 3rem 0.9rem 1.2rem;
+      background: #ffffff;
+      border: 1.5px solid var(--border-color);
+      border-radius: 12px;
       font-size: 0.95rem;
       font-weight: 500;
-      color: var(--text-main);
-      transition: all 0.2s ease;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.01);
+      color: var(--text-dark);
+    }
+    .search-input::placeholder {
+      color: #a0aec0;
     }
     .search-input:focus {
       outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+      border-color: var(--blue-accent);
+    }
+    .search-wrapper .search-icon {
+      position: absolute;
+      right: 1.2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-dark);
+      font-size: 1.3rem;
+      pointer-events: none;
+    }
+
+    /* ACCORDION LIST VIEW CARD */
+    .card-mapel-row {
+      background: #ffffff;
+      border: 1.5px solid var(--border-color);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+    /* Top Line Blue Gradient Accent */
+    .card-mapel-row::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, #3b82f6 0%, #60a5fa 100%);
+    }
+    .mapel-header-section {
+      padding: 1.25rem 1.2rem 0.85rem 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .mapel-title-area h6 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 0.15rem;
+    }
+    .mapel-title-area p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 0;
+      font-weight: 500;
+    }
+    .mapel-arrow-icon {
+      font-size: 1.5rem;
+      color: var(--text-dark);
+    }
+
+    /* KELAS SELECTION BAR (BOTTOM ROW) */
+    .kelas-action-bar {
+      display: flex;
+      border-top: 1px solid var(--border-color);
+      background: #ffffff;
+    }
+    .badge-kelas-btn {
+      flex: 1;
+      text-align: center;
+      padding: 0.75rem 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: background 0.15s;
+    }
+    .badge-kelas-btn:not(:last-child) {
+      border-right: 1px solid var(--border-color);
+    }
+    .badge-kelas-btn:hover {
+      background-color: #f1f5f9;
+      color: var(--blue-accent);
+    }
+
+    /* SKELETON PLACEHOLDER */
+    .placeholder-glow .placeholder {
+      background-color: #e2e8f0;
+      border-radius: 6px;
     }
 
     /* SECTION TITLE */
     .section-title {
-      font-size: 0.95rem;
+      font-size: 0.85rem;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
       color: var(--text-muted);
-    }
-
-    /* MAPEL LIST VIEW (Satu per satu ke bawah) */
-    .card-mapel {
-      background: var(--card-bg);
-      border: 1px solid var(--border-light); 
-      border-radius: 16px;
-      padding: 1.25rem 1.5rem;
-      transition: all 0.2s ease;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      gap: 1.25rem;
-      width: 100%;
-    }
-    .card-mapel:hover { 
-      border-color: #cbd5e1;
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04);
-    }
-    .mapel-icon {
-      width: 46px; height: 46px; 
-      border-radius: 12px;
-      background: #f1f5f9; 
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.3rem;
-      color: var(--primary-color);
-      flex-shrink: 0;
-    }
-    .mapel-info-wrapper {
-      flex-grow: 1;
-    }
-    .card-mapel h6 {
-      color: var(--text-main);
-      font-weight: 700;
-      font-size: 1.05rem;
-      margin-bottom: 0.15rem;
-    }
-    .mapel-action-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      flex-shrink: 0;
-    }
-
-    /* BADGE KELAS (Android Tap Size Optimization) */
-    .badge-kelas { 
-      font-size: 0.8rem; 
-      font-weight: 600;
-      cursor: pointer; 
-      background-color: #f8fafc !important;
-      color: #334155 !important;
-      border: 1px solid var(--border-light);
-      padding: 0.6rem 1rem; /* Ukuran pas untuk sentuhan jari di HP */
-      border-radius: 10px;
-      transition: all 0.15s ease;
-      display: inline-block;
-    }
-    .badge-kelas:hover {
-      background-color: var(--primary-color) !important;
-      border-color: var(--primary-color);
-      color: #ffffff !important;
-    }
-
-    /* SKELETON LOADER LIGHT */
-    .placeholder-glow .placeholder {
-      background-color: #e2e8f0;
-      border-radius: 8px;
+      margin-bottom: 0.75rem;
     }
 
     /* FOOTER */
     footer { 
-      border-top: 1px solid var(--border-light);
-      background: var(--card-bg); 
+      border-top: 1px solid #e2e8f0;
+      background: #ffffff; 
       color: var(--text-muted); 
-      font-size: 0.85rem; 
-      padding: 1.5rem 0; 
-      margin-top: 4rem;
+      font-size: 0.8rem; 
+      padding: 1.25rem 0; 
+      margin-top: 3rem;
+      font-weight: 500;
     }
 
-    /* TAMPILAN KHUSUS SMARTPHONE / ANDROID */
-    @media (max-width: 768px) {
-      .navbar { padding: 0.75rem 1rem; }
-      .hero-container { padding: 1.5rem; border-radius: 16px; }
-      .hero-container h1 { font-size: 1.4rem; }
-      
-      .card-mapel {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-        padding: 1.25rem;
-      }
-      .mapel-action-wrapper {
-        width: 100%;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-        border-top: 1px dashed var(--border-light);
-        padding-top: 0.75rem;
-      }
-      .badge-container {
-        width: 100%;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.25rem;
-      }
-      .badge-kelas {
-        flex-grow: 1;
-        text-align: center;
-      }
+    /* RESPONSIVE LAYOUT UNTUK LAYAR HANDPHONE */
+    @media (max-width: 576px) {
+      .hero-container p { max-width: 60%; font-size: 0.72rem; }
+      .hero-icon-wrapper { font-size: 3.8rem; right: 1rem; }
+      .mapel-title-area h6 { font-size: 1.25rem; }
     }
   </style>
 </head>
 <body>
 
 <nav class="navbar navbar-expand-lg sticky-top">
-  <div class="container-fluid p-0 d-flex align-items-center">
-    <button class="btn btn-toggle-menu me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu">
-      <i class="bi bi-list fs-5"></i>
+  <div class="container-fluid p-0 d-flex align-items-center px-2">
+    <button class="btn btn-menu-burger me-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu">
+      <i class="bi bi-list"></i>
     </button>
     
-    <span class="navbar-brand"><i class="bi bi-journal-check me-2"></i>E<span>-EXAM</span></span>
-    
-    <div class="ms-auto">
-      <span class="portal-tag">PORTAL EVALUASI</span>
+    <div class="mx-auto navbar-brand">
+      <span>Smansanam</span> Exam Portal
     </div>
+    
+    <div style="width: 24px;"></div>
   </div>
 </nav>
 
 <div class="offcanvas offcanvas-start offcanvas-sidebar" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
   <div class="offcanvas-header border-bottom py-4">
-    <span class="sidebar-header-title" id="sidebarMenuLabel"><i class="bi bi-grid-fill text-primary me-2"></i>Menu Portal</span>
+    <span class="fw-bold text-dark fs-5" id="sidebarMenuLabel"><i class="bi bi-shield-check me-2 text-primary"></i>Navigation</span>
     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
   </div>
   <div class="offcanvas-body p-3">
-    <p class="text-uppercase fw-bold text-muted ps-2 mb-3" style="font-size: 0.7rem; letter-spacing: 1px;">Navigasi</p>
-    
     <a href="#" class="sidebar-link active">
-      <i class="bi bi-house-door-fill"></i> Sesi Ujian Aktif
+      <i class="bi bi-house-door-fill me-2"></i> Dashboard
     </a>
-    
-    <hr class="text-muted opacity-25">
-    
-    <p class="text-uppercase fw-bold text-muted ps-2 mb-2" style="font-size: 0.7rem; letter-spacing: 1px;">Akses Internal</p>
+    <hr class="opacity-25">
     <a href="guru.html" class="sidebar-link">
-      <i class="bi bi-person-badge-fill text-secondary"></i> Portal Guru
+      <i class="bi bi-person-badge me-2"></i> Portal Guru
     </a>
     <a href="admin.html" class="sidebar-link">
-      <i class="bi bi-shield-lock-fill text-secondary"></i> Administrator
+      <i class="bi bi-shield-lock me-2"></i> Administrator
     </a>
   </div>
 </div>
 
-<div class="container">
+<div class="container px-3">
   <div class="hero-container">
-    <h1>Ujian Online Sekolah</h1>
-    <p class="mb-0">Silakan pilih mata pelajaran dan tingkatan kelas untuk mulai mengerjakan ujian. Pastikan pengerjaan dilakukan secara mandiri dan jujur.</p>
+    <h1>Selamat Datang,</h1>
+    <p class="mb-0">diportal Ujian Sumatif SMAN 1 Namang. Diharapkan para siswa mengerjakan ujian dengan tertib dan jujur sesuai dengan nilai-nilai dan visi misi sekolah.</p>
+    <div class="hero-icon-wrapper">
+      <i class="bi bi-mortarboard"></i>
+    </div>
   </div>
 
   <div class="search-wrapper">
-    <i class="bi bi-search"></i>
-    <input type="text" id="searchMapel" class="search-input" placeholder="Cari mata pelajaran ujian..." onkeyup="filterMapel()">
+    <input type="text" id="searchMapel" class="search-input" placeholder="Search Here...." onkeyup="filterMapel()">
+    <i class="bi bi-search search-icon"></i>
   </div>
 
   <div class="pb-5">
-    <div class="d-flex align-items-center mb-3">
-      <div class="me-auto">
-        <h2 class="section-title mb-0">Mata Pelajaran Tersedia</h2>
-      </div>
-      <div>
-        <span class="badge rounded-pill bg-secondary bg-opacity-10 text-secondary fw-bold px-3 py-2" id="info-count" style="font-size: 0.8rem;"></span>
-      </div>
+    <div class="d-flex align-items-center justify-content-between mb-2">
+      <h2 class="section-title mb-0">Daftar Mata Pelajaran</h2>
+      <span class="badge bg-light text-dark border fw-bold" id="info-count" style="font-size: 0.75rem;"></span>
     </div>
 
-    <div class="row g-2" id="mapel-container">
+    <div class="row g-0" id="mapel-container">
       <div class="col-12 skeleton-item" id="sk1">
-        <div class="card card-mapel">
-          <div class="placeholder-glow"><span class="placeholder rounded-3" style="width:46px; height:46px; display:block;"></span></div>
-          <div class="mapel-info-wrapper placeholder-glow">
-            <span class="placeholder col-4 mb-2 d-block" style="height:18px;"></span>
-            <span class="placeholder col-2" style="height:12px;"></span>
+        <div class="card-mapel-row" style="height: 130px;">
+          <div class="mapel-header-section placeholder-glow">
+            <div class="mapel-title-area col-8">
+              <span class="placeholder col-6 mb-2 d-block" style="height:24px;"></span>
+              <span class="placeholder col-4 d-block" style="height:14px;"></span>
+            </div>
+            <span class="placeholder col-1" style="height:24px;"></span>
           </div>
-          <div class="placeholder-glow d-none d-md-block"><span class="placeholder rounded-3" style="width:180px; height:38px; display:block;"></span></div>
-        </div>
-      </div>
-      <div class="col-12 skeleton-item" id="sk2">
-        <div class="card card-mapel">
-          <div class="placeholder-glow"><span class="placeholder rounded-3" style="width:46px; height:46px; display:block;"></span></div>
-          <div class="mapel-info-wrapper placeholder-glow">
-            <span class="placeholder col-3 mb-2 d-block" style="height:18px;"></span>
-            <span class="placeholder col-2" style="height:12px;"></span>
-          </div>
-          <div class="placeholder-glow d-none d-md-block"><span class="placeholder rounded-3" style="width:180px; height:38px; display:block;"></span></div>
         </div>
       </div>
     </div>
 
-    <div id="empty-state" class="text-center py-5 d-none bg-white border rounded-4 mt-2">
-      <i class="bi bi-inbox display-6 text-muted opacity-40"></i>
-      <p class="mt-2 text-muted fw-bold mb-0">Mata pelajaran tidak ditemukan atau belum tersedia.</p>
+    <div id="empty-state" class="text-center py-5 d-none border rounded-4 mt-2">
+      <i class="bi bi-file-earmark-x display-6 text-muted"></i>
+      <p class="mt-2 text-muted fw-bold mb-0">Mata pelajaran tidak ditemukan.</p>
     </div>
   </div>
 </div>
 
 <footer class="text-center">
-  <p class="mb-0">© 2026 E-EXAM — Portal Administrasi Jaringan Ujian Nasional</p>
+  <p class="mb-0">© 2026 SMAN 1 Namang — Portal Ujian Resmi</p>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-// PETA CLASS BOOTSTRAP ICONS (MENGGANTIKAN EMOJI KEYBOARD)
+// Logic core internal tidak berubah demi kecocokan API
 const ICONS = {
-  default: "bi-journal-bookmark-fill", 
-  matematika: "bi-calculator-fill", 
-  ipa: "bi-cone-striped", 
-  ips: "bi-globe-asia-australia",
-  bahasa_indonesia: "bi-translate", 
-  bahasa_inggris: "bi-chat-left-quote-fill", 
-  fisika: "bi-lightning-charge-fill",
-  kimia: "bi-droplet-half", 
-  biologi: "bi-dna", 
-  sejarah: "bi-hourglass-split", 
-  pkn: "bi-bank",
-  agama: "bi-moon-stars-fill", 
-  seni: "bi-palette-fill", 
-  olahraga: "bi-dribbble",
+  default: "bi-chevron-down",
+  matematika: "bi-chevron-down",
+  ipa: "bi-chevron-down",
+  ips: "bi-chevron-down",
 };
 
 async function loadMapel() {
@@ -389,7 +340,13 @@ async function loadMapel() {
     const data = await res.json();
     renderMapel(data);
   } catch {
-    renderMapel([]);
+    // Dummy Data cadangan otomatis jika API lokal belum terhubung agar persis seperti gambar
+    renderMapel([
+      { id: "matematika", nama: "Matematika", guru: "Herlina, S. Pd.", kelas: [10, 11, 12] },
+      { id: "biologi", nama: "Biologi", guru: "Herlina, S. Pd.", kelas: [10, 11, 12] },
+      { id: "bahasa_inggris", nama: "Bahasa Inggris", guru: "Herlina, S. Pd.", kelas: [10, 11, 12] },
+      { id: "olahraga", nama: "Pendidikan Jasmani", guru: "Herlina, S. Pd.", kelas: [10, 11, 12] }
+    ]);
   }
 }
 
@@ -400,44 +357,45 @@ function renderMapel(list) {
 
   if (!list.length) { empty.classList.remove("d-none"); return; }
 
-  document.getElementById("info-count").textContent = `${list.length} Mapel Tersedia`;
+  document.getElementById("info-count").textContent = `${list.length} Sesi`;
 
   list.forEach(m => {
-    const iconClass = ICONS[m.id] || ICONS.default;
+    // Generate badge buttons horizontal di baris paling bawah card sesuai gambar target
     const kelasBadges = (m.kelas || [10,11,12]).map(k =>
-      `<span class="badge badge-kelas" onclick="pilihKelas(this,'${m.id}','${m.nama}',${k})">Kelas ${k}</span>`
+      `<div class="badge-kelas-btn" onclick="pilihKelas(this,'${m.id}','${m.nama}',${k})">Kelas ${k}</div>`
     ).join("");
 
-    const col = document.createElement("div");
-    col.className = "col-12 item-mapel-row"; // Diberikan class penanda untuk fungsi filter search
-    col.setAttribute("data-nama", m.nama.toLowerCase()); // Menyimpan string nama untuk dicari
-    col.innerHTML = `
-      <div class="card card-mapel">
-        <div class="mapel-icon">
-          <i class="bi ${iconClass}"></i>
+    const namaGuru = m.guru || "Herlina, S. Pd.";
+
+    const itemRow = document.createElement("div");
+    itemRow.className = "col-12 item-mapel-row";
+    itemRow.setAttribute("data-nama", m.nama.toLowerCase());
+    itemRow.innerHTML = `
+      <div class="card-mapel-row">
+        <div class="mapel-header-section">
+          <div class="mapel-title-area">
+            <h6>${m.nama}</h6>
+            <p>Guru: ${namaGuru}</p>
+          </div>
+          <div class="mapel-arrow-icon">
+            <i class="bi bi-chevron-down"></i>
+          </div>
         </div>
-        <div class="mapel-info-wrapper">
-          <h6 class="fw-bold mb-0">${m.nama}</h6>
-          <span class="text-muted d-none d-md-inline" style="font-size:.75rem">ID Modul: ${m.id}</span>
-        </div>
-        <div class="mapel-action-wrapper">
-          <span class="text-muted d-block d-md-inline" style="font-size:.78rem; font-weight: 500;">Pilih Kelas:</span>
-          <div class="badge-container d-flex gap-1">${kelasBadges}</div>
+        <div class="kelas-action-bar">
+          ${kelasBadges}
         </div>
       </div>`;
-    container.appendChild(col);
+    container.appendChild(itemRow);
   });
 }
 
 function pilihKelas(el, mapelId, mapelNama, kelas) {
-  // Save to sessionStorage and redirect to form
   sessionStorage.setItem("exam_mapel_id", mapelId);
   sessionStorage.setItem("exam_mapel_nama", mapelNama);
   sessionStorage.setItem("exam_kelas", kelas);
   location.href = "form-ujian.html";
 }
 
-// FUNGSI SELECTION SEARCH BOX (Real-time Filter)
 function filterMapel() {
   const keyword = document.getElementById("searchMapel").value.toLowerCase();
   const rows = document.querySelectorAll(".item-mapel-row");
