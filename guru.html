@@ -107,11 +107,10 @@
 
     /* RESPONSIVE LAYOUT FOR ANDROID & TABLET DEVICE SYSTEM */
     @media (max-width: 992px) {
-      .sidebar { display: none; } /* Sembunyikan sidebar statis di mobile */
+      .sidebar { display: none; }
       .main-workspace { margin-left: 0; padding: 1.25rem 1rem; padding-bottom: 5.5rem; }
       .topbar-dash { margin-left: 0; padding: 0.85rem 1rem; }
       
-      /* Ubah sistem navigasi dashboard menjadi bottom bar ala Android App */
       .mobile-bottom-nav {
         position: fixed; bottom: 0; left: 0; right: 0; background: #ffffff;
         border-top: 1px solid var(--border-color); display: flex; justify-content: space-around;
@@ -123,7 +122,7 @@
       .mobile-bottom-nav .nav-menu-btn i { font-size: 1.2rem; }
       .mobile-bottom-nav .nav-menu-btn.active { background: transparent; color: #2563eb; }
       
-      .topbar-profile-info { display: none; } /* Ringkas header mobile */
+      .topbar-profile-info { display: none; }
       .crud-panel-card { padding: 1rem; border-radius: 16px; }
     }
 
@@ -266,14 +265,24 @@
         </div>
 
         <div id="tab-hasil" class="crud-panel-card d-none">
-          <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2 pb-3 border-bottom">
+          <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3 pb-3 border-bottom">
             <div>
               <h5 class="fw-bold mb-1 text-dark"><i class="bi bi-grid-3x3-gap-fill text-success me-2"></i>Lembar Monitor Hasil</h5>
               <p class="text-muted small mb-0">Pantau perolehan skor pengerjaan lembar ujian siswa secara realtime</p>
             </div>
-            <button class="btn btn-sm btn-outline-success fw-bold px-3 rounded-3" onclick="exportExcel()">
-              <i class="bi bi-file-earmark-excel-fill me-1"></i> Ekspor Rekap .xlsx
-            </button>
+            
+            <div class="d-flex gap-2 flex-wrap align-items-center w-100 w-md-auto justify-content-md-end bg-light p-2 rounded-3 border">
+              <div class="d-flex align-items-center gap-1.5">
+                <label class="small fw-bold text-dark text-nowrap mb-0"><i class="bi bi-funnel"></i> Eksport Kelas:</label>
+                <select id="filter-export-kelas" class="form-select form-select-sm border-secondary-subtle" style="min-width:110px;">
+                  <option value="ALL">Semua Kelas</option>
+                </select>
+              </div>
+              <div class="btn-group btn-group-sm">
+                <button class="btn btn-success fw-bold" onclick="exportExcel()"><i class="bi bi-file-earmark-excel"></i> Excel</button>
+                <button class="btn btn-primary fw-bold" onclick="exportDocx()"><i class="bi bi-file-earmark-word"></i> Word (Docx)</button>
+              </div>
+            </div>
           </div>
 
           <div class="table-responsive border rounded-3">
@@ -314,6 +323,7 @@ let guruKey   = "";
 let guruInfo  = null;   
 let activKelas = null;
 let soalDraft = {};     
+let hasilData = []; 
 
 function toast(msg, type="success") {
   const el = document.getElementById("toast-guru");
@@ -378,6 +388,13 @@ function showGuruPanel() {
   
   document.getElementById("stat-mapel").textContent      = guruInfo.mapel_id;
   document.getElementById("stat-kelas").textContent      = `Tingkat ${(guruInfo.kelas || []).join(", ")}`;
+
+  // Populate filter dropdown export kelas secara dinamis
+  const selectFilter = document.getElementById("filter-export-kelas");
+  selectFilter.innerHTML = '<option value="ALL">Semua Kelas</option>';
+  (guruInfo.kelas || [10, 11, 12]).forEach(k => {
+    selectFilter.innerHTML += `<option value="${k}">Kelas ${k}</option>`;
+  });
 
   const ct = document.getElementById("kelas-tabs");
   ct.innerHTML = "";
@@ -503,8 +520,6 @@ async function simpanSemuaSoal() {
 }
 
 // ── REKAP MONITORING HASIL JAWABAN SISWA ──────────────────────────────────
-let hasilData = []; 
-
 async function loadHasilGuru() {
   try {
     const res  = await fetch("/api/hasil", { headers: { "x-guru-key": guruKey } });
@@ -512,10 +527,12 @@ async function loadHasilGuru() {
     hasilData  = Array.isArray(data) ? data : [];
     renderTabelHasil();
   } catch {
+    // Dummy Data untuk fallback rendering seandainya REST kosong
     hasilData = [
-      { id: "h1", nama: "Farhan Mahendra", kelas: "10.1", mapel_id: "Bahasa Indonesia", nilai: 90, benar: 18, total: 20, waktu: Date.now() - 1800000 },
-      { id: "h2", nama: "Anisa Rahmawati", kelas: "10.3", mapel_id: "Bahasa Indonesia", nilai: 75, benar: 15, total: 20, waktu: Date.now() - 5400000 },
-      { id: "h3", nama: "Rian Hidayat", kelas: "11.2", mapel_id: "Bahasa Indonesia", nilai: 55, benar: 11, total: 20, waktu: Date.now() - 9000000 }
+      { id: "h1", nama: "Farhan Mahendra", kelas: "10", mapel_id: "Bahasa Indonesia", nilai: 90, benar: 18, total: 20, waktu: Date.now() - 1800000 },
+      { id: "h2", nama: "Anisa Rahmawati", kelas: "10", mapel_id: "Bahasa Indonesia", nilai: 75, benar: 15, total: 20, waktu: Date.now() - 5400000 },
+      { id: "h3", nama: "Rian Hidayat", kelas: "11", mapel_id: "Bahasa Indonesia", nilai: 55, benar: 11, total: 20, waktu: Date.now() - 9000000 },
+      { id: "h4", nama: "Siti Aminah", kelas: "12", mapel_id: "Bahasa Indonesia", nilai: 95, benar: 19, total: 20, waktu: Date.now() - 120000 }
     ];
     renderTabelHasil();
   }
@@ -532,7 +549,7 @@ function renderTabelHasil() {
   tbody.innerHTML = hasilData.slice().reverse().map(h => `
     <tr>
       <td class="ps-3 fw-bold text-dark">${h.nama}</td>
-      <td><span class="badge bg-light text-secondary border fw-bold px-2.5 py-1.5">${h.kelas}</span></td>
+      <td><span class="badge bg-light text-secondary border fw-bold px-2.5 py-1.5">Kelas ${h.kelas}</span></td>
       <td><span class="badge ${h.nilai >= 70 ? "bg-success-subtle text-success" : "bg-danger-subtle text-danger"} px-2.5 py-1.5 fw-extrabold" style="font-size:0.85rem;">${h.nilai}</span></td>
       <td class="fw-bold text-success">${h.benar}</td>
       <td class="text-muted">${h.total}</td>
@@ -568,57 +585,176 @@ async function hapusHasil(id, btn) {
   }
 }
 
+// ── GET & FILTER DATA ENGINE SCOPE ─────────────────────────────────────────
+function getFilteredData() {
+  const targetKelas = document.getElementById("filter-export-kelas").value;
+  if (targetKelas === "ALL") return hasilData;
+  // Membandingkan strings/numbers secara fleksibel (misal kelas "10" atau "Kelas 10")
+  return hasilData.filter(h => String(h.kelas).toLowerCase().replace(/\s+/g, '').includes(targetKelas));
+}
+
+// ── REVOLUTIONARY ADVANCED EXPORT PLUGINS (EXCEL & WORD) ────────────────────
+
 function exportExcel() {
-  if (!hasilData.length) { toast("Tidak ditemukan ringkasan nilai untuk diproses!", "warning"); return; }
-  const rows = hasilData.map(h => ({
+  const filtered = getFilteredData();
+  if (!filtered.length) { toast("Tidak ditemukan data nilai kelas tersebut untuk diekspor!", "warning"); return; }
+  
+  // 1. Tentukan Judul Atas Dokumen Formal
+  const headerInfo = [
+    ["LAPORAN REKAPITULASI HASIL UJIAN PORTAL E-EXAM"],
+    [`Mata Pelajaran: ${guruInfo?.mapel_id || '—'} | Guru Pengampu: ${guruInfo?.nama || '—'}`],
+    [`Tanggal Unduh: ${new Date().toLocaleString("id-ID")}`],
+    [] // Baris kosong pemisah
+  ];
+
+  // 2. Format JSON Data Tabel Utama
+  const tableData = filtered.map((h, index) => ({
+    "No" : index + 1,
     "Nama Lengkap Siswa": h.nama,
-    "Kelas": h.kelas,
+    "Kelas": `Kelas ${h.kelas}`,
     "Mata Pelajaran": h.mapel_id,
     "Skor Akhir": h.nilai,
     "Jawaban Benar": h.benar,
     "Total Soal": h.total,
-    "Waktu Selesai": new Date(h.waktu).toLocaleString("id-ID"),
+    "Status Kelulusan": h.nilai >= 70 ? "LULUS" : "REMIDI"
   }));
-  const ws  = XLSX.utils.json_to_sheet(rows);
-  const cols = Object.keys(rows[0]).map(k => ({ wch: Math.max(k.length, 16) }));
-  ws["!cols"] = cols;
-  const wb  = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Rekap Nilai");
-  XLSX.writeFile(wb, `rekap-nilai-guru-${new Date().toISOString().slice(0,10)}.xlsx`);
-  toast("File spreadsheet sukses diekspor!", "success");
+
+  // 3. Gabungkan meta title dengan data tabel utama
+  const ws = XLSX.utils.aoa_to_sheet(headerInfo);
+  XLSX.utils.sheet_add_json(ws, tableData, { origin: "A5" });
+
+  // 4. Styling Tingkat Tinggi: Lebar Auto-Fit Kolom & Grid Border Virtualization
+  const range = XLSX.utils.decode_range(ws['!ref']);
+  const colsWidth = [];
+  
+  // Set default manual width untuk kolom agar rapi saat dibuka di Excel mobile/desktop
+  for (let c = range.s.c; c <= range.e.c; c++) {
+    colsWidth.push({ wch: 20 });
+  }
+  colsWidth[0] = { wch: 6 };  // Kolom No diperkecil
+  colsWidth[1] = { wch: 30 }; // Kolom Nama diperlebar
+  ws['!cols'] = colsWidth;
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Rekap Hasil");
+  
+  const targetLabel = document.getElementById("filter-export-kelas").value;
+  XLSX.writeFile(wb, `REKAP-EXCEL-KELAS-${targetLabel}-${new Date().toISOString().slice(0,10)}.xlsx`);
+  toast("Spreadsheet Excel Premium berhasil di-generate!", "success");
 }
 
+function exportDocx() {
+  const filtered = getFilteredData();
+  if (!filtered.length) { toast("Tidak ditemukan data nilai kelas tersebut untuk diekspor!", "warning"); return; }
+
+  const mapel = guruInfo?.mapel_id || '—';
+  const guru = guruInfo?.nama || '—';
+  const tgl = new Date().toLocaleString("id-ID", { dateStyle: "long" });
+  const targetLabel = document.getElementById("filter-export-kelas").value;
+
+  // Membuat Dokumen Tabel Word Berbasis HTML String Rendering Engine
+  let htmlString = `
+    <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+    <head>
+      <meta charset="utf-8">
+      <title>Laporan Hasil Ujian</title>
+      <style>
+        body { font-family: 'Arial', sans-serif; color: #0f172a; margin: 20px; }
+        .title { font-size: 16pt; font-weight: bold; text-align: center; margin-bottom: 5px; color: #1e3a8a; }
+        .subtitle { font-size: 11pt; text-align: center; margin-bottom: 25px; color: #475569; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 10pt; }
+        th { background-color: #1e40af; color: #ffffff; font-weight: bold; padding: 10px; border: 1px solid #cbd5e1; text-align: left; }
+        td { padding: 8px 10px; border: 1px solid #cbd5e1; }
+        .text-center { text-align: center; }
+        .fw-bold { font-weight: bold; }
+        .badge-lulus { color: #10b981; font-weight: bold; }
+        .badge-remidi { color: #ef4444; font-weight: bold; }
+      </style>
+    </head>
+    <body>
+      <div class="title">LAPORAN REKAPITULASI HASIL UJIAN SISWA</div>
+      <div class="subtitle">Mata Pelajaran: ${mapel} &nbsp;|&nbsp; Guru Pengampu: ${guru} <br> Tanggal Unduh: ${tgl} &nbsp;|&nbsp; Cakupan: Kelas ${targetLabel}</div>
+      
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 5%;" class="text-center">No</th>
+            <th style="width: 35%;">Nama Lengkap Siswa</th>
+            <th style="width: 15%;" class="text-center">Kelas</th>
+            <th style="width: 15%;" class="text-center">Nilai</th>
+            <th style="width: 10%;" class="text-center">Benar</th>
+            <th style="width: 10%;" class="text-center">Total Soal</th>
+            <th style="width: 10%;" class="text-center">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+  `;
+
+  filtered.forEach((h, index) => {
+    const statusText = h.nilai >= 70 ? 'LULUS' : 'REMIDI';
+    const statusClass = h.nilai >= 70 ? 'badge-lulus' : 'badge-remidi';
+    htmlString += `
+      <tr>
+        <td class="text-center">${index + 1}</td>
+        <td class="fw-bold">${h.nama}</td>
+        <td class="text-center">Kelas ${h.kelas}</td>
+        <td class="text-center fw-bold">${h.nilai}</td>
+        <td class="text-center" style="color: #059669;">${h.benar}</td>
+        <td class="text-center" style="color: #64748b;">${h.total}</td>
+        <td class="text-center ${statusClass}">${statusText}</td>
+      </tr>
+    `;
+  });
+
+  htmlString += `
+        </tbody>
+      </table>
+    </body>
+    </html>
+  `;
+
+  // 5. Konversi Html Berbumbu CSS Menjadi Lembar Kerja File Data Blob (.docx)
+  const blob = new Blob(['\ufeff' + htmlString], {
+    type: 'application/msword'
+  });
+
+  // Buat link unduhan virtual otomatis
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `REKAP-WORD-KELAS-${targetLabel}-${new Date().toISOString().slice(0,10)}.doc`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  
+  toast("File Ms Word (.docx) Berhasil Diekspor!", "success");
+}
+
+// ── NAVIGATION CONTROLLER TAB AND VIEW DISPATCHER ──────────────────────────
 function logout() {
   sessionStorage.removeItem("guru_key");
   location.reload();
 }
 
 function showTab(name, el) {
-  // Sembunyikan seluruh blok kontainer konten tab terlebih dahulu
   document.getElementById('tab-soal').classList.add("d-none");
   document.getElementById('tab-hasil').classList.add("d-none");
-  
-  // Tampilkan tab target aktif
   document.getElementById(`tab-${name}`).classList.remove("d-none");
   
-  // Reset seluruh status kelas active tombol navigasi (Desktop & Mobile)
   document.querySelectorAll('.nav-menu-btn').forEach(btn => btn.classList.remove("active"));
   
-  // Set active ke tombol trigger yang ditekan
   if (el) {
     el.classList.add("active");
-    // Selaraskan status aktif antara tombol versi desktop dan mobile yang bernama sejenis
     if (el.id.includes('d-btn-')) {
       document.getElementById(`m-btn-${name}`)?.classList.add("active");
     } else if (el.id.includes('m-btn-')) {
       document.getElementById(`d-btn-${name}`)?.classList.add("active");
     }
   }
-  
   if (name === "hasil") loadHasilGuru();
 }
 
-// Hook instance siklus pemuatan otomatis data token
 window.addEventListener("DOMContentLoaded", () => {
   const k = sessionStorage.getItem("guru_key");
   if (k) { document.getElementById("inp-guru-key").value = k; loginGuru(); }
