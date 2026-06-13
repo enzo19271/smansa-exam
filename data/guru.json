@@ -1,1 +1,9 @@
-[]
+[
+  {
+    "id": "kenzo",
+    "nama": "Enzo Fahrezi, S. Pd., Gr.",
+    "mapel_id": "bindo",
+    "guru_key": "enzoo",
+    "kelas": []
+  }
+]
