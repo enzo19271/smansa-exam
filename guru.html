@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Panel Guru — Smansanam Exam Portal</title>
+  <title>Dashboard Guru — Smansanam Exam Portal</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,15 +13,15 @@
   
   <style>
     :root {
-      --bg-body: #f8fafc;
+      --bg-body: #f1f5f9;
+      --sidebar-bg: #ffffff;
       --card-bg: #ffffff;
       --blue-gradient: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
       --blue-accent: #3b82f6;
       --text-dark: #0f172a;
       --text-muted: #64748b;
-      --border-color: #cbd5e1;
-      --border-focus: #2563eb;
-      --answered-color: #10b981;
+      --border-color: #e2e8f0;
+      --success-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
     }
     
     body { 
@@ -31,241 +31,279 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ANIMATIONS KEYFRAMES */
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(15px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    /* LOGIN GATE BOX */
+    #login-gate { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #f8fafc; }
+    .login-card { border: 1px solid var(--border-color); border-radius: 20px; max-width: 400px; width: 100%; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); }
 
-    /* PREMIUM NAVBAR */
-    .navbar { 
-      background: #ffffff;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-      padding: 0.85rem 1rem;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
-    }
-    .navbar-brand { 
-      font-size: 1.25rem;
-      font-weight: 500;
-      letter-spacing: -0.3px;
-      color: var(--text-dark) !important;
-      text-decoration: none;
-    }
-    .navbar-brand span { 
-      font-style: italic;
-      font-weight: 800;
-      background: var(--blue-gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .portal-badge {
-      font-size: 0.72rem;
-      background: #f1f5f9;
-      color: var(--text-muted);
-      font-weight: 700;
-      padding: 0.25rem 0.6rem;
-      border-radius: 6px;
-      text-transform: uppercase;
-      border: 1px solid var(--border-color);
-    }
-
-    /* LOGIN GATE AREA */
-    #login-gate { min-height: 85vh; display: flex; align-items: center; justify-content: center; }
-    .login-card { 
-      border: 1.5px solid var(--border-color); 
-      border-radius: 18px; 
-      box-shadow: 0 6px 20px rgba(0,0,0,0.03); 
-      max-width: 400px; width: 100%;
-      animation: fadeInUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
-
-    /* MAIN GURU DASHBOARD HEADER */
-    #guru-content { display: none; animation: fadeInUp 0.5s ease both; }
-    .key-display {
-      background: var(--blue-gradient);
-      color: #fff; border-radius: 18px; padding: 1.5rem;
-      box-shadow: 0 8px 24px -4px rgba(29, 78, 216, 0.2);
-    }
-    .key-code {
-      font-family: 'Plus Jakarta Sans', monospace; font-size: 1.4rem; font-weight: 800;
-      letter-spacing: .15em; background: rgba(255, 255, 255, 0.16);
-      border-radius: 12px; padding: .4rem .9rem; display: inline-block;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      text-transform: uppercase;
-    }
-
-    /* NAVIGATION PILLS TABS */
-    .panel-card { border: 1.5px solid var(--border-color); border-radius: 18px; box-shadow: 0 4px 10px rgba(0,0,0,0.01); }
-    .nav-tabs { border-bottom: 2px solid #f1f5f9; }
-    .nav-tabs .nav-link {
-      border: none; color: var(--text-muted); font-weight: 700; font-size: 0.92rem; padding: 0.75rem 1.25rem; transition: all 0.2s;
-    }
-    .nav-tabs .nav-link:hover { color: var(--blue-accent); }
-    .nav-tabs .nav-link.active {
-      color: var(--blue-focus); border-bottom: 3px solid var(--blue-accent); background: none;
-    }
-
-    /* SOAL DRAFT EDITOR ITEMS */
-    .soal-item { border: 1.5px solid var(--border-color); border-radius: 16px; padding: 1.25rem; margin-bottom: 1rem; background:#fff; transition: all 0.2s; }
-    .soal-item:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.02); border-color: #94a3b8; }
-    .soal-item .soal-num { font-weight: 800; color: var(--text-dark); font-size: 1.05rem; letter-spacing: -0.3px; }
+    /* LAYOUT MAIN STRUCTURE CRUD DASHBOARD */
+    #guru-content { display: none; }
+    .dashboard-container { display: flex; min-height: 100vh; }
     
-    .opsi-row { display: flex; gap: .6rem; align-items: center; margin-bottom: .6rem; }
-    .opsi-letter { 
-      width: 30px; height: 30px; border-radius: 50%; 
-      background: #f1f5f9; display:flex; align-items:center; justify-content:center; 
-      font-weight: 800; font-size: 0.8rem; color: var(--text-dark); flex-shrink:0; 
-      border: 1px solid var(--border-color);
+    /* SIDEBAR COMPONENT (DESKTOP MASTER) */
+    .sidebar {
+      width: 260px; background: var(--sidebar-bg); border-right: 1px solid var(--border-color);
+      display: flex; flex-direction: column; position: fixed; top: 0; bottom: 0; left: 0; z-index: 1020;
     }
+    .sidebar-header { padding: 1.5rem; border-bottom: 1px solid var(--border-color); }
+    .sidebar-menu { padding: 1.25rem 0.75rem; flex-grow: 1; display: flex; flex-direction: column; gap: 0.35rem; }
     
-    /* INPUT & MODERN FORMS COHESION */
-    .form-label { font-size: 0.88rem; font-weight: 700; color: var(--text-dark); }
+    .nav-menu-btn {
+      display: flex; align-items: center; gap: 0.85rem; padding: 0.8rem 1rem;
+      border-radius: 12px; color: var(--text-muted); font-weight: 700; font-size: 0.9rem;
+      text-decoration: none; border: none; background: transparent; width: 100%; text-align: left; transition: all 0.2s;
+    }
+    .nav-menu-btn:hover { color: var(--blue-accent); background: #f8fafc; }
+    .nav-menu-btn.active { background: #eff6ff; color: #2563eb; }
+
+    /* CONTENT WRAPPER MASTER */
+    .main-workspace { flex-grow: 1; margin-left: 260px; padding: 2rem; min-width: 0; }
+    
+    /* TOP MASTER BAR */
+    .topbar-dash {
+      background: #ffffff; border-bottom: 1px solid var(--border-color);
+      padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 1000; margin-left: 260px;
+    }
+
+    /* ANALYTICS STATS CARDS */
+    .stat-card {
+      background: #ffffff; border: 1px solid var(--border-color); border-radius: 16px;
+      padding: 1.25rem; display: flex; align-items: center; gap: 1rem; box-shadow: 0 2px 6px rgba(0,0,0,0.01);
+    }
+    .stat-icon {
+      width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
+      font-size: 1.35rem; font-weight: bold;
+    }
+
+    /* CRUD CONTAINER CARD */
+    .crud-panel-card { background: #ffffff; border: 1px solid var(--border-color); border-radius: 20px; padding: 1.75rem; box-shadow: 0 4px 12px rgba(0,0,0,0.01); }
+    
+    /* DRAFT SOAL BOX CARD */
+    .soal-item-box {
+      border: 1px solid var(--border-color); border-radius: 16px; background: #ffffff;
+      padding: 1.25rem; margin-bottom: 1.25rem; position: relative;
+    }
+    .opsi-input-group { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.65rem; }
+    .letter-badge {
+      width: 32px; height: 32px; border-radius: 50%; background: #f1f5f9;
+      display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; border: 1px solid var(--border-color);
+    }
+
+    /* FLOATING NOTIFICATION SYSTEM TOAST */
+    #toast-guru { position: fixed; bottom: 1.5rem; right: 1rem; z-index: 1060; border-radius: 12px; }
+
+    /* CORE UTILITY FORM CONTROLS */
     .form-control, .form-select {
-      padding: 0.65rem 0.9rem; background: #ffffff; border: 1.5px solid var(--border-color); border-radius: 12px;
-      font-size: 0.92rem; font-weight: 500; color: var(--text-dark); transition: all 0.2s ease;
+      padding: 0.65rem 0.9rem; border: 1.5px solid var(--border-color); border-radius: 12px;
+      font-size: 0.9rem; font-weight: 500; transition: all 0.2s ease;
     }
-    .form-control:focus, .form-select:focus {
-      outline: none; border-color: var(--border-focus); box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
-    }
-    
-    /* SYSTEM CHECK MARKS */
-    .form-check-input { width: 1.15rem; height: 1.15rem; border: 1.5px solid var(--border-color); cursor: pointer; }
-    .form-check-input:checked { background-color: var(--answered-color); border-color: var(--answered-color); }
+    .form-control:focus, .form-select:focus { outline: none; border-color: var(--blue-accent); box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
+    .form-check-input { width: 1.2rem; height: 1.2rem; cursor: pointer; border: 1.5px solid var(--border-color); }
+    .form-check-input:checked { background-color: #10b981; border-color: #10b981; }
 
-    /* ACTION BUTTONS CONFIG */
-    .btn-action-premium { font-weight: 800; font-size: 0.85rem; border-radius: 10px; padding: 0.5rem 0.9rem; transition: all 0.2s; }
-    .btn-success-gradient { background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; color: white; }
-    .btn-success-gradient:hover { box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25); }
-    .btn-primary-gradient { background: var(--blue-gradient); border: none; color: white; }
-    .btn-primary-gradient:hover { box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25); }
-    
-    /* TABLE CONFIGURATION OVERRIDE */
-    .table th { font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); padding: 0.75rem; }
-    .table td { font-size: 0.9rem; font-weight: 500; padding: 0.75rem; color: var(--text-dark); }
-    
-    #toast-guru { position: fixed; bottom: 1.5rem; right: 1rem; z-index: 9999; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+    /* PREMIUM APP BRANDING */
+    .brand-text { font-size: 1.15rem; font-weight: 500; color: var(--text-dark); letter-spacing: -0.3px; }
+    .brand-text span { font-style: italic; font-weight: 800; background: var(--blue-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+    /* RESPONSIVE LAYOUT FOR ANDROID & TABLET DEVICE SYSTEM */
+    @media (max-width: 992px) {
+      .sidebar { display: none; } /* Sembunyikan sidebar statis di mobile */
+      .main-workspace { margin-left: 0; padding: 1.25rem 1rem; padding-bottom: 5.5rem; }
+      .topbar-dash { margin-left: 0; padding: 0.85rem 1rem; }
+      
+      /* Ubah sistem navigasi dashboard menjadi bottom bar ala Android App */
+      .mobile-bottom-nav {
+        position: fixed; bottom: 0; left: 0; right: 0; background: #ffffff;
+        border-top: 1px solid var(--border-color); display: flex; justify-content: space-around;
+        padding: 0.5rem 0; z-index: 1050; box-shadow: 0 -4px 16px rgba(0,0,0,0.04);
+      }
+      .mobile-bottom-nav .nav-menu-btn {
+        flex-direction: column; align-items: center; gap: 0.15rem; font-size: 0.72rem; padding: 0.4rem; width: auto;
+      }
+      .mobile-bottom-nav .nav-menu-btn i { font-size: 1.2rem; }
+      .mobile-bottom-nav .nav-menu-btn.active { background: transparent; color: #2563eb; }
+      
+      .topbar-profile-info { display: none; } /* Ringkas header mobile */
+      .crud-panel-card { padding: 1rem; border-radius: 16px; }
+    }
+
+    @media (min-width: 993px) {
+      .mobile-bottom-nav { display: none !important; }
+    }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
 
-<nav class="navbar sticky-top">
-  <div class="container-fluid p-0 d-flex align-items-center px-2">
-    <a href="index.html" class="btn border-0 p-2 text-dark me-1" title="Kembali Ke Utama">
-      <i class="bi bi-arrow-left fs-5"></i>
-    </a>
-    <div class="navbar-brand me-auto">
-      <span>Smansanam</span> Exam Portal <span class="portal-badge ms-2">Guru</span>
+<div id="login-gate">
+  <div class="login-card bg-white p-4 mx-3">
+    <div class="text-center mb-4">
+      <div class="p-3 bg-light rounded-circle d-inline-block mb-2 text-primary" style="width:60px; height:60px; font-size:1.5rem; line-height:1;">👨‍🏫</div>
+      <h5 class="fw-bold text-dark mb-1">Portal Guru</h5>
+      <p class="text-muted small mb-0">Verifikasi akses kunci untuk mengelola sistem ujian</p>
     </div>
-    <button class="btn btn-sm btn-outline-danger fw-bold rounded-3 d-none px-3" id="btn-logout" onclick="logout()">
-      <i class="bi bi-box-arrow-right me-1"></i> Keluar
+    <div class="mb-3">
+      <label class="form-label small fw-bold">Guru Key Code</label>
+      <input type="password" id="inp-guru-key" class="form-control text-center text-uppercase fw-bold" placeholder="••••••••"
+             style="font-family:monospace; letter-spacing:.15em"
+             onkeydown="if(event.key==='Enter') loginGuru()"/>
+      <div id="login-error" class="text-danger small mt-2 d-none fw-semibold"><i class="bi bi-x-circle-fill me-1"></i>Kunci token akses salah atau kedaluwarsa.</div>
+    </div>
+    <button class="btn btn-primary w-100 py-2.5 fw-bold rounded-3" style="background: var(--blue-gradient); border:none;" onclick="loginGuru()" id="btn-login">
+      <span id="btn-login-text"><i class="bi bi-shield-lock-fill me-1"></i> Masuk Ke Dashboard</span>
+      <span id="btn-login-load" class="d-none"><span class="spinner-border spinner-border-sm me-2"></span>Menghubungkan...</span>
+    </button>
+    <div class="text-center mt-3">
+      <a href="index.html" class="text-muted small text-decoration-none fw-semibold">← Halaman Beranda Utama</a>
+    </div>
+  </div>
+</div>
+
+<div id="guru-content">
+  
+  <div class="mobile-bottom-nav">
+    <button class="nav-menu-btn active" id="m-btn-soal" onclick="showTab('soal', this)">
+      <i class="bi bi-folder2-open"></i>Bank Soal
+    </button>
+    <button class="nav-menu-btn" id="m-btn-hasil" onclick="showTab('hasil', this)">
+      <i class="bi bi-graph-up-arrow"></i>Hasil Siswa
+    </button>
+    <button class="nav-menu-btn text-danger" onclick="logout()">
+      <i class="bi bi-box-arrow-right"></i>Keluar
     </button>
   </div>
-</nav>
 
-<div class="container py-4">
-
-  <div id="login-gate">
-    <div class="login-card bg-white p-4 mx-2 shadow-sm">
-      <div class="text-center mb-4">
-        <div class="p-3 bg-light rounded-circle d-inline-block mb-2 text-primary" style="width:60px; height:60px; font-size:1.5rem; line-height:1;">👨‍🏫</div>
-        <h5 class="fw-bold text-dark mb-1">Autentikasi Guru</h5>
-        <p class="text-muted small mb-0">Masukkan kunci kode guru akses untuk otorisasi data</p>
+  <div class="dashboard-container">
+    
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-text"><span>Smansanam</span> Exam</div>
       </div>
-      <div class="mb-3">
-        <label class="form-label">Guru Key Code</label>
-        <input type="password" id="inp-guru-key" class="form-control text-center text-uppercase fw-bold" placeholder="• • • • • • • •"
-               style="font-family:monospace; letter-spacing:.15em"
-               onkeydown="if(event.key==='Enter') loginGuru()"/>
-        <div id="login-error" class="text-danger small mt-2 d-none fw-semibold"><i class="bi bi-x-circle-fill me-1"></i>Token kunci tidak terdaftar.</div>
-      </div>
-      <button class="btn btn-primary-gradient w-100 py-2.5 fw-bold rounded-3" onclick="loginGuru()" id="btn-login">
-        <span id="btn-login-text"><i class="bi bi-shield-lock-fill me-1"></i> Verifikasi Kunci</span>
-        <span id="btn-login-load" class="d-none"><span class="spinner-border spinner-border-sm me-2"></span>Menghubungkan...</span>
-      </button>
-      <div class="text-center mt-3.5">
-        <a href="index.html" class="text-muted small text-decoration-none fw-semibold">← Kembali ke Beranda Siswa</a>
-      </div>
-    </div>
-  </div>
-
-  <div id="guru-content" style="max-width:840px" class="mx-auto">
-
-    <div class="key-display mb-4">
-      <div class="d-flex align-items-center gap-3 flex-wrap">
-        <i class="bi bi-person-bounding-box" style="font-size:2.2rem; opacity:.9"></i>
-        <div class="flex-grow-1">
-          <h5 class="fw-bold mb-1" id="guru-nama">—</h5>
-          <div class="small opacity-90 fw-medium">Mengampu: <span id="guru-mapel" class="fw-bold">—</span> &nbsp;•&nbsp; Tingkat: <span id="guru-kelas" class="fw-bold">—</span></div>
-        </div>
-        <div class="text-md-end text-start mt-md-0 mt-2">
-          <div style="opacity:.8; font-size:.7rem; text-transform:uppercase; font-weight:800; letter-spacing:1px; margin-bottom: 2px;">Key Token Ujian</div>
-          <div class="key-code" id="guru-key-display">—</div>
+      <div class="sidebar-menu">
+        <button class="nav-menu-btn active" id="d-btn-soal" onclick="showTab('soal', this)">
+          <i class="bi bi-folder-fill"></i> Kelola Bank Soal
+        </button>
+        <button class="nav-menu-btn" id="d-btn-hasil" onclick="showTab('hasil', this)">
+          <i class="bi bi-bar-chart-line-fill"></i> Rekap Nilai Siswa
+        </button>
+        <div class="mt-auto pt-4">
+          <button class="nav-menu-btn text-danger" onclick="logout()">
+            <i class="bi bi-box-arrow-right-fill"></i> Log Out Panel
+          </button>
         </div>
       </div>
-    </div>
+    </aside>
 
-    <div class="panel-card bg-white p-4">
-      <ul class="nav nav-tabs mb-4" id="guruTab">
-        <li class="nav-item">
-          <a class="nav-link active" href="#" onclick="showTab('soal',this)"><i class="bi bi-folder-fill me-1.5"></i>Kelola Bank Soal</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#" onclick="showTab('hasil',this)"><i class="bi bi-clipboard-data-fill me-1.5"></i>Monitor Hasil Siswa</a>
-        </li>
-      </ul>
+    <div class="flex-grow-1 d-flex flex-column" style="min-width: 0;">
+      
+      <header class="topbar-dash">
+        <div class="d-flex align-items-center gap-2">
+          <i class="bi bi-person-circle fs-4 text-primary"></i>
+          <div>
+            <div class="fw-bold text-dark lh-1 mb-1" id="guru-nama">—</div>
+            <small class="text-muted small" style="font-size:0.75rem;">Mengajar: <span id="guru-mapel" class="fw-bold">—</span></small>
+          </div>
+        </div>
+        <div class="topbar-profile-info text-end">
+          <span class="text-muted small fw-bold text-uppercase d-block mb-1" style="font-size:0.68rem; letter-spacing:0.5px;">Token Room Ujian</span>
+          <span class="badge font-monospace px-3 py-2 text-dark border bg-light fs-6 fw-bold" id="guru-key-display" style="letter-spacing:1px;">—</span>
+        </div>
+      </header>
 
-      <div id="tab-soal">
-        <div class="d-flex gap-2 align-items-center mb-4 flex-wrap bg-light p-2.5 rounded-3 border">
-          <span class="fw-bold small text-dark ms-1">Pilih Kelas:</span>
-          <div id="kelas-tabs" class="d-flex gap-1.5"></div>
-          
-          <div class="ms-md-auto d-flex gap-2 w-100 w-md-auto mt-2 mt-md-0">
-            <button class="btn btn-action-premium btn-primary-gradient flex-fill" onclick="tambahSoal()"><i class="bi bi-plus-lg me-1"></i>Baris Soal</button>
-            <button class="btn btn-action-premium btn-success-gradient flex-fill" onclick="simpanSemuaSoal()"><i class="bi bi-cloud-check-fill me-1"></i>Simpan Perubahan</button>
+      <main class="main-workspace">
+        
+        <div class="row g-3 mb-4">
+          <div class="col-6 col-lg-4">
+            <div class="stat-card">
+              <div class="stat-icon bg-primary-subtle text-primary"><i class="bi bi-file-earmark-text"></i></div>
+              <div>
+                <small class="text-muted d-block fw-semibold" style="font-size:0.75rem;">Mata Pelajaran</small>
+                <span class="fw-bold fs-6 text-dark" id="stat-mapel">—</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-4">
+            <div class="stat-card">
+              <div class="stat-icon bg-success-subtle text-success"><i class="bi bi-layers"></i></div>
+              <div>
+                <small class="text-muted d-block fw-semibold" style="font-size:0.75rem;">Target Tingkat</small>
+                <span class="fw-bold fs-6 text-dark" id="stat-kelas">—</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-lg-4">
+            <div class="stat-card">
+              <div class="stat-icon bg-warning-subtle text-warning"><i class="bi bi-people"></i></div>
+              <div>
+                <small class="text-muted d-block fw-semibold" style="font-size:0.75rem;">Siswa Merespons</small>
+                <span class="fw-bold fs-5 text-dark" id="stat-siswa">0</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div id="soal-container">
-          <div class="text-center text-muted py-5"><div class="spinner-border text-primary spinner-border-sm me-2"></div>Sinkronisasi basis kelas...</div>
-        </div>
-      </div>
+        <div id="tab-soal" class="crud-panel-card">
+          <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2 pb-3 border-bottom">
+            <div>
+              <h5 class="fw-bold mb-1 text-dark"><i class="bi bi-journal-plus text-primary me-2"></i>Bank Data Soal</h5>
+              <p class="text-muted small mb-0">Rancang dan sunting butir pertanyaan berdasarkan kluster tingkatan</p>
+            </div>
+            
+            <div class="d-flex gap-2 w-100 w-sm-auto justify-content-end">
+              <button class="btn btn-sm btn-primary fw-bold px-3 rounded-3" onclick="tambahSoal()"><i class="bi bi-plus-lg me-1"></i>Tambah Baris</button>
+              <button class="btn btn-sm btn-success fw-bold px-3 rounded-3" style="background:var(--success-gradient); border:none;" onclick="simpanSemuaSoal()"><i class="bi bi-cloud-arrow-up-fill me-1"></i>Simpan Perubahan</button>
+            </div>
+          </div>
 
-      <div id="tab-hasil" class="d-none">
-        <div class="d-flex align-items-center mb-3.5 gap-2 flex-wrap">
-          <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-journal-check text-success me-1.5"></i>Buku Rekap Nilai Masuk</h6>
-          <button class="btn btn-action-premium btn-success-gradient ms-auto" onclick="exportExcel()">
-            <i class="bi bi-file-earmark-spreadsheet-fill me-1"></i> Unduh File Excel
-          </button>
+          <div class="mb-4">
+            <label class="form-label small fw-bold text-muted text-uppercase d-block mb-2">Pilih Workspace Kelas:</label>
+            <div id="kelas-tabs" class="d-flex gap-1.5 flex-wrap"></div>
+          </div>
+
+          <div id="soal-container">
+            <div class="text-center text-muted py-5"><div class="spinner-border text-primary spinner-border-sm me-2"></div>Sinkronisasi modul kelas berjalan...</div>
+          </div>
         </div>
-        
-        <div class="table-responsive border rounded-3">
-          <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
-              <tr>
-                <th>Nama Siswa</th>
-                <th>Kelas</th>
-                <th>Nilai Akhir</th>
-                <th>Benar</th>
-                <th>Total</th>
-                <th>Waktu Selesai</th>
-                <th class="text-center">Aksi</th>
-              </tr>
-            </thead>
-            <tbody id="tbody-hasil">
-              <tr><td colspan="7" class="text-center text-muted py-4">Memproses record database...</td></tr>
-            </tbody>
-          </table>
+
+        <div id="tab-hasil" class="crud-panel-card d-none">
+          <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2 pb-3 border-bottom">
+            <div>
+              <h5 class="fw-bold mb-1 text-dark"><i class="bi bi-grid-3x3-gap-fill text-success me-2"></i>Lembar Monitor Hasil</h5>
+              <p class="text-muted small mb-0">Pantau perolehan skor pengerjaan lembar ujian siswa secara realtime</p>
+            </div>
+            <button class="btn btn-sm btn-outline-success fw-bold px-3 rounded-3" onclick="exportExcel()">
+              <i class="bi bi-file-earmark-excel-fill me-1"></i> Ekspor Rekap .xlsx
+            </button>
+          </div>
+
+          <div class="table-responsive border rounded-3">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th class="ps-3">Nama Lengkap Siswa</th>
+                  <th>Tingkat Kelas</th>
+                  <th>Nilai Ujian</th>
+                  <th>Benar</th>
+                  <th>Total Soal</th>
+                  <th>Waktu Submit</th>
+                  <th class="text-center pe-3">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-hasil">
+                <tr><td colspan="7" class="text-center text-muted py-4">Memproses sinkronisasi database...</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
-      
+
+      </main>
     </div>
   </div>
 </div>
 
 <div id="toast-guru" class="toast align-items-center text-bg-dark border-0" role="alert" data-bs-delay="2500">
   <div class="d-flex p-1.5">
-    <div class="toast-body fw-semibold small" id="toast-msg-guru"></div>
+    <div class="toast-body fw-bold small" id="toast-msg-guru"></div>
     <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
   </div>
 </div>
@@ -280,11 +318,11 @@ let soalDraft = {};
 function toast(msg, type="success") {
   const el = document.getElementById("toast-guru");
   el.className = `toast align-items-center text-bg-${type === 'danger' ? 'danger' : type === 'warning' ? 'warning' : 'success'} border-0`;
-  document.getElementById("toast-msg-guru").innerHTML = `<i class="bi bi-info-circle-fill me-1.5"></i> ${msg}`;
+  document.getElementById("toast-msg-guru").innerHTML = `<i class="bi bi-check-circle-fill me-1.5"></i> ${msg}`;
   bootstrap.Toast.getOrCreateInstance(el).show();
 }
 
-// ── SISTEM AUTENTIKASI MASUK GURU ──────────────────────────────────────────
+// ── CONTROL AUTENTIKASI AKSES GURU ─────────────────────────────────────────
 async function loginGuru() {
   const key = document.getElementById("inp-guru-key").value.trim();
   if (!key) return;
@@ -302,7 +340,7 @@ async function loginGuru() {
       document.getElementById("login-error").classList.remove("d-none");
     }
   } catch {
-    document.getElementById("login-error").textContent = "Gagal memproses, periksa kendala jaringan.";
+    document.getElementById("login-error").textContent = "Kesalahan transmisi data jaringan.";
     document.getElementById("login-error").classList.remove("d-none");
   }
   document.getElementById("btn-login-text").classList.remove("d-none");
@@ -321,11 +359,11 @@ async function loadGuruProfile() {
       guruInfo = json.guru;
       showGuruPanel();
     } else {
-      guruInfo = { nama: "Drs. Eko Prasetyo", mapel_id: "Bahasa Indonesia", kelas: [10,11,12], guru_key: guruKey };
+      guruInfo = { nama: "Drs. Budi Setiawan", mapel_id: "Bahasa Indonesia", kelas: [10, 11, 12], guru_key: guruKey };
       showGuruPanel();
     }
   } catch {
-    guruInfo = { nama: "Drs. Eko Prasetyo", mapel_id: "Bahasa Indonesia", kelas: [10,11,12], guru_key: guruKey };
+    guruInfo = { nama: "Drs. Budi Setiawan", mapel_id: "Bahasa Indonesia", kelas: [10, 11, 12], guru_key: guruKey };
     showGuruPanel();
   }
 }
@@ -333,18 +371,19 @@ async function loadGuruProfile() {
 function showGuruPanel() {
   document.getElementById("login-gate").style.display = "none";
   document.getElementById("guru-content").style.display = "block";
-  document.getElementById("btn-logout").classList.remove("d-none");
 
   document.getElementById("guru-nama").textContent       = guruInfo.nama;
   document.getElementById("guru-mapel").textContent      = guruInfo.mapel_id;
-  document.getElementById("guru-kelas").textContent      = (guruInfo.kelas||[]).join(", ");
   document.getElementById("guru-key-display").textContent = guruInfo.guru_key || guruKey;
+  
+  document.getElementById("stat-mapel").textContent      = guruInfo.mapel_id;
+  document.getElementById("stat-kelas").textContent      = `Tingkat ${(guruInfo.kelas || []).join(", ")}`;
 
   const ct = document.getElementById("kelas-tabs");
   ct.innerHTML = "";
-  (guruInfo.kelas || [10,11,12]).forEach((k,i) => {
+  (guruInfo.kelas || [10, 11, 12]).forEach((k, i) => {
     const btn = document.createElement("button");
-    btn.className = `btn btn-sm px-3 fw-bold rounded-2 ${i===0?"btn-primary":"btn-outline-primary"}`;
+    btn.className = `btn btn-sm px-3 fw-bold rounded-pill ${i === 0 ? "btn-primary" : "btn-light border text-secondary"}`;
     btn.textContent = `Kelas ${k}`;
     btn.onclick = () => selectKelas(k, btn);
     ct.appendChild(btn);
@@ -357,13 +396,13 @@ function showGuruPanel() {
 function selectKelas(k, btn) {
   activKelas = k;
   document.querySelectorAll("#kelas-tabs .btn").forEach(b => {
-    b.className = "btn btn-sm px-3 fw-bold rounded-2 btn-outline-primary";
+    b.className = "btn btn-sm px-3 fw-bold rounded-pill btn-light border text-secondary";
   });
-  btn.className = "btn btn-sm px-3 fw-bold rounded-2 btn-primary";
+  btn.className = "btn btn-sm px-3 fw-bold rounded-pill btn-primary";
   loadSoalKelas(k);
 }
 
-// ── OPERASI MANAGEMENT INPUT BANK SOAL ──────────────────────────────────────
+// ── CORE LOGIC CRUD ENGINE MANAJEMEN BANK SOAL ─────────────────────────────
 async function loadSoalKelas(k) {
   if (!guruInfo) return;
   const mapelId = guruInfo.mapel_id;
@@ -378,7 +417,7 @@ async function loadSoalKelas(k) {
       const j = await res2.json();
       if (j.soal) soalFull = j.soal;
     }
-    soalDraft[k] = soalFull.map(s => ({...s}));
+    soalDraft[k] = soalFull.map(s => ({ ...s }));
     renderSoalEditor(k);
   } catch {
     soalDraft[k] = [];
@@ -390,28 +429,28 @@ function renderSoalEditor(k) {
   const container = document.getElementById("soal-container");
   const list = soalDraft[k] || [];
   if (!list.length) {
-    container.innerHTML = `<div class="text-center text-muted py-5 border rounded-3 bg-light">Belum ada baris pertanyaan terdaftar untuk kelas ${k}.<br>Silakan klik tombol <strong>Tambah Soal</strong> di atas.</div>`;
+    container.innerHTML = `<div class="text-center text-muted py-5 bg-light rounded-4 border border-dashed">Belum ada baris pertanyaan ujian terdaftar untuk kelas ${k}.<br>Silakan picu tombol <strong>Tambah Baris Soal</strong>.</div>`;
     return;
   }
-  container.innerHTML = list.map((s,i) => `
-    <div class="soal-item" id="si-${i}">
-      <div class="d-flex align-items-center mb-2.5">
-        <span class="soal-num"><i class="bi bi-file-earmark-text text-primary me-1"></i> Soal Nomor ${i+1}</span>
-        <button class="btn btn-sm btn-outline-danger border-0 ms-auto rounded-3" onclick="hapusSoal(${i})" title="Hapus Soal">
-          <i class="bi bi-trash3-fill"></i>
+  container.innerHTML = list.map((s, i) => `
+    <div class="soal-item-box" id="si-${i}">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <span class="fw-extrabold text-dark" style="font-size:0.95rem;"><i class="bi bi-file-earmark-text-fill text-primary me-1.5"></i>Butir Pertanyaan ${i + 1}</span>
+        <button class="btn btn-sm btn-link text-danger text-decoration-none p-0 fw-bold small" onclick="hapusSoal(${i})">
+          <i class="bi bi-trash3-fill me-1"></i>Hapus
         </button>
       </div>
-      <textarea class="form-control form-control-sm mb-3 fw-medium" rows="2" placeholder="Tuliskan materi pertanyaan soal di sini..."
-        onchange="soalDraft[${k}][${i}].pertanyaan=this.value">${s.pertanyaan||""}</textarea>
-      ${["A","B","C","D"].map(l => `
-        <div class="opsi-row">
-          <div class="opsi-letter">${l}</div>
-          <input type="text" class="form-control form-control-sm flex-grow-1" placeholder="Isi redaksi teks jawaban opsi ${l}"
-            value="${(s.opsi||{})[l]||""}"
+      <textarea class="form-control mb-3 fw-medium" rows="2" placeholder="Tuliskan teks deskripsi pertanyaan di sini..."
+        onchange="soalDraft[${k}][${i}].pertanyaan=this.value">${s.pertanyaan || ""}</textarea>
+      ${["A", "B", "C", "D"].map(l => `
+        <div class="opsi-input-group">
+          <div class="letter-badge">${l}</div>
+          <input type="text" class="form-control form-control-sm flex-grow-1" placeholder="Masukkan teks respon pilihan opsi ${l}"
+            value="${(s.opsi || {})[l] || ""}"
             onchange="if(!soalDraft[${k}][${i}].opsi) { soalDraft[${k}][${i}].opsi={}; }; soalDraft[${k}][${i}].opsi['${l}']=this.value"/>
-          <div class="form-check ms-2 mt-1" title="Tandai Kunci Jawaban Benar">
+          <div class="form-check ms-1" title="Centang jika Opsi ini adalah jawaban yang benar">
             <input class="form-check-input" type="radio" name="jwb_${i}" value="${l}"
-              ${(s.jawaban===l)?"checked":""}
+              ${(s.jawaban === l) ? "checked" : ""}
               onchange="soalDraft[${k}][${i}].jawaban='${l}'"/>
           </div>
         </div>`).join("")}
@@ -419,20 +458,20 @@ function renderSoalEditor(k) {
 }
 
 function tambahSoal() {
-  if (!activKelas) { toast("Tentukan sub tingkat kelas terlebih dahulu!","warning"); return; }
+  if (!activKelas) { toast("Tentukan segmentasi kelas terlebih dahulu!", "warning"); return; }
   if (!soalDraft[activKelas]) soalDraft[activKelas] = [];
   soalDraft[activKelas].push({
     id: "s" + Date.now(),
     pertanyaan: "",
-    opsi: { A:"", B:"", C:"", D:"" },
+    opsi: { A: "", B: "", C: "", D: "" },
     jawaban: "A",
   });
   renderSoalEditor(activKelas);
-  document.getElementById("soal-container").lastElementChild?.scrollIntoView({behavior:"smooth"});
+  document.getElementById("soal-container").lastElementChild?.scrollIntoView({ behavior: "smooth" });
 }
 
 function hapusSoal(idx) {
-  if (!confirm("Apakah Anda yakin ingin menghapus record butir soal ini?")) return;
+  if (!confirm("Apakah Anda yakin ingin menghapus data pertanyaan ini?")) return;
   soalDraft[activKelas].splice(idx, 1);
   renderSoalEditor(activKelas);
 }
@@ -442,8 +481,8 @@ async function simpanSemuaSoal() {
   const soal = soalDraft[activKelas] || [];
   
   for (let i = 0; i < soal.length; i++) {
-    if (!soal[i].pertanyaan?.trim()) { toast(`Narasi pertanyaan pada soal Nomor ${i+1} masih kosong!`,"warning"); return; }
-    if (!soal[i].jawaban) { toast(`Kunci verifikasi jawaban benar soal Nomor ${i+1} belum dipilih!`,"warning"); return; }
+    if (!soal[i].pertanyaan?.trim()) { toast(`Narasi pertanyaan nomor ${i + 1} tidak boleh kosong!`, "warning"); return; }
+    if (!soal[i].jawaban) { toast(`Kunci jawaban verifikasi nomor ${i + 1} belum didefinisikan!`, "warning"); return; }
   }
   
   try {
@@ -458,12 +497,12 @@ async function simpanSemuaSoal() {
       }),
     });
     const json = await res.json();
-    if (json.ok) toast(`${soal.length} bank soal ter-update berhasil disimpan!`,"success");
-    else toast(json.error||"Gagal mengamankan berkas soal ke server.","danger");
-  } catch { toast("Gangguan koneksi transmisi jaringan.","danger"); }
+    if (json.ok) toast(`${soal.length} data butir soal sukses diperbarui & diamankan!`, "success");
+    else toast(json.error || "Gagal mengunggah berkas soal.", "danger");
+  } catch { toast("Kendala transmisi pengiriman data.", "danger"); }
 }
 
-// ── REKAPITULASI MONITORING HASIL NILAI SISWA ──────────────────────────────
+// ── REKAP MONITORING HASIL JAWABAN SISWA ──────────────────────────────────
 let hasilData = []; 
 
 async function loadHasilGuru() {
@@ -473,10 +512,10 @@ async function loadHasilGuru() {
     hasilData  = Array.isArray(data) ? data : [];
     renderTabelHasil();
   } catch {
-    // Mock rekap dummy record seandainya server lokal REST tidak terpanggil
     hasilData = [
-      { id: "h1", nama: "Ahmad Rifai", kelas: "10.1", mapel_id: "Bahasa Indonesia", nilai: 85, benar: 17, total: 20, waktu: Date.now() - 3600000 },
-      { id: "h2", nama: "Siti Aminah", kelas: "10.2", mapel_id: "Bahasa Indonesia", nilai: 60, benar: 12, total: 20, waktu: Date.now() - 7200000 }
+      { id: "h1", nama: "Farhan Mahendra", kelas: "10.1", mapel_id: "Bahasa Indonesia", nilai: 90, benar: 18, total: 20, waktu: Date.now() - 1800000 },
+      { id: "h2", nama: "Anisa Rahmawati", kelas: "10.3", mapel_id: "Bahasa Indonesia", nilai: 75, benar: 15, total: 20, waktu: Date.now() - 5400000 },
+      { id: "h3", nama: "Rian Hidayat", kelas: "11.2", mapel_id: "Bahasa Indonesia", nilai: 55, benar: 11, total: 20, waktu: Date.now() - 9000000 }
     ];
     renderTabelHasil();
   }
@@ -484,20 +523,22 @@ async function loadHasilGuru() {
 
 function renderTabelHasil() {
   const tbody = document.getElementById("tbody-hasil");
+  document.getElementById("stat-siswa").textContent = hasilData.length;
+  
   if (!hasilData.length) {
-    tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-4">Belum ada record pengerjaan ujian dari siswa.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-4">Belum ada responses masuk dari siswa.</td></tr>';
     return;
   }
   tbody.innerHTML = hasilData.slice().reverse().map(h => `
     <tr>
-      <td class="fw-bold text-dark">${h.nama}</td>
-      <td><span class="badge bg-light text-dark border px-2.5 py-1.5 fw-bold">${h.kelas}</span></td>
-      <td><span class="badge ${h.nilai>=70?"bg-success":"bg-danger"} px-2.5 py-1.5 fw-bold" style="font-size:0.85rem;">${h.nilai}</span></td>
+      <td class="ps-3 fw-bold text-dark">${h.nama}</td>
+      <td><span class="badge bg-light text-secondary border fw-bold px-2.5 py-1.5">${h.kelas}</span></td>
+      <td><span class="badge ${h.nilai >= 70 ? "bg-success-subtle text-success" : "bg-danger-subtle text-danger"} px-2.5 py-1.5 fw-extrabold" style="font-size:0.85rem;">${h.nilai}</span></td>
       <td class="fw-bold text-success">${h.benar}</td>
       <td class="text-muted">${h.total}</td>
-      <td class="text-muted small">${new Date(h.waktu).toLocaleString("id-ID", {dateStyle: "medium", timeStyle: "short"})}</td>
-      <td class="text-center">
-        <button class="btn btn-sm btn-outline-danger border-0 rounded-3" onclick="hapusHasil('${h.id}', this)" title="Hapus Berkas Data">
+      <td class="text-muted small">${new Date(h.waktu).toLocaleString("id-ID", { dateStyle: "short", timeStyle: "short" })}</td>
+      <td class="text-center pe-3">
+        <button class="btn btn-sm btn-link text-danger p-0" onclick="hapusHasil('${h.id}', this)" title="Bersihkan Record">
           <i class="bi bi-trash3-fill"></i>
         </button>
       </td>
@@ -505,9 +546,7 @@ function renderTabelHasil() {
 }
 
 async function hapusHasil(id, btn) {
-  if (!confirm("Hapus berkas permanen lembar rekap nilai siswa ini?")) return;
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+  if (!confirm("Hapus data rekap lembar nilai siswa ini?")) return;
   try {
     const res = await fetch("/api/hasil", {
       method: "DELETE",
@@ -518,38 +557,35 @@ async function hapusHasil(id, btn) {
     if (json.ok) {
       hasilData = hasilData.filter(h => h.id !== id);
       renderTabelHasil();
-      toast("Record data rekap berhasil dibersihkan.", "success");
+      toast("Data rekap pengerjaan sukses dihapus.", "success");
     } else {
-      toast(json.error || "Gagal menghapus berkas.", "danger");
-      btn.disabled = false;
-      btn.innerHTML = '<i class="bi bi-trash3-fill"></i>';
+      toast(json.error || "Gagal memproses penghapusan.", "danger");
     }
   } catch {
     hasilData = hasilData.filter(h => h.id !== id);
     renderTabelHasil();
-    toast("Simulasi: Berkas sukses dibersihkan dari memori lokal.", "success");
+    toast("Simulasi Local: Data record sukses dibersihkan.", "success");
   }
 }
 
 function exportExcel() {
-  if (!hasilData.length) { toast("Tidak ditemukan ringkasan data nilai untuk diekspor!", "warning"); return; }
+  if (!hasilData.length) { toast("Tidak ditemukan ringkasan nilai untuk diproses!", "warning"); return; }
   const rows = hasilData.map(h => ({
-    "Nama Lengkap Siswa"  : h.nama,
-    "Rincian Kelas"       : h.kelas,
-    "Mata Pelajaran Ujian": h.mapel_id,
-    "Skor Nilai Akhir"    : h.nilai,
-    "Jumlah Benar"        : h.benar,
-    "Total Kumpulan Soal" : h.total,
-    "Tanggal Submit Ujian": new Date(h.waktu).toLocaleString("id-ID"),
+    "Nama Lengkap Siswa": h.nama,
+    "Kelas": h.kelas,
+    "Mata Pelajaran": h.mapel_id,
+    "Skor Akhir": h.nilai,
+    "Jawaban Benar": h.benar,
+    "Total Soal": h.total,
+    "Waktu Selesai": new Date(h.waktu).toLocaleString("id-ID"),
   }));
   const ws  = XLSX.utils.json_to_sheet(rows);
   const cols = Object.keys(rows[0]).map(k => ({ wch: Math.max(k.length, 16) }));
   ws["!cols"] = cols;
   const wb  = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Rekap Hasil Ujian");
-  const now = new Date().toISOString().slice(0,10);
-  XLSX.writeFile(wb, `rekap-nilai-smansanam-${now}.xlsx`);
-  toast("Dokumen Excel sukses diekspor dan diunduh!", "success");
+  XLSX.utils.book_append_sheet(wb, ws, "Rekap Nilai");
+  XLSX.writeFile(wb, `rekap-nilai-guru-${new Date().toISOString().slice(0,10)}.xlsx`);
+  toast("File spreadsheet sukses diekspor!", "success");
 }
 
 function logout() {
@@ -558,15 +594,31 @@ function logout() {
 }
 
 function showTab(name, el) {
-  event.preventDefault();
-  ["soal","hasil"].forEach(t => document.getElementById(`tab-${t}`).classList.add("d-none"));
+  // Sembunyikan seluruh blok kontainer konten tab terlebih dahulu
+  document.getElementById('tab-soal').classList.add("d-none");
+  document.getElementById('tab-hasil').classList.add("d-none");
+  
+  // Tampilkan tab target aktif
   document.getElementById(`tab-${name}`).classList.remove("d-none");
-  document.querySelectorAll("#guruTab .nav-link").forEach(a => a.classList.remove("active"));
-  el.classList.add("active");
+  
+  // Reset seluruh status kelas active tombol navigasi (Desktop & Mobile)
+  document.querySelectorAll('.nav-menu-btn').forEach(btn => btn.classList.remove("active"));
+  
+  // Set active ke tombol trigger yang ditekan
+  if (el) {
+    el.classList.add("active");
+    // Selaraskan status aktif antara tombol versi desktop dan mobile yang bernama sejenis
+    if (el.id.includes('d-btn-')) {
+      document.getElementById(`m-btn-${name}`)?.classList.add("active");
+    } else if (el.id.includes('m-btn-')) {
+      document.getElementById(`d-btn-${name}`)?.classList.add("active");
+    }
+  }
+  
   if (name === "hasil") loadHasilGuru();
 }
 
-// System Auto-login validator instance Hook
+// Hook instance siklus pemuatan otomatis data token
 window.addEventListener("DOMContentLoaded", () => {
   const k = sessionStorage.getItem("guru_key");
   if (k) { document.getElementById("inp-guru-key").value = k; loginGuru(); }
