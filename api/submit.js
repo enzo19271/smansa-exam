@@ -16,39 +16,46 @@ module.exports = async (req, res) => {
     if (!nama || !kelas || !mapel_id || !jawaban)
       return res.status(400).json({ error: "Data tidak lengkap" });
 
+    // kelas bisa "10.2" — ambil hanya angka depan untuk path soal
+    const kelasMain = String(kelas).split(".")[0];
+
     // Ambil soal dengan kunci jawaban
-    const path = `data/soal/${mapel_id}_${kelas}.json`;
+    const path = `data/soal/${mapel_id}_${kelasMain}.json`;
     const { data: soalList } = await readFile(path, []);
     const soal = Array.isArray(soalList) ? soalList : [];
 
     if (!soal.length)
-      return res.status(400).json({ error: "Soal tidak ditemukan untuk mapel/kelas ini" });
+      return res.status(404).json({ error: `Soal tidak ditemukan (${mapel_id} kelas ${kelasMain})` });
 
-    // Hitung nilai
+    // Hitung nilai + buat detail per soal
     let benar = 0;
-    soal.forEach((s) => {
-      if (jawaban[s.id] && jawaban[s.id] === s.jawaban) benar++;
+    const detail = soal.map((s) => {
+      const pilihan = jawaban[s.id] || null;
+      const correct = pilihan === s.jawaban;
+      if (correct) benar++;
+      return { id: s.id, pilihan, jawaban: s.jawaban, benar: correct };
     });
+
     const total = soal.length;
     const nilai = Math.round((benar / total) * 100);
 
-    // Simpan hasil
+    // Simpan hasil ke GitHub
     const { data: hasilList, sha } = await readFile("data/hasil.json", []);
     const list = Array.isArray(hasilList) ? hasilList : [];
-    const hasil = {
+    list.push({
       id: `${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
       nama,
-      kelas: Number(kelas),
+      kelas,
       mapel_id,
       benar,
       total,
       nilai,
       waktu: new Date().toISOString(),
-    };
-    list.push(hasil);
+    });
     await writeFile("data/hasil.json", list, sha);
 
-    return res.status(200).json({ ok: true, nilai, benar, total });
+    // Kembalikan detail juga supaya selesai.html bisa tampilkan pembahasan
+    return res.status(200).json({ ok: true, nilai, benar, total, detail });
 
   } catch (err) {
     console.error("submit.js error:", err.message);
