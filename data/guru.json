@@ -16,5 +16,14 @@
       12
     ],
     "guru_key": "Eaa"
+  },
+  {
+    "id": "003",
+    "nama": "Novia",
+    "mapel_id": "bahasa_inggris",
+    "kelas": [
+      10
+    ],
+    "guru_key": "Bing001"
   }
 ]
