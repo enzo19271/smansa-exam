@@ -40,5 +40,23 @@
     "dibuat_at": "2026-06-13T13:31:29.656Z",
     "guru_id": "kenzo",
     "diupdate_at": "2026-06-13T13:38:47.998Z"
+  },
+  {
+    "id": "ujian_1781488439930",
+    "guru_id": "001",
+    "mapel_id": "bindo",
+    "mapel_nama": "bindo",
+    "kelas": [
+      "10.1",
+      "10.2",
+      "10.3",
+      "10.4",
+      "10.5",
+      "10.6"
+    ],
+    "kunci": "Bindo12",
+    "soal": [],
+    "aktif": true,
+    "created_at": "2026-06-15T01:53:59.930Z"
   }
 ]
