@@ -239,7 +239,7 @@ async function submitForm() {
 
   const nama  = document.getElementById("inp-nama").value.trim();
   const kelas = document.getElementById("inp-kelas").value;
-  const key   = document.getElementById("inp-key").value.trim().toUpperCase();
+  const key   = document.getElementById("inp-key").value.trim();
 
   let valid = true;
   if (!nama)  { document.getElementById("inp-nama").classList.add("is-invalid");  valid = false; }
