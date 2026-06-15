@@ -52,5 +52,14 @@
       11,
       12
     ]
+  },
+  {
+    "id": "ipas",
+    "nama": "Ilmu Pengetahuan Alam & Sosial",
+    "kelas": [
+      10,
+      11,
+      12
+    ]
   }
 ]
