@@ -15,7 +15,9 @@ module.exports = async (req, res) => {
     if (!mapel_id || !kelas || !key)
       return res.status(400).json({ error: "Data tidak lengkap" });
 
-    // Cek dari ujian.json
+    // kelas dari form-ujian berupa string misal "10.2"
+    const kelasStr = String(kelas);
+
     const { data: ujianList } = await readFile("data/ujian.json", []);
     const ujianArr = Array.isArray(ujianList) ? ujianList : [];
 
@@ -23,7 +25,7 @@ module.exports = async (req, res) => {
       u.mapel_id === mapel_id &&
       u.aktif !== false &&
       u.kunci === key &&
-      (u.kelas || []).some(k => String(kelas).startsWith(String(k)))
+      (u.kelas || []).some(k => String(k) === kelasStr || kelasStr.startsWith(String(k) + "."))
     );
 
     if (matchUjian) {
@@ -37,7 +39,7 @@ module.exports = async (req, res) => {
       });
     }
 
-    // Fallback: cek dari guru.json (backward compat dengan soal lama)
+    // Fallback: cek dari guru.json (backward compat)
     const { data: guruList } = await readFile("data/guru.json", []);
     const guruMatch = (Array.isArray(guruList) ? guruList : []).find(
       (g) => g.mapel_id === mapel_id && g.guru_key === key
