@@ -12,5 +12,12 @@
     "mapel_id": "bing",
     "guru_key": "iraira",
     "kelas": []
+  },
+  {
+    "id": "003",
+    "nama": "M. Alfijar Sandika, S. Pd., Gr.",
+    "mapel_id": "bio",
+    "guru_key": "sandika",
+    "kelas": []
   }
 ]
