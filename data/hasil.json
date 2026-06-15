@@ -103,5 +103,16 @@
     "nilai": 80,
     "ujian_id": "ujian_1781500844568",
     "waktu": "2026-06-15T05:33:04.425Z"
+  },
+  {
+    "id": "1781513592428_6s4d6",
+    "nama": "RIvan",
+    "kelas": "11.2",
+    "mapel_id": "bindo",
+    "benar": 0,
+    "total": 1,
+    "nilai": 0,
+    "ujian_id": "ujian_1781489557876",
+    "waktu": "2026-06-15T08:53:12.428Z"
   }
 ]
