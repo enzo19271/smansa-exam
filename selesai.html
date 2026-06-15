@@ -25,6 +25,7 @@
       font-family: 'Plus Jakarta Sans', sans-serif;
       color: var(--text-dark);
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
 
     /* TOPBAR */
@@ -33,6 +34,7 @@
       border-bottom: 1px solid var(--border-color);
       padding: 0.85rem 1.25rem;
       display: flex; align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.02);
     }
     .topbar .brand { font-weight: 500; font-size: 1rem; }
     .topbar .brand span {
@@ -45,23 +47,35 @@
     /* HERO RESULT */
     .result-hero {
       background: var(--blue-gradient);
-      padding: 2.5rem 1rem 4.5rem;
+      padding: 3rem 1rem 5.5rem;
       text-align: center;
       color: #fff;
       position: relative;
     }
+    
+    .result-hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 40px;
+      background: linear-gradient(to top, rgba(0,0,0,0.05), transparent);
+    }
+
     .result-hero .student-info {
-      font-size: 0.85rem;
-      opacity: 0.8;
+      font-size: 0.9rem;
+      opacity: 0.9;
       margin-bottom: 1.5rem;
-      font-weight: 500;
+      font-weight: 600;
+      animation: fadeInDown 0.8s ease-out forwards;
     }
 
     /* SCORE CIRCLE */
     .score-circle-wrap {
       margin: 0 auto 0.5rem;
-      width: 150px; height: 150px;
+      width: 160px; height: 160px;
       position: relative;
+      animation: zoomIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      filter: drop-shadow(0 0 20px rgba(255,255,255,0.2));
     }
     .score-circle-wrap svg {
       transform: rotate(-90deg);
@@ -72,96 +86,115 @@
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
     }
-    .score-number .val { font-size: 2.6rem; font-weight: 800; line-height: 1; }
-    .score-number .lbl { font-size: 0.7rem; opacity: 0.75; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
-    .predikat-text { font-size: 1.1rem; font-weight: 700; margin-top: 0.75rem; }
+    .score-number .val { font-size: 3rem; font-weight: 800; line-height: 1; text-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .score-number .lbl { font-size: 0.75rem; opacity: 0.8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
+    
+    .predikat-text { 
+      font-size: 1.25rem; 
+      font-weight: 800; 
+      margin-top: 1rem; 
+      animation: fadeInUp 1s ease-out forwards;
+      opacity: 0;
+      animation-delay: 0.3s;
+    }
 
     /* FLOATING CARD */
     .result-card-float {
       background: #fff;
-      border-radius: 22px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-      padding: 1.5rem;
-      margin: -2.5rem 1rem 0;
+      border-radius: 24px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+      padding: 2rem 1.5rem;
+      margin: -3.5rem 1rem 0;
       position: relative;
       z-index: 10;
+      opacity: 0;
+      animation: slideUpFloat 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation-delay: 0.5s;
     }
-    .stat-item {
+    
+    .message-box {
       text-align: center;
-      padding: 0.75rem 0.5rem;
-      border-radius: 14px;
+      margin-bottom: 1.5rem;
     }
-    .stat-item .val { font-size: 1.6rem; font-weight: 800; line-height: 1; }
-    .stat-item .lbl { font-size: 0.72rem; font-weight: 600; color: var(--text-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .message-box h4 {
+      font-weight: 800;
+      color: var(--text-dark);
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+    }
+    .message-box p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin: 0;
+      font-weight: 500;
+    }
 
     /* DIVIDER */
     .section-divider {
-      height: 1px; background: var(--border-color);
-      margin: 1.25rem 0;
+      height: 1.5px; background: var(--border-color);
+      margin: 1.5rem 0;
+      border-radius: 2px;
     }
-
-    /* REVIEW */
-    .review-wrap { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
-    .review-wrap.open { max-height: 9999px; }
-    .review-item {
-      display: flex; gap: 0.75rem; align-items: flex-start;
-      padding: 0.75rem 1rem;
-      border-radius: 12px;
-      margin-bottom: 0.5rem;
-      font-size: 0.875rem;
-    }
-    .review-item.correct { background: #f0fdf4; border: 1px solid #bbf7d0; }
-    .review-item.wrong   { background: #fff1f2; border: 1px solid #fecdd3; }
-    .review-num {
-      width: 26px; height: 26px; border-radius: 7px; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 800; font-size: 0.78rem;
-    }
-    .correct .review-num { background: #22c55e; color: #fff; }
-    .wrong   .review-num { background: #ef4444; color: #fff; }
-    .review-detail { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.25rem; }
 
     /* ACTIONS */
     .btn-home {
       background: var(--blue-gradient);
       border: none; color: #fff;
-      font-weight: 700; border-radius: 14px;
-      padding: 0.75rem;
+      font-weight: 700; border-radius: 16px;
+      padding: 0.85rem;
       width: 100%;
-      font-size: 0.95rem;
-      box-shadow: 0 4px 12px rgba(37,99,235,0.25);
-      transition: all 0.2s;
+      font-size: 1rem;
+      box-shadow: 0 8px 20px rgba(37,99,235,0.25);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex; justify-content: center; align-items: center;
     }
-    .btn-home:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(37,99,235,0.35); }
-    .btn-review-toggle {
-      background: #f1f5f9;
-      border: 1.5px solid var(--border-color);
-      color: var(--text-dark);
-      font-weight: 700; border-radius: 14px;
-      padding: 0.75rem;
-      width: 100%;
-      font-size: 0.9rem;
-      transition: all 0.2s;
+    .btn-home:hover { 
+      transform: translateY(-3px); 
+      box-shadow: 0 12px 25px rgba(37,99,235,0.35); 
     }
-    .btn-review-toggle:hover { background: #e2e8f0; }
+    .btn-home:active {
+      transform: translateY(0);
+    }
 
-    /* confetti dots (pure CSS) */
+    /* ANIMATIONS */
+    @keyframes slideUpFloat {
+      from { opacity: 0; transform: translateY(40px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes zoomIn {
+      from { opacity: 0; transform: scale(0.5); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* CONFETTI (Pure CSS) */
     .confetti-bar {
-      display: flex; justify-content: center; gap: 4px;
-      margin-bottom: 0.5rem;
+      display: flex; justify-content: center; gap: 8px;
+      margin-bottom: 1rem;
     }
     .confetti-bar span {
-      width: 8px; height: 8px; border-radius: 50%;
-      animation: confettiFall 1.2s ease both;
+      width: 10px; height: 10px; border-radius: 50%;
+      animation: confettiFall 1.5s cubic-bezier(0.25, 1, 0.5, 1) both;
     }
     @keyframes confettiFall {
-      from { transform: translateY(-20px) scale(0); opacity: 0; }
-      to   { transform: translateY(0) scale(1); opacity: 1; }
+      0%   { transform: translateY(-30px) scale(0) rotate(0deg); opacity: 0; }
+      50%  { opacity: 1; }
+      100% { transform: translateY(20px) scale(1.2) rotate(360deg); opacity: 0; }
     }
 
     @media (max-width: 480px) {
-      .result-hero { padding: 2rem 1rem 4rem; }
-      .result-card-float { margin: -2rem 0.75rem 0; padding: 1.25rem; }
+      .result-hero { padding: 2.5rem 1rem 5rem; }
+      .result-card-float { margin: -3rem 1rem 0; padding: 1.5rem; }
+      .score-circle-wrap { width: 140px; height: 140px; }
+      .score-number .val { font-size: 2.6rem; }
     }
   </style>
 </head>
@@ -171,177 +204,137 @@
   <span class="brand"><span>Smansanam</span> Exam Portal</span>
 </div>
 
-<!-- HERO -->
 <div class="result-hero" id="result-hero">
   <div class="confetti-bar" id="confetti-bar"></div>
-  <p class="student-info" id="sub-info">—</p>
+  <div class="student-info" id="sub-info">—</div>
 
   <div class="score-circle-wrap">
-    <svg width="150" height="150" viewBox="0 0 150 150">
-      <!-- track -->
-      <circle cx="75" cy="75" r="62" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="10"/>
-      <!-- fill -->
-      <circle cx="75" cy="75" r="62" fill="none"
-        stroke="white" stroke-width="10"
+    <svg width="100%" height="100%" viewBox="0 0 160 160">
+      <circle cx="80" cy="80" r="70" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="12"/>
+      <circle cx="80" cy="80" r="70" fill="none"
+        stroke="#ffffff" stroke-width="12"
         stroke-linecap="round"
         id="score-arc"
-        stroke-dasharray="389.56"
-        stroke-dashoffset="389.56"
-        style="transition: stroke-dashoffset 1.2s cubic-bezier(0.34,1.56,0.64,1)"/>
+        stroke-dasharray="439.8"
+        stroke-dashoffset="439.8"
+        style="transition: stroke-dashoffset 1.5s cubic-bezier(0.34,1.56,0.64,1) 0.2s"/>
     </svg>
     <div class="score-number">
-      <span class="val" id="nilai-text">—</span>
-      <span class="lbl">Nilai</span>
+      <span class="val" id="nilai-text">0</span>
+      <span class="lbl">Nilai Akhir</span>
     </div>
   </div>
 
   <div class="predikat-text" id="predikat-text">—</div>
 </div>
 
-<!-- FLOATING CARD -->
-<div class="result-card-float mx-auto" style="max-width:500px">
-
-  <!-- Stats row -->
-  <div class="row g-0">
-    <div class="col-4">
-      <div class="stat-item">
-        <div class="val text-success" id="benar-text">—</div>
-        <div class="lbl">✓ Benar</div>
-      </div>
-    </div>
-    <div class="col-4">
-      <div class="stat-item">
-        <div class="val text-danger" id="salah-text">—</div>
-        <div class="lbl">✗ Salah</div>
-      </div>
-    </div>
-    <div class="col-4">
-      <div class="stat-item">
-        <div class="val text-primary" id="total-text">—</div>
-        <div class="lbl">Total Soal</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="section-divider"></div>
-
-  <!-- Review toggle -->
-  <button class="btn-review-toggle mb-2" onclick="toggleReview()" id="btn-review">
-    <i class="bi bi-list-check me-2"></i>Lihat Pembahasan Jawaban
-  </button>
-  <div class="review-wrap" id="review-wrap">
-    <div id="review-area" class="pt-2"></div>
+<div class="result-card-float mx-auto" style="max-width:420px">
+  
+  <div class="message-box">
+    <div class="mb-2" style="font-size:3rem; line-height: 1; animation: zoomIn 1s cubic-bezier(0.34, 1.56, 0.64, 1) 0.6s both;">✨</div>
+    <h4 id="greeting-name">Kerja Bagus!</h4>
+    <p>Ujian telah berhasil diselesaikan. Jadikan hasil ini sebagai motivasi untuk terus belajar dan meraih prestasi yang lebih tinggi.</p>
   </div>
 
   <div class="section-divider"></div>
 
   <button class="btn-home" onclick="clearSession()">
-    <i class="bi bi-house-fill me-2"></i>Kembali ke Beranda
+    <i class="bi bi-house-door-fill me-2 fs-5"></i> Kembali ke Beranda
   </button>
 </div>
 
-<div style="height:3rem"></div>
+<div style="height:4rem"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-// ── Ambil data hasil — robust terhadap berbagai format response ────────────
+// ── Ambil data hasil dari session ──────────────────────────────────────────
 const raw  = sessionStorage.getItem("hasil_ujian");
-const nama = sessionStorage.getItem("siswa_nama") || "—";
+const nama = sessionStorage.getItem("siswa_nama") || "Siswa";
 const kel  = sessionStorage.getItem("siswa_kelas") || "—";
-const mapN = sessionStorage.getItem("exam_mapel_nama") || "—";
+const mapN = sessionStorage.getItem("exam_mapel_nama") || "Mata Pelajaran";
 
-// Jangan redirect — tampilkan error graceful kalau data tidak ada
 let hasil = {};
 if (raw) {
   try { hasil = JSON.parse(raw); } catch { hasil = {}; }
 }
 
-// Normalisasi: handle jika API hanya return {nilai, benar, total} tanpa detail
-const nilai  = hasil.nilai  ?? hasil.score ?? null;
-const benar  = hasil.benar  ?? hasil.correct ?? null;
-const total  = hasil.total  ?? hasil.questions ?? null;
-const detail = hasil.detail ?? [];
+const nilai = hasil.nilai ?? hasil.score ?? null;
 
-// Jika benar-benar tidak ada data sama sekali, tampilkan pesan bukan redirect
-if (nilai === null && benar === null) {
+// Sapaan personal di floating card
+document.getElementById("greeting-name").textContent = `Kerja Bagus, ${nama.split(' ')[0]}!`;
+
+// Jika tidak ada data
+if (nilai === null) {
   document.getElementById("nilai-text").textContent = "—";
   document.getElementById("sub-info").textContent   = "Data hasil tidak ditemukan";
   document.getElementById("predikat-text").textContent = "Hubungi guru kamu";
-  document.getElementById("benar-text").textContent = "—";
-  document.getElementById("salah-text").textContent = "—";
-  document.getElementById("total-text").textContent = "—";
 } else {
-  // ── Tampilkan data ──────────────────────────────────────────────────────
-  document.getElementById("sub-info").textContent   = `${nama} · Kelas ${kel} · ${mapN}`;
-  document.getElementById("nilai-text").textContent = nilai ?? "—";
-  document.getElementById("benar-text").textContent = benar ?? "—";
-  document.getElementById("salah-text").textContent = (total != null && benar != null) ? (total - benar) : "—";
-  document.getElementById("total-text").textContent = total ?? "—";
+  // ── Tampilkan data & Animasi ────────────────────────────────────────────
+  document.getElementById("sub-info").innerHTML = `<i class="bi bi-person-fill me-1"></i> ${nama} &nbsp;&bull;&nbsp; Kelas ${kel} <br> <span class="badge bg-white text-primary mt-2 ps-2 pe-2 py-1 rounded-pill"><i class="bi bi-book-half me-1"></i> ${mapN}</span>`;
+  
+  const n = parseFloat(nilai) || 0;
+  
+  // Animasi angka (Counting Up)
+  const duration = 1500; 
+  const start = performance.now();
+  const nilaiEl = document.getElementById("nilai-text");
 
-  // ── Animasi lingkaran skor ──────────────────────────────────────────────
-  const n   = nilai ?? 0;
+  function animateScore(time) {
+    let progress = (time - start) / duration;
+    if (progress > 1) progress = 1;
+    // Ease out cubic
+    const easeProgress = 1 - Math.pow(1 - progress, 3);
+    const currentScore = (easeProgress * n).toFixed(n % 1 === 0 ? 0 : 1);
+    
+    nilaiEl.textContent = currentScore;
+    
+    if (progress < 1) {
+      requestAnimationFrame(animateScore);
+    } else {
+      nilaiEl.textContent = n; // Pastikan hasil akhirnya tepat
+    }
+  }
+  requestAnimationFrame(animateScore);
+
+  // Animasi Lingkaran (SVG Stroke Dashoffset)
   const arc = document.getElementById("score-arc");
-  const circumference = 389.56;
+  const circumference = 439.8; // 2 * pi * r (r=70)
   setTimeout(() => {
-    arc.style.strokeDashoffset = circumference - (circumference * n / 100);
-  }, 300);
+    arc.style.strokeDashoffset = circumference - (circumference * (n / 100));
+  }, 100);
 
-  // ── Predikat ────────────────────────────────────────────────────────────
+  // ── Predikat & Confetti ────────────────────────────────────────────────
   let predikat, emoji, confettiColors;
-  if (n >= 90)      { predikat = "Luar Biasa!";    emoji = "🏆"; confettiColors = ["#fbbf24","#f59e0b","#fcd34d","#fff"]; }
-  else if (n >= 80) { predikat = "Sangat Baik";    emoji = "⭐"; confettiColors = ["#60a5fa","#3b82f6","#93c5fd","#fff"]; }
-  else if (n >= 70) { predikat = "Baik";           emoji = "👍"; confettiColors = ["#34d399","#10b981","#6ee7b7","#fff"]; }
-  else if (n >= 60) { predikat = "Cukup";          emoji = "📚"; confettiColors = ["#fbbf24","#d97706","#fde68a","#fff"]; }
-  else              { predikat = "Perlu Belajar Lagi"; emoji = "💪"; confettiColors = ["#f87171","#ef4444","#fca5a5","#fff"]; }
+  if (n >= 90)      { predikat = "Luar Biasa!";    emoji = "🏆"; confettiColors = ["#fbbf24","#f59e0b","#fcd34d","#ffffff","#fbbf24"]; }
+  else if (n >= 80) { predikat = "Sangat Baik";    emoji = "⭐"; confettiColors = ["#60a5fa","#3b82f6","#93c5fd","#ffffff","#60a5fa"]; }
+  else if (n >= 70) { predikat = "Baik";           emoji = "👍"; confettiColors = ["#34d399","#10b981","#6ee7b7","#ffffff","#34d399"]; }
+  else if (n >= 60) { predikat = "Cukup";          emoji = "📚"; confettiColors = ["#fbbf24","#d97706","#fde68a","#ffffff","#fbbf24"]; }
+  else              { predikat = "Tetap Semangat!"; emoji = "💪"; confettiColors = ["#f87171","#ef4444","#fca5a5","#ffffff","#f87171"]; }
 
-  document.getElementById("predikat-text").textContent = `${emoji} ${predikat}`;
+  document.getElementById("predikat-text").innerHTML = `${emoji} ${predikat}`;
 
-  // Confetti dots
+  // Generate Confetti
   const bar = document.getElementById("confetti-bar");
-  confettiColors.concat(confettiColors).forEach((c, i) => {
+  confettiColors.forEach((c, i) => {
     const s = document.createElement("span");
     s.style.background = c;
-    s.style.animationDelay = `${i * 60}ms`;
+    s.style.animationDelay = `${i * 150}ms`;
+    // Memberikan variasi ukuran
+    if(i % 2 === 0) s.style.width = "12px", s.style.height = "12px";
     bar.appendChild(s);
   });
-
-  // ── Review jawaban ──────────────────────────────────────────────────────
-  let reviewBuilt = false;
-  let reviewOpen  = false;
-
-  function buildReview() {
-    const area = document.getElementById("review-area");
-    if (!detail.length) {
-      area.innerHTML = `<p class="text-muted small text-center py-2">Detail pembahasan tidak tersedia.</p>`;
-      return;
-    }
-    detail.forEach((d, i) => {
-      const div = document.createElement("div");
-      div.className = `review-item ${d.benar ? "correct" : "wrong"}`;
-      div.innerHTML = `
-        <div class="review-num">${i + 1}</div>
-        <div>
-          <div class="fw-semibold">${d.benar ? "✓ Jawaban Benar" : "✗ Jawaban Salah"}</div>
-          ${!d.benar ? `<div class="review-detail">Jawabanmu: <strong>${d.pilihan || "—"}</strong> &nbsp;·&nbsp; Kunci: <strong>${d.jawaban}</strong></div>` : ""}
-        </div>`;
-      area.appendChild(div);
-    });
-  }
-
-  window.toggleReview = function() {
-    reviewOpen = !reviewOpen;
-    if (reviewOpen && !reviewBuilt) { buildReview(); reviewBuilt = true; }
-    document.getElementById("review-wrap").classList.toggle("open", reviewOpen);
-    document.getElementById("btn-review").innerHTML = reviewOpen
-      ? '<i class="bi bi-eye-slash me-2"></i>Sembunyikan Pembahasan'
-      : '<i class="bi bi-list-check me-2"></i>Lihat Pembahasan Jawaban';
-  };
 }
 
+// ── Clear Session & Kembali ke Home ──────────────────────────────────────
 function clearSession() {
-  ["exam_mapel_id","exam_mapel_nama","exam_kelas","siswa_nama","siswa_kelas",
-   "siswa_kelas_main","exam_guru_nama","hasil_ujian"].forEach(k => sessionStorage.removeItem(k));
-  location.href = "index.html";
+  const btn = document.querySelector('.btn-home');
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Mengalihkan...';
+  
+  setTimeout(() => {
+    ["exam_mapel_id","exam_mapel_nama","exam_kelas","siswa_nama","siswa_kelas",
+     "siswa_kelas_main","exam_guru_nama","hasil_ujian"].forEach(k => sessionStorage.removeItem(k));
+    location.href = "index.html";
+  }, 600); // Jeda singkat agar animasi loading tombol terlihat premium
 }
 </script>
 </body>
