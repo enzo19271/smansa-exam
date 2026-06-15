@@ -127,9 +127,54 @@
           "D": "ntah"
         },
         "jawaban": "A"
+      },
+      {
+        "id": "s1781501482895",
+        "pertanyaan": "Jaksksks",
+        "opsi": {
+          "A": "hdhdhs",
+          "B": "bdbdbd",
+          "C": "bdbdbs",
+          "D": "ndndbd"
+        },
+        "jawaban": "A"
+      },
+      {
+        "id": "s1781501492777",
+        "pertanyaan": "hshshs",
+        "opsi": {
+          "A": "bxbana",
+          "B": "lwoeks",
+          "C": "osowjs",
+          "D": "zuisoak"
+        },
+        "jawaban": "A"
+      },
+      {
+        "id": "s1781501494212",
+        "pertanyaan": "jsksis",
+        "opsi": {
+          "A": "hdhdhd",
+          "B": "dhdhd",
+          "C": "hdhdhs",
+          "D": "hshhds"
+        },
+        "jawaban": "C"
+      },
+      {
+        "id": "s1781501495857",
+        "pertanyaan": "hdhsjajka",
+        "opsi": {
+          "A": "bdhxhx",
+          "B": "bdhdh",
+          "C": "hxhhx",
+          "D": "jdjx"
+        },
+        "jawaban": "C"
       }
     ],
     "aktif": true,
-    "created_at": "2026-06-15T05:20:44.568Z"
+    "created_at": "2026-06-15T05:20:44.568Z",
+    "updated_at": "2026-06-15T05:32:25.422Z"
   }
 ]
