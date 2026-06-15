@@ -19,5 +19,12 @@
     "mapel_id": "bio",
     "guru_key": "sandika",
     "kelas": []
+  },
+  {
+    "id": "004",
+    "nama": "Zani Sumanta, S. Pd., Gr.",
+    "mapel_id": "penjas",
+    "guru_key": "zanizan",
+    "kelas": []
   }
 ]
