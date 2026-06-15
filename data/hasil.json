@@ -92,5 +92,16 @@
     "nilai": 0,
     "ujian_id": "ujian_1781489557876",
     "waktu": "2026-06-15T05:29:48.048Z"
+  },
+  {
+    "id": "1781501584425_kvgze",
+    "nama": "Vernanda",
+    "kelas": "11.4",
+    "mapel_id": "bio",
+    "benar": 4,
+    "total": 5,
+    "nilai": 80,
+    "ujian_id": "ujian_1781500844568",
+    "waktu": "2026-06-15T05:33:04.425Z"
   }
 ]
