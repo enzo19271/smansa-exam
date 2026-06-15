@@ -5,5 +5,12 @@
     "mapel_id": "bindo",
     "guru_key": "Enzoo",
     "kelas": []
+  },
+  {
+    "id": "002",
+    "nama": "Irawati, S. Pd., Gr.",
+    "mapel_id": "bing",
+    "guru_key": "iraira",
+    "kelas": []
   }
 ]
