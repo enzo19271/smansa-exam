@@ -30,277 +30,126 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ANIMATIONS KEYFRAMES */
     @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
-    @keyframes pulseGlow {
-      0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.2); }
-      70% { box-shadow: 0 0 0 10px rgba(37, 99, 235, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
-    }
-
-    /* NAVBAR STYLES */
+    /* NAVBAR */
     .navbar { 
       background: #ffffff;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      border-bottom: 1px solid rgba(0,0,0,0.05);
       padding: 0.85rem 1rem;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.02);
     }
     .navbar-brand { 
-      font-size: 1.25rem;
-      font-weight: 500;
-      letter-spacing: -0.3px;
-      color: var(--text-dark) !important;
+      font-size: 1.25rem; font-weight: 500;
+      letter-spacing: -0.3px; color: var(--text-dark) !important;
     }
     .navbar-brand span { 
-      font-style: italic;
-      font-weight: 800;
+      font-style: italic; font-weight: 800;
       background: var(--blue-gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
     .btn-menu-burger {
-      border: none;
-      background: #f1f5f9;
-      color: var(--text-dark);
-      font-size: 1.2rem;
-      padding: 0.5rem;
-      border-radius: 10px;
+      border: none; background: #f1f5f9; color: var(--text-dark);
+      font-size: 1.2rem; padding: 0.5rem; border-radius: 10px;
       transition: all 0.2s ease;
     }
-    .btn-menu-burger:hover {
-      background: #e2e8f0;
-    }
+    .btn-menu-burger:hover { background: #e2e8f0; }
 
-    /* SIDEBAR OFFCANVAS */
-    .offcanvas-sidebar {
-      width: 290px !important;
-      background: #ffffff !important;
-      border-right: 1px solid var(--border-color);
-    }
+    /* SIDEBAR */
+    .offcanvas-sidebar { width: 290px !important; background: #ffffff !important; border-right: 1px solid var(--border-color); }
     .sidebar-link {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.85rem 1rem;
-      color: var(--text-muted);
-      font-weight: 600;
-      font-size: 0.92rem;
-      text-decoration: none;
-      border-radius: 12px;
-      transition: all 0.2s ease;
-      margin-bottom: 0.5rem;
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.85rem 1rem; color: var(--text-muted);
+      font-weight: 600; font-size: 0.92rem; text-decoration: none;
+      border-radius: 12px; transition: all 0.2s ease; margin-bottom: 0.5rem;
     }
     .sidebar-link:hover, .sidebar-link.active {
-      background: rgba(37, 99, 235, 0.05);
-      color: var(--border-focus);
+      background: rgba(37,99,235,0.05); color: var(--border-focus);
     }
 
-    /* HERO GRADIENT BANNER WITH ENTICING ANIMATION */
+    /* HERO */
     .hero-container {
-      background: var(--blue-gradient);
-      border-radius: 18px;
-      padding: 2.2rem 1.8rem;
-      margin-top: 1.5rem;
-      margin-bottom: 1.5rem;
-      color: #ffffff;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 10px 25px -5px rgba(29, 78, 216, 0.3);
-      animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+      background: var(--blue-gradient); border-radius: 18px;
+      padding: 2.2rem 1.8rem; margin-top: 1.5rem; margin-bottom: 1.5rem;
+      color: #ffffff; position: relative; overflow: hidden;
+      box-shadow: 0 10px 25px -5px rgba(29,78,216,0.3);
+      animation: fadeInUp 0.6s cubic-bezier(0.16,1,0.3,1) both;
     }
-    .hero-container h1 { 
-      font-size: 1.9rem; 
-      font-weight: 800; 
-      margin-bottom: 0.5rem;
-      letter-spacing: -0.5px;
-    }
-    .hero-container p { 
-      font-size: 0.85rem;
-      line-height: 1.6;
-      max-width: 65%;
-      opacity: 0.95;
-      font-weight: 400;
-    }
+    .hero-container h1 { font-size: 1.9rem; font-weight: 800; margin-bottom: 0.5rem; letter-spacing: -0.5px; }
+    .hero-container p  { font-size: 0.85rem; line-height: 1.6; max-width: 65%; opacity: 0.95; font-weight: 400; }
     .hero-icon-wrapper {
-      position: absolute;
-      right: 2rem;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 5rem;
-      opacity: 0.25;
-      color: #ffffff;
-      line-height: 1;
-      transition: all 0.5s ease;
+      position: absolute; right: 2rem; top: 50%; transform: translateY(-50%);
+      font-size: 5rem; opacity: 0.25; color: #ffffff; transition: all 0.5s ease;
     }
-    .hero-container:hover .hero-icon-wrapper {
-      transform: translateY(-50%) scale(1.1) rotate(-5deg);
-      opacity: 0.4;
-    }
+    .hero-container:hover .hero-icon-wrapper { transform: translateY(-50%) scale(1.1) rotate(-5deg); opacity: 0.4; }
 
-    /* SEARCH BOX BARU */
-    .search-wrapper {
-      position: relative;
-      margin-bottom: 1.75rem;
-      animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
+    /* SEARCH */
+    .search-wrapper { position: relative; margin-bottom: 1.75rem; animation: fadeInUp 0.7s cubic-bezier(0.16,1,0.3,1) both; }
     .search-input {
-      width: 100%;
-      padding: 0.95rem 3.5rem 0.95rem 1.2rem;
-      background: var(--card-bg);
-      border: 1.5px solid var(--border-color);
-      border-radius: 14px;
-      font-size: 0.95rem;
-      font-weight: 500;
-      color: var(--text-dark);
-      transition: all 0.25s ease;
+      width: 100%; padding: 0.95rem 3.5rem 0.95rem 1.2rem;
+      background: var(--card-bg); border: 1.5px solid var(--border-color);
+      border-radius: 14px; font-size: 0.95rem; font-weight: 500;
+      color: var(--text-dark); transition: all 0.25s ease;
       box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
     }
-    .search-input::placeholder {
-      color: #94a3b8;
-    }
-    .search-input:focus {
-      outline: none;
-      border-color: var(--border-focus);
-      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
-    }
+    .search-input::placeholder { color: #94a3b8; }
+    .search-input:focus { outline: none; border-color: var(--border-focus); box-shadow: 0 0 0 4px rgba(37,99,235,0.15); }
     .search-wrapper .search-icon {
-      position: absolute;
-      right: 1.3rem;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-dark);
-      font-size: 1.25rem;
-      pointer-events: none;
-      transition: color 0.2s;
+      position: absolute; right: 1.3rem; top: 50%; transform: translateY(-50%);
+      color: var(--text-dark); font-size: 1.25rem; pointer-events: none;
     }
-    .search-input:focus + .search-icon {
-      color: var(--border-focus);
-    }
+    .search-input:focus + .search-icon { color: var(--border-focus); }
 
-    /* ACCORDION LIST VIEW CARD */
-    .card-mapel-row {
-      background: var(--card-bg);
-      border: 1.5px solid var(--border-color);
-      border-radius: 16px;
-      overflow: hidden;
-      margin-bottom: 1.25rem;
-      position: relative;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    /* MAPEL CARD — klik langsung, tanpa kelas di bawahnya */
+    .card-mapel {
+      background: var(--card-bg); border: 1.5px solid var(--border-color);
+      border-radius: 16px; overflow: hidden; margin-bottom: 1rem;
+      position: relative; cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16,1,0.3,1);
       box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
-      animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation: fadeInUp 0.8s cubic-bezier(0.16,1,0.3,1) both;
+      text-decoration: none; display: block; color: inherit;
     }
-    /* Top Line Accent Card */
-    .card-mapel-row::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 5px;
-      background: linear-gradient(90deg, #3b82f6 0%, #60a5fa 100%);
+    .card-mapel::before {
+      content: ""; position: absolute; top: 0; left: 0; right: 0;
+      height: 4px; background: linear-gradient(90deg,#3b82f6 0%,#60a5fa 100%);
     }
-    .card-mapel-row:hover {
-      border-color: #94a3b8;
-      transform: translateY(-2px);
-      box-shadow: 0 12px 20px -8px rgba(0,0,0,0.08);
+    .card-mapel:hover {
+      border-color: #94a3b8; transform: translateY(-3px);
+      box-shadow: 0 14px 24px -8px rgba(0,0,0,0.1);
+      color: inherit;
     }
-    .mapel-header-section {
-      padding: 1.4rem 1.4rem 1rem 1.4rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    .card-mapel:active { transform: translateY(-1px); }
+    .card-mapel-body {
+      padding: 1.35rem 1.4rem;
+      display: flex; align-items: center; justify-content: space-between;
     }
-    .mapel-title-area h6 {
-      font-size: 1.35rem;
-      font-weight: 700;
-      color: var(--text-dark);
-      margin-bottom: 0.2rem;
-      letter-spacing: -0.3px;
-    }
-    .mapel-title-area p {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      margin-bottom: 0;
-      font-weight: 500;
-    }
-    .mapel-arrow-icon {
-      font-size: 1.3rem;
-      color: var(--text-dark);
-      transition: transform 0.3s ease;
-    }
-    .card-mapel-row:hover .mapel-arrow-icon {
-      transform: translateY(3px);
-    }
+    .mapel-title { font-size: 1.25rem; font-weight: 700; color: var(--text-dark); margin-bottom: 0.2rem; letter-spacing: -0.3px; }
+    .mapel-guru  { font-size: 0.83rem; color: var(--text-muted); font-weight: 500; margin: 0; }
+    .mapel-arrow { font-size: 1.2rem; color: #94a3b8; transition: transform 0.25s ease, color 0.2s; }
+    .card-mapel:hover .mapel-arrow { transform: translateX(4px); color: var(--border-focus); }
 
-    /* KELAS SELECTION BAR */
-    .kelas-action-bar {
-      display: flex;
-      border-top: 1px solid var(--border-color);
-      background: #fafafa;
-    }
-    .badge-kelas-btn {
-      flex: 1;
-      text-align: center;
-      padding: 0.9rem 0.5rem;
-      font-size: 0.78rem;
-      font-weight: 800;
-      color: var(--text-dark);
-      cursor: pointer;
-      text-transform: uppercase;
-      transition: all 0.2s ease;
-      letter-spacing: 0.5px;
-      user-select: none;
-    }
-    .badge-kelas-btn:not(:last-child) {
-      border-right: 1px solid var(--border-color);
-    }
-    .badge-kelas-btn:hover {
-      background-color: rgba(37, 99, 235, 0.06);
-      color: var(--border-focus);
-      animation: pulseGlow 1s ease-in-out infinite;
-    }
-
-    /* SKELETON LOADER */
-    .placeholder-glow .placeholder {
-      background-color: #e2e8f0;
-      border-radius: 6px;
-    }
+    /* SKELETON */
+    .placeholder-glow .placeholder { background-color: #e2e8f0; border-radius: 6px; }
 
     /* SECTION TITLE */
-    .section-title {
-      font-size: 0.85rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      color: var(--text-muted);
-    }
+    .section-title { font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); }
 
     /* FOOTER */
     footer { 
-      border-top: 1px solid var(--border-color);
-      background: #ffffff; 
-      color: var(--text-muted); 
-      font-size: 0.8rem; 
-      padding: 1.5rem 0; 
-      margin-top: 4rem;
-      font-weight: 500;
+      border-top: 1px solid var(--border-color); background: #ffffff; 
+      color: var(--text-muted); font-size: 0.8rem; padding: 1.5rem 0; 
+      margin-top: 4rem; font-weight: 500;
     }
 
-    /* RESPONSIVE LAYOUT SMARTPHONE */
     @media (max-width: 576px) {
       .hero-container { padding: 1.75rem 1.25rem; }
       .hero-container p { max-width: 100%; font-size: 0.78rem; }
-      .hero-icon-wrapper { display: none; } /* Menyembunyikan icon besar di HP agar fokus ke teks */
-      .mapel-title-area h6 { font-size: 1.2rem; }
-      .badge-kelas-btn { padding: 0.8rem 0.25rem; font-size: 0.72rem; }
+      .hero-icon-wrapper { display: none; }
+      .mapel-title { font-size: 1.1rem; }
     }
   </style>
 </head>
@@ -311,12 +160,11 @@
     <button class="btn btn-menu-burger me-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu">
       <i class="bi bi-list"></i>
     </button>
-    
     <div class="mx-auto navbar-brand">
       <span>Smansanam</span> Exam Portal
     </div>
-    
-    <div style="width: 38px;"></div> </div>
+    <div style="width:38px;"></div>
+  </div>
 </nav>
 
 <div class="offcanvas offcanvas-start offcanvas-sidebar" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
@@ -325,55 +173,55 @@
     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
   </div>
   <div class="offcanvas-body p-3">
-    <a href="#" class="sidebar-link active">
-      <i class="bi bi-house-door-fill me-2"></i> Dashboard Utama
-    </a>
+    <a href="#" class="sidebar-link active"><i class="bi bi-house-door-fill me-2"></i> Dashboard Utama</a>
     <hr class="opacity-25">
-    <p class="text-uppercase fw-bold text-muted px-2" style="font-size:0.7rem; letter-spacing:1px;">Internal Link</p>
-    <a href="guru.html" class="sidebar-link">
-      <i class="bi bi-person-badge me-2"></i> Portal Akademik Guru
-    </a>
-    <a href="admin.html" class="sidebar-link">
-      <i class="bi bi-shield-lock me-2"></i> Administrator System
-    </a>
+    <p class="text-uppercase fw-bold text-muted px-2" style="font-size:0.7rem;letter-spacing:1px;">Internal Link</p>
+    <a href="guru.html" class="sidebar-link"><i class="bi bi-person-badge me-2"></i> Portal Akademik Guru</a>
+    <a href="admin.html" class="sidebar-link"><i class="bi bi-shield-lock me-2"></i> Administrator System</a>
   </div>
 </div>
 
 <div class="container px-3">
   <div class="hero-container">
     <h1>Selamat Datang,</h1>
-    <p class="mb-0">diportal Ujian Sumatif SMAN 1 Namang. Diharapkan para siswa mengerjakan ujian dengan tertib dan jujur sesuai dengan nilai-nilai dan visi misi sekolah.</p>
-    <div class="hero-icon-wrapper">
-      <i class="bi bi-mortarboard-fill"></i>
-    </div>
+    <p class="mb-0">di portal Ujian Sumatif SMAN 1 Namang. Pilih mata pelajaran yang akan diujikan, lalu isi data diri dan kelas di halaman berikutnya.</p>
+    <div class="hero-icon-wrapper"><i class="bi bi-mortarboard-fill"></i></div>
   </div>
 
   <div class="search-wrapper">
-    <input type="text" id="searchMapel" class="search-input" placeholder="Search Here...." onkeyup="filterMapel()">
+    <input type="text" id="searchMapel" class="search-input" placeholder="Cari mata pelajaran..." onkeyup="filterMapel()">
     <i class="bi bi-search search-icon"></i>
   </div>
 
   <div class="pb-5">
     <div class="d-flex align-items-center justify-content-between mb-3">
       <h2 class="section-title mb-0"><i class="bi bi-collection-check me-2 text-primary"></i>Mata Pelajaran Ujian</h2>
-      <span class="badge bg-white text-dark border fw-bold px-2.5 py-1.5" id="info-count" style="font-size: 0.75rem;"></span>
+      <span class="badge bg-white text-dark border fw-bold px-2 py-1" id="info-count" style="font-size:0.75rem;"></span>
     </div>
 
-    <div class="row g-0" id="mapel-container">
-      <div class="col-12 skeleton-item" id="sk1">
-        <div class="card-mapel-row" style="height: 125px;">
-          <div class="mapel-header-section placeholder-glow">
-            <div class="mapel-title-area col-8">
-              <span class="placeholder col-6 mb-2 d-block" style="height:24px;"></span>
-              <span class="placeholder col-4 d-block" style="height:14px;"></span>
-            </div>
-            <span class="placeholder col-1" style="height:24px;"></span>
+    <div id="mapel-container">
+      <!-- Skeleton loader -->
+      <div class="card-mapel skeleton-item" style="pointer-events:none;">
+        <div class="card-mapel-body placeholder-glow">
+          <div class="col-8">
+            <span class="placeholder col-7 mb-2 d-block" style="height:20px;"></span>
+            <span class="placeholder col-4 d-block" style="height:13px;"></span>
           </div>
+          <span class="placeholder col-1" style="height:20px;"></span>
+        </div>
+      </div>
+      <div class="card-mapel skeleton-item" style="pointer-events:none;">
+        <div class="card-mapel-body placeholder-glow">
+          <div class="col-8">
+            <span class="placeholder col-6 mb-2 d-block" style="height:20px;"></span>
+            <span class="placeholder col-5 d-block" style="height:13px;"></span>
+          </div>
+          <span class="placeholder col-1" style="height:20px;"></span>
         </div>
       </div>
     </div>
 
-    <div id="empty-state" class="text-center py-5 d-none bg-white border rounded-4 mt-2 shadow-sm animation-fade">
+    <div id="empty-state" class="text-center py-5 d-none bg-white border rounded-4 mt-2 shadow-sm">
       <i class="bi bi-search-heart display-5 text-muted mb-2 d-block"></i>
       <h5 class="fw-bold text-dark mb-1" style="font-size:1.1rem">Mapel Tidak Ditemukan</h5>
       <p class="text-muted small mb-3">Periksa kembali kata kunci pencarian Anda.</p>
@@ -394,12 +242,11 @@ async function loadMapel() {
     const data = await res.json();
     renderMapel(data);
   } catch {
-    // Data dummy otomatis dimuat jika API backend belum online/lokal
     renderMapel([
-      { id: "matematika", nama: "Matematika", guru: "Herlina, S. Pd.", kelas: [10, 11, 12] },
-      { id: "biologi", nama: "Biologi", guru: "Herlina, S. Pd.", kelas: [10, 11, 12] },
-      { id: "bahasa_inggris", nama: "Bahasa Inggris", guru: "Herlina, S. Pd.", kelas: [10, 11, 12] },
-      { id: "olahraga", nama: "Pendidikan Jasmani", guru: "Herlina, S. Pd.", kelas: [10, 11, 12] }
+      { id: "matematika",    nama: "Matematika",       guru: "Herlina, S. Pd." },
+      { id: "biologi",       nama: "Biologi",           guru: "Herlina, S. Pd." },
+      { id: "bahasa_inggris",nama: "Bahasa Inggris",    guru: "Herlina, S. Pd." },
+      { id: "olahraga",      nama: "Pendidikan Jasmani",guru: "Herlina, S. Pd." }
     ]);
   }
 }
@@ -409,91 +256,54 @@ function renderMapel(list) {
   const container = document.getElementById("mapel-container");
   const empty     = document.getElementById("empty-state");
 
-  // Bersihkan penampung list lama agar tidak menumpuk saat reset
-  const oldRows = container.querySelectorAll(".item-mapel-row");
-  oldRows.forEach(r => r.remove());
-
+  container.querySelectorAll(".item-mapel").forEach(r => r.remove());
   if (!list.length) { empty.classList.remove("d-none"); return; }
 
-  document.getElementById("info-count").textContent = `${list.length} Sesi Ujian`;
+  document.getElementById("info-count").textContent = `${list.length} Mata Pelajaran`;
 
   list.forEach((m, index) => {
-    // Generate sub-kelas untuk setiap kelas (10.1-10.6, 11.1-11.6, 12.1-12.6)
-    let kelasBadges = "";
-    (m.kelas || [10,11,12]).forEach(k => {
-      kelasBadges += `<div class="badge-kelas-group">
-        <div class="kelas-label" style="font-size:0.7rem;color:#64748b;margin-bottom:0.4rem;font-weight:600;">Kelas ${k}</div>`;
-      for (let sub = 1; sub <= 6; sub++) {
-        const subKelas = `${k}.${sub}`;
-        kelasBadges += `<div class="badge-kelas-btn" onclick="pilihKelas(this,'${m.id}','${m.nama}','${subKelas}')">${subKelas}</div>`;
-      }
-      kelasBadges += `</div>`;
-    });
-
-    const namaGuru = m.guru || "Herlina, S. Pd.";
-
-    const itemRow = document.createElement("div");
-    itemRow.className = "col-12 item-mapel-row";
-    itemRow.setAttribute("data-nama", m.nama.toLowerCase());
-    
-    // Menambahkan efek delay stagger animasi CSS murni menggunakan inline style
-    itemRow.style.animationDelay = `${index * 0.08}s`;
-    
-    itemRow.innerHTML = `
-      <div class="card-mapel-row">
-        <div class="mapel-header-section">
-          <div class="mapel-title-area">
-            <h6>${m.nama}</h6>
-            <p>Guru: ${namaGuru}</p>
-          </div>
-          <div class="mapel-arrow-icon">
-            <i class="bi bi-chevron-down"></i>
-          </div>
+    const namaGuru = m.guru || "—";
+    const el = document.createElement("a");
+    el.className = "card-mapel item-mapel";
+    el.href = "#";
+    el.setAttribute("data-nama", m.nama.toLowerCase());
+    el.style.animationDelay = `${index * 0.07}s`;
+    el.onclick = (e) => { e.preventDefault(); pilihMapel(m.id, m.nama); };
+    el.innerHTML = `
+      <div class="card-mapel-body">
+        <div>
+          <div class="mapel-title">${m.nama}</div>
+          <p class="mapel-guru">Guru Pengampu: ${namaGuru}</p>
         </div>
-        <div class="kelas-action-bar">
-          ${kelasBadges}
-        </div>
+        <i class="bi bi-arrow-right mapel-arrow"></i>
       </div>`;
-    container.appendChild(itemRow);
+    container.appendChild(el);
   });
 }
 
-function pilihKelas(el, mapelId, mapelNama, kelas) {
-  sessionStorage.setItem("exam_mapel_id", mapelId);
+function pilihMapel(mapelId, mapelNama) {
+  sessionStorage.setItem("exam_mapel_id",   mapelId);
   sessionStorage.setItem("exam_mapel_nama", mapelNama);
-  sessionStorage.setItem("exam_kelas", kelas);
   location.href = "form-ujian.html";
 }
 
 function filterMapel() {
   const keyword = document.getElementById("searchMapel").value.toLowerCase();
-  const rows = document.querySelectorAll(".item-mapel-row");
-  const emptyState = document.getElementById("empty-state");
-  let foundCounter = 0;
-
+  const rows    = document.querySelectorAll(".item-mapel");
+  const emptyEl = document.getElementById("empty-state");
+  let found = 0;
   rows.forEach(row => {
-    const namaMapel = row.getAttribute("data-nama");
-    if (namaMapel.includes(keyword)) {
-      row.style.setProperty("display", "block", "important");
-      foundCounter++;
-    } else {
-      row.style.setProperty("display", "none", "important");
-    }
+    const match = row.getAttribute("data-nama").includes(keyword);
+    row.style.display = match ? "" : "none";
+    if (match) found++;
   });
-
-  if (foundCounter === 0 && rows.length > 0) {
-    emptyState.classList.remove("d-none");
-  } else {
-    emptyState.classList.add("d-none");
-  }
+  emptyEl.classList.toggle("d-none", found > 0 || rows.length === 0);
 }
 
-// Fungsi tambahan pembantu untuk mereset pencarian di Android / Browser
 function resetSearch() {
-  const input = document.getElementById("searchMapel");
-  input.value = "";
+  document.getElementById("searchMapel").value = "";
   filterMapel();
-  input.focus();
+  document.getElementById("searchMapel").focus();
 }
 
 loadMapel();
