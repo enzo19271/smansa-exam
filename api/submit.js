@@ -39,12 +39,12 @@ module.exports = async (req, res) => {
 
   try {
     const body = await parseBody(req);
-    const { nama, kelas, mapel_id, jawaban } = body;
+    const { nama, kelas, mapel_id, jawaban, ujian_id } = body;
 
     if (!nama || !kelas || !mapel_id || !jawaban)
       return res.status(400).json({ error: "Data tidak lengkap" });
 
-    // Cek duplikat sekali lagi saat submit (double-guard)
+    // Cek duplikat
     const { data: hasilList, sha: hasilSha } = await readFile("data/hasil.json", []);
     const list = Array.isArray(hasilList) ? hasilList : [];
 
@@ -62,13 +62,31 @@ module.exports = async (req, res) => {
       });
     }
 
-    // Ambil soal
-    const kelasMain = String(kelas).split(".")[0];
-    const { data: soalList } = await readFile(`data/soal/${mapel_id}_${kelasMain}.json`, []);
-    const soal = Array.isArray(soalList) ? soalList : [];
+    // Ambil soal dari ujian.json (sumber utama)
+    let soal = [];
+    const { data: ujianList } = await readFile("data/ujian.json", []);
+    const ujianArr = Array.isArray(ujianList) ? ujianList : [];
+
+    // Cari ujian yang cocok: by ujian_id kalau ada, atau by mapel_id+kelas
+    let ujianMatch = ujian_id
+      ? ujianArr.find(u => u.id === ujian_id)
+      : ujianArr.find(u =>
+          u.mapel_id === mapel_id &&
+          u.aktif !== false &&
+          (u.kelas || []).some(k => String(k) === String(kelas) || String(kelas).startsWith(String(k) + "."))
+        );
+
+    if (ujianMatch && Array.isArray(ujianMatch.soal) && ujianMatch.soal.length) {
+      soal = ujianMatch.soal;
+    } else {
+      // Fallback ke file soal lama
+      const kelasMain = String(kelas).split(".")[0];
+      const { data: soalFile } = await readFile(`data/soal/${mapel_id}_${kelasMain}.json`, []);
+      soal = Array.isArray(soalFile) ? soalFile : [];
+    }
 
     if (!soal.length)
-      return res.status(404).json({ error: `Soal tidak ditemukan (${mapel_id} kelas ${kelasMain})` });
+      return res.status(404).json({ error: `Soal tidak ditemukan untuk ujian ini` });
 
     // Hitung nilai
     let benar = 0;
@@ -86,6 +104,7 @@ module.exports = async (req, res) => {
     list.push({
       id: `${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
       nama, kelas, mapel_id, benar, total, nilai,
+      ujian_id: ujianMatch?.id || null,
       waktu: new Date().toISOString(),
     });
     await writeFile("data/hasil.json", list, hasilSha);
