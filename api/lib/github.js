@@ -3,14 +3,7 @@
 const BASE = "https://api.github.com";
 
 function getHeaders() {
-  const token  = process.env.GITHUB_TOKEN;
-  const repo   = process.env.GITHUB_REPO;
-
-  // Debug: log semua env keys yang tersedia (hapus setelah confirmed bekerja)
-  console.log("[github.js] GITHUB_REPO =", JSON.stringify(repo));
-  console.log("[github.js] GITHUB_TOKEN exists =", !!token);
-  console.log("[github.js] All env keys =", Object.keys(process.env).filter(k => k.startsWith("GITHUB")));
-
+  const token = process.env.GITHUB_TOKEN;
   return {
     Authorization: `token ${token}`,
     "Content-Type": "application/json",
