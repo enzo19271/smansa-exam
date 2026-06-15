@@ -156,7 +156,6 @@
 
 <div id="print-area"></div>
 
-<!-- LOGIN GATE -->
 <div id="login-gate">
   <div class="login-card-guru bg-white p-4 mx-3">
     <div class="text-center mb-4">
@@ -181,7 +180,6 @@
   </div>
 </div>
 
-<!-- MAIN CONTENT -->
 <div id="guru-content">
 
   <nav class="topnav">
@@ -193,15 +191,12 @@
 
   <div class="container py-3 main-content" style="max-width:680px;">
 
-    <!-- Profile Banner -->
     <div class="profile-banner" id="profile-banner">
       <h5 id="guru-nama-display">Nama guru</h5>
       <small>Key Login: <span id="guru-key-display">—</span></small>
     </div>
 
-    <!-- Action Bar (Hasil Ujian / Coming soon) — hanya tampil di tab soal -->
     <div id="main-panel">
-      <!-- Tombol Tambah Ujian di dalam banner (versi mobile) -->
       <div class="d-flex gap-2 mb-3">
         <button class="btn btn-success fw-bold flex-fill rounded-3" onclick="showHasilPanel()">
           <i class="bi bi-graph-up me-1"></i>Hasil Ujian
@@ -211,24 +206,20 @@
         </button>
       </div>
 
-      <!-- Search -->
       <div class="search-box">
         <input type="text" id="search-ujian" placeholder="Search Here...." onkeyup="filterUjian()"/>
         <i class="bi bi-search si"></i>
       </div>
 
-      <!-- Daftar Ujian -->
       <div id="ujian-list">
         <div class="text-center text-muted py-4"><span class="spinner-border spinner-border-sm me-2"></span>Memuat data ujian...</div>
       </div>
 
-      <!-- FAB Tambah Ujian -->
       <button class="btn btn-primary w-100 fw-bold rounded-3 py-2 mt-2" onclick="showSoalPanel(null)" style="background:var(--blue-gradient);border:none;">
         <i class="bi bi-plus-lg me-1"></i>Tambah Ujian
       </button>
     </div>
 
-    <!-- ─── SOAL EDITOR PANEL ─── -->
     <div id="soal-panel">
       <div class="soal-editor-header">
         <div class="d-flex align-items-center gap-2 mb-2">
@@ -237,7 +228,6 @@
         </div>
       </div>
 
-      <!-- Konfigurasi ujian -->
       <div class="bg-white border rounded-3 p-3 mb-3">
         <div class="mb-3 d-flex align-items-center gap-3">
           <label class="fw-bold" style="min-width:90px;">Mapel :</label>
@@ -256,7 +246,6 @@
         </div>
       </div>
 
-      <!-- Tombol aksi -->
       <div class="d-flex gap-2 mb-3">
         <button class="btn fw-bold flex-grow-1 rounded-3" style="background:#f59e0b;color:#fff;border:none;" onclick="tambahSoalBaru()">
           <i class="bi bi-plus me-1"></i>Tambah Baris
@@ -266,21 +255,29 @@
         </button>
       </div>
 
-      <!-- Container soal -->
       <div id="soal-container-editor"></div>
     </div>
 
-    <!-- ─── HASIL PANEL ─── -->
     <div id="hasil-panel">
-      <div class="d-flex align-items-center gap-2 mb-3">
-        <button class="btn btn-sm btn-outline-secondary" onclick="backToMain()"><i class="bi bi-arrow-left"></i></button>
-        <h6 class="fw-bold mb-0">Hasil Ujian Siswa</h6>
-        <div class="ms-auto d-flex gap-1">
-          <button class="btn btn-sm btn-success fw-bold" onclick="exportExcel()"><i class="bi bi-file-earmark-excel"></i></button>
-          <button class="btn btn-sm btn-primary fw-bold" onclick="exportDocx()"><i class="bi bi-file-earmark-word"></i></button>
-          <button class="btn btn-sm btn-danger fw-bold" onclick="exportPdf()"><i class="bi bi-file-earmark-pdf"></i></button>
+      <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn btn-sm btn-outline-secondary" onclick="backToMain()"><i class="bi bi-arrow-left"></i></button>
+          <h6 class="fw-bold mb-0">Hasil Ujian Siswa</h6>
+        </div>
+        
+        <div class="d-flex flex-wrap align-items-center gap-2 ms-auto">
+          <select id="filter-kelas-hasil" class="form-select form-select-sm shadow-sm" style="width: auto; min-width: 130px; font-weight: 600;" onchange="renderHasil()">
+            <option value="all">Semua Kelas</option>
+            </select>
+
+          <div class="d-flex gap-1">
+            <button class="btn btn-sm btn-success fw-bold shadow-sm" onclick="exportExcel()" title="Ekspor ke Excel"><i class="bi bi-file-earmark-excel"></i></button>
+            <button class="btn btn-sm btn-primary fw-bold shadow-sm" onclick="exportDocx()" title="Ekspor ke Word"><i class="bi bi-file-earmark-word"></i></button>
+            <button class="btn btn-sm btn-danger fw-bold shadow-sm" onclick="exportPdf()" title="Cetak ke PDF"><i class="bi bi-file-earmark-pdf"></i></button>
+          </div>
         </div>
       </div>
+
       <div class="table-responsive border rounded-3 bg-white">
         <table class="table table-hover align-middle mb-0 table-sm">
           <thead class="table-light">
@@ -300,10 +297,7 @@
       </div>
     </div>
 
-  </div><!-- /container -->
-</div><!-- /guru-content -->
-
-<div id="toast-guru" class="toast align-items-center text-bg-dark border-0" role="alert" data-bs-delay="2500">
+  </div></div><div id="toast-guru" class="toast align-items-center text-bg-dark border-0" role="alert" data-bs-delay="2500">
   <div class="d-flex p-1">
     <div class="toast-body fw-bold small" id="toast-msg-guru"></div>
     <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
@@ -597,23 +591,57 @@ async function deleteUjian(id) {
   } catch(err) { toast(err.message,"danger"); }
 }
 
-// ── HASIL ──────────────────────────────────────────────────────────────────
+// ── HASIL & FILTER ─────────────────────────────────────────────────────────
 async function loadHasil() {
   try {
     const res = await fetch("/api/hasil", {headers:{"x-guru-key":guruKey}});
     hasilData = await res.json();
     if (!Array.isArray(hasilData)) hasilData = [];
   } catch { hasilData = []; }
+  
+  updateFilterKelasOptions();
   renderHasil();
+}
+
+// Update Opsi Filter Dropdown Kelas berdasarkan data yang tersedia
+function updateFilterKelasOptions() {
+  const select = document.getElementById("filter-kelas-hasil");
+  const currentVal = select.value;
+  
+  // Dapatkan daftar kelas unik yang tersedia di hasilData
+  const uniqueKelas = [...new Set(hasilData.map(h => String(h.kelas)))].sort();
+  
+  let html = `<option value="all">Semua Kelas</option>`;
+  uniqueKelas.forEach(k => {
+    html += `<option value="${esc(k)}">Kelas ${esc(k)}</option>`;
+  });
+  
+  select.innerHTML = html;
+  
+  // Jika nilai sebelumnya masih ada di daftar kelas yang baru, kembalikan ke pilihan itu
+  if (currentVal !== "all" && uniqueKelas.includes(currentVal)) {
+    select.value = currentVal;
+  } else {
+    select.value = "all";
+  }
+}
+
+// Ambil data hasil berdasarkan filter saat ini
+function getFilteredHasilData() {
+  const selectedKelas = document.getElementById("filter-kelas-hasil").value;
+  if (selectedKelas === "all") return hasilData;
+  return hasilData.filter(h => String(h.kelas) === selectedKelas);
 }
 
 function renderHasil() {
   const tbody = document.getElementById("tbody-hasil");
-  if (!hasilData.length) {
-    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-3">Belum ada hasil ujian.</td></tr>';
+  const filteredData = getFilteredHasilData();
+
+  if (!filteredData.length) {
+    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-3">Tidak ada data untuk kelas ini.</td></tr>';
     return;
   }
-  tbody.innerHTML = hasilData.slice().reverse().map(h => `
+  tbody.innerHTML = filteredData.slice().reverse().map(h => `
     <tr>
       <td class="ps-3 fw-bold">${esc(h.nama)}</td>
       <td>Kelas ${esc(String(h.kelas))}</td>
@@ -631,21 +659,29 @@ function showHasilPanel() {
   loadHasil();
 }
 
-// ── EXPORT ─────────────────────────────────────────────────────────────────
+// ── EXPORT (Excel/Word/PDF) ────────────────────────────────────────────────
 function exportExcel() {
-  if (!hasilData.length) { toast("Tidak ada data!","warning"); return; }
-  const ws = XLSX.utils.json_to_sheet(hasilData.map((h,i)=>({
+  const dataToExport = getFilteredHasilData();
+  if (!dataToExport.length) { toast("Tidak ada data untuk diekspor!","warning"); return; }
+  
+  const ws = XLSX.utils.json_to_sheet(dataToExport.map((h,i)=>({
     No:i+1, Nama:h.nama, Kelas:`Kelas ${h.kelas}`, Nilai:h.nilai, Benar:h.benar, Total:h.total,
     Status: h.nilai>=70?"LULUS":"REMIDI"
   })));
   const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Hasil");
-  XLSX.writeFile(wb, `Hasil-Ujian-${new Date().toISOString().slice(0,10)}.xlsx`);
-  toast("Excel diunduh!","success");
+  
+  const filterLabel = document.getElementById("filter-kelas-hasil").value;
+  const fileName = filterLabel === "all" ? "Hasil-Ujian-Semua-Kelas" : `Hasil-Ujian-Kelas-${filterLabel}`;
+  
+  XLSX.writeFile(wb, `${fileName}-${new Date().toISOString().slice(0,10)}.xlsx`);
+  toast("Excel berhasil diunduh!","success");
 }
 
 function exportDocx() {
-  if (!hasilData.length) { toast("Tidak ada data!","warning"); return; }
-  let rows = hasilData.map((h,i) => `<tr>
+  const dataToExport = getFilteredHasilData();
+  if (!dataToExport.length) { toast("Tidak ada data untuk diekspor!","warning"); return; }
+  
+  let rows = dataToExport.map((h,i) => `<tr>
     <td style="border:1px solid #000;padding:6px;text-align:center;">${i+1}</td>
     <td style="border:1px solid #000;padding:6px;font-weight:bold;">${h.nama}</td>
     <td style="border:1px solid #000;padding:6px;text-align:center;">Kelas ${h.kelas}</td>
@@ -654,25 +690,33 @@ function exportDocx() {
     <td style="border:1px solid #000;padding:6px;text-align:center;">${h.total}</td>
     <td style="border:1px solid #000;padding:6px;text-align:center;font-weight:bold;">${h.nilai>=70?"LULUS":"REMIDI"}</td>
   </tr>`).join("");
+  
+  const filterLabel = document.getElementById("filter-kelas-hasil").value;
+  const subtitle = filterLabel === "all" ? "Semua Kelas" : `Kelas ${filterLabel}`;
+  
   const html = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
   <head><meta charset="utf-8"></head><body style="font-family:Arial,sans-serif;margin:30px;">
-  <h3 style="text-align:center;">Rekap Hasil Ujian — ${new Date().toLocaleDateString("id-ID")}</h3>
-  <table border="1" cellspacing="0" style="width:100%;border-collapse:collapse;">
+  <h3 style="text-align:center; margin-bottom: 5px;">Rekap Hasil Ujian — ${new Date().toLocaleDateString("id-ID")}</h3>
+  <h4 style="text-align:center; margin-top: 0; color: #555;">Filter: ${subtitle}</h4>
+  <table border="1" cellspacing="0" style="width:100%;border-collapse:collapse; margin-top: 20px;">
     <thead><tr style="background:#1e293b;color:#fff;">
       <th style="border:1px solid #000;padding:6px;">No</th><th style="border:1px solid #000;padding:6px;">Nama</th>
       <th style="border:1px solid #000;padding:6px;">Kelas</th><th style="border:1px solid #000;padding:6px;">Nilai</th>
       <th style="border:1px solid #000;padding:6px;">Benar</th><th style="border:1px solid #000;padding:6px;">Total</th>
       <th style="border:1px solid #000;padding:6px;">Status</th>
     </tr></thead><tbody>${rows}</tbody></table></body></html>`;
+  
   const blob = new Blob(['\ufeff'+html], {type:'application/msword'});
   const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
-  a.download = `Hasil-${new Date().toISOString().slice(0,10)}.doc`; a.click();
-  toast("Word diunduh!","success");
+  a.download = `Hasil-${subtitle.replace(' ','-')}-${new Date().toISOString().slice(0,10)}.doc`; a.click();
+  toast("Word berhasil diunduh!","success");
 }
 
 function exportPdf() {
-  if (!hasilData.length) { toast("Tidak ada data!","warning"); return; }
-  let rows = hasilData.map((h,i) => `<tr>
+  const dataToExport = getFilteredHasilData();
+  if (!dataToExport.length) { toast("Tidak ada data untuk dicetak!","warning"); return; }
+  
+  let rows = dataToExport.map((h,i) => `<tr>
     <td style="border:1px solid #000;padding:6px;text-align:center;">${i+1}</td>
     <td style="border:1px solid #000;padding:6px;">${h.nama}</td>
     <td style="border:1px solid #000;padding:6px;text-align:center;">Kelas ${h.kelas}</td>
@@ -681,8 +725,15 @@ function exportPdf() {
     <td style="border:1px solid #000;padding:6px;text-align:center;">${h.total}</td>
     <td style="border:1px solid #000;padding:6px;text-align:center;">${h.nilai>=70?"LULUS":"REMIDI"}</td>
   </tr>`).join("");
+  
+  const filterLabel = document.getElementById("filter-kelas-hasil").value;
+  const subtitle = filterLabel === "all" ? "Semua Kelas" : `Kelas ${filterLabel}`;
+
   document.getElementById("print-area").innerHTML = `
-  <h3 style="text-align:center;font-family:Arial;">Rekap Hasil Ujian</h3>
+  <div style="text-align:center;font-family:Arial;margin-bottom:20px;">
+    <h3 style="margin-bottom:5px;">Rekap Hasil Ujian</h3>
+    <h4 style="margin-top:0;color:#555;">Filter: ${subtitle} | Tanggal: ${new Date().toLocaleDateString("id-ID")}</h4>
+  </div>
   <table style="width:100%;border-collapse:collapse;font-family:Arial;font-size:10pt;">
     <thead><tr style="background:#f2f2f2;">
       <th style="border:1px solid #000;padding:6px;text-align:center;">No</th>
