@@ -119,6 +119,13 @@
 
     /* ─── HASIL TAB ─── */
     #hasil-panel { display: none; }
+    .filter-card {
+      background: #fff;
+      border: 1.5px solid var(--border-color);
+      border-radius: 14px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
 
     /* ─── TOAST ─── */
     #toast-guru { position: fixed; bottom: 1.5rem; right: 1rem; z-index: 9999; border-radius: 12px; }
@@ -156,6 +163,7 @@
 
 <div id="print-area"></div>
 
+<!-- LOGIN GATE -->
 <div id="login-gate">
   <div class="login-card-guru bg-white p-4 mx-3">
     <div class="text-center mb-4">
@@ -180,6 +188,7 @@
   </div>
 </div>
 
+<!-- MAIN CONTENT -->
 <div id="guru-content">
 
   <nav class="topnav">
@@ -191,11 +200,13 @@
 
   <div class="container py-3 main-content" style="max-width:680px;">
 
+    <!-- Profile Banner -->
     <div class="profile-banner" id="profile-banner">
       <h5 id="guru-nama-display">Nama guru</h5>
       <small>Key Login: <span id="guru-key-display">—</span></small>
     </div>
 
+    <!-- Main Panel Dashboard -->
     <div id="main-panel">
       <div class="d-flex gap-2 mb-3">
         <button class="btn btn-success fw-bold flex-fill rounded-3" onclick="showHasilPanel()">
@@ -220,6 +231,7 @@
       </button>
     </div>
 
+    <!-- SOAL EDITOR PANEL -->
     <div id="soal-panel">
       <div class="soal-editor-header">
         <div class="d-flex align-items-center gap-2 mb-2">
@@ -258,6 +270,7 @@
       <div id="soal-container-editor"></div>
     </div>
 
+    <!-- HASIL PANEL -->
     <div id="hasil-panel">
       <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
         <div class="d-flex align-items-center gap-2">
@@ -265,21 +278,53 @@
           <h6 class="fw-bold mb-0">Hasil Ujian Siswa</h6>
         </div>
         
-        <div class="d-flex flex-wrap align-items-center gap-2 ms-auto">
-          <select id="filter-kelas-hasil" class="form-select form-select-sm shadow-sm" style="width: auto; min-width: 130px; font-weight: 600;" onchange="renderHasil()">
-            <option value="all">Semua Kelas</option>
-            </select>
+        <!-- Tombol Aksi Ekspor -->
+        <div class="d-flex gap-1 ms-auto">
+          <button class="btn btn-sm btn-success fw-bold shadow-sm" onclick="exportExcel()" title="Ekspor ke Excel"><i class="bi bi-file-earmark-excel me-1"></i>Excel</button>
+          <button class="btn btn-sm btn-primary fw-bold shadow-sm" onclick="exportDocx()" title="Ekspor ke Word"><i class="bi bi-file-earmark-word"></i>Word</button>
+          <button class="btn btn-sm btn-danger fw-bold shadow-sm" onclick="exportPdf()" title="Cetak ke PDF"><i class="bi bi-file-earmark-pdf"></i>PDF</button>
+        </div>
+      </div>
 
-          <div class="d-flex gap-1">
-            <button class="btn btn-sm btn-success fw-bold shadow-sm" onclick="exportExcel()" title="Ekspor ke Excel"><i class="bi bi-file-earmark-excel"></i></button>
-            <button class="btn btn-sm btn-primary fw-bold shadow-sm" onclick="exportDocx()" title="Ekspor ke Word"><i class="bi bi-file-earmark-word"></i></button>
-            <button class="btn btn-sm btn-danger fw-bold shadow-sm" onclick="exportPdf()" title="Cetak ke PDF"><i class="bi bi-file-earmark-pdf"></i></button>
+      <!-- Control Filter -->
+      <div class="filter-card shadow-sm">
+        <div class="row g-2 align-items-center">
+          <div class="col-12 col-md-4">
+            <label class="form-label small fw-bold text-muted mb-1"><i class="bi bi-funnel-fill me-1"></i>Mode Filter</label>
+            <select id="filter-mode" class="form-select form-select-sm fw-semibold" onchange="toggleFilterMode()">
+              <option value="all">Semua Kelas</option>
+              <option value="single">Pilih Satu Kelas</option>
+              <option value="range">Rentang Kelas (Dari - Sampai)</option>
+            </select>
+          </div>
+          
+          <!-- Wrapper Pilihan Kelas Tunggal -->
+          <div class="col-12 col-md-8 d-none" id="col-single-kelas">
+            <label class="form-label small fw-bold text-muted mb-1">Kelas</label>
+            <select id="filter-single-kelas" class="form-select form-select-sm fw-semibold" onchange="renderHasil()">
+              <!-- Generated via JS -->
+            </select>
+          </div>
+
+          <!-- Wrapper Rentang Kelas (Dari - Sampai) -->
+          <div class="col-6 col-md-4 d-none" id="col-range-dari">
+            <label class="form-label small fw-bold text-muted mb-1">Dari Kelas</label>
+            <select id="filter-range-dari" class="form-select form-select-sm fw-semibold" onchange="renderHasil()">
+              <!-- Generated via JS -->
+            </select>
+          </div>
+          <div class="col-6 col-md-4 d-none" id="col-range-sampai">
+            <label class="form-label small fw-bold text-muted mb-1">Sampai Kelas</label>
+            <select id="filter-range-sampai" class="form-select form-select-sm fw-semibold" onchange="renderHasil()">
+              <!-- Generated via JS -->
+            </select>
           </div>
         </div>
       </div>
 
-      <div class="table-responsive border rounded-3 bg-white">
-        <table class="table table-hover align-middle mb-0 table-sm">
+      <!-- Tabel Hasil -->
+      <div class="table-responsive border rounded-3 bg-white shadow-sm">
+        <table class="table table-hover align-middle mb-0 table-sm" id="table-hasil-siswa">
           <thead class="table-light">
             <tr>
               <th class="ps-3">Nama Siswa</th>
@@ -297,7 +342,10 @@
       </div>
     </div>
 
-  </div></div><div id="toast-guru" class="toast align-items-center text-bg-dark border-0" role="alert" data-bs-delay="2500">
+  </div><!-- /container -->
+</div><!-- /guru-content -->
+
+<div id="toast-guru" class="toast align-items-center text-bg-dark border-0" role="alert" data-bs-delay="2500">
   <div class="d-flex p-1">
     <div class="toast-body fw-bold small" id="toast-msg-guru"></div>
     <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
@@ -331,7 +379,6 @@ async function loginGuru() {
   document.getElementById("btn-login-load").classList.remove("d-none");
   document.getElementById("login-error").classList.add("d-none");
   try {
-    // verify key via whoami
     const res = await fetch("/api/soal", {
       method: "POST",
       headers: {"Content-Type":"application/json","x-guru-key":key},
@@ -342,7 +389,9 @@ async function loginGuru() {
       guruKey  = key;
       guruInfo = json.guru;
       sessionStorage.setItem("guru_key", key);
-      showGuruDashboard();
+      // Muat hasil terlebih dahulu agar hitungan jumlah submit siswa sinkron saat merender daftar ujian
+      await loadHasil();
+      await showGuruDashboard();
     } else {
       document.getElementById("login-error").classList.remove("d-none");
     }
@@ -367,11 +416,9 @@ async function showGuruDashboard() {
   document.getElementById("guru-nama-display").textContent = guruInfo.nama;
   document.getElementById("guru-key-display").textContent  = guruInfo.guru_key || guruKey;
   await loadUjian();
-  await loadHasil();
 }
 
 // ── LOAD UJIAN ─────────────────────────────────────────────────────────────
-// Ujian tersimpan di data/ujian.json — setiap ujian punya: id, mapel_id, kelas[], kunci, soal[], guru_id, aktif
 async function loadUjian() {
   try {
     const res = await fetch("/api/ujian", {
@@ -400,9 +447,16 @@ function renderUjianList(keyword="") {
     return;
   }
   container.innerHTML = filtered.map(u => {
-    const kelasLabel = Array.isArray(u.kelas) ? u.kelas.map(k=>`${u.mapel_nama||u.mapel_id} KELAS ${k}`).join(", ") : "—";
-    const jumlahSoal = Array.isArray(u.soal) ? u.soal.length : 0;
+    const totalSoal = Array.isArray(u.soal) ? u.soal.length : 0;
     const kelasDisplay = Array.isArray(u.kelas) ? u.kelas.map(k=>`KELAS ${k}`).join(" • ") : "—";
+    
+    // LOGIKA PERUBAHAN BARU:
+    // Menghitung jumlah siswa yang mengumpulkan hasil berdasarkan kunci ujian yang sama
+    const jumlahSiswaSubmit = hasilData.filter(h => String(h.kunci_ujian || '').toLowerCase() === String(u.kunci || '').toLowerCase()).length;
+    
+    const siswaFmt = jumlahSiswaSubmit < 10 ? "0" + jumlahSiswaSubmit : jumlahSiswaSubmit;
+    const soalFmt  = totalSoal < 10 ? "0" + totalSoal : totalSoal;
+
     return `
     <div class="ujian-card">
       <div class="d-flex align-items-start justify-content-between">
@@ -413,13 +467,14 @@ function renderUjianList(keyword="") {
         </div>
         <div class="d-flex align-items-center gap-1 ms-2 flex-shrink-0">
           <span class="badge-aktif">${u.aktif !== false ? "Aktif" : "Nonaktif"}</span>
-          <span class="badge-soal">${jumlahSoal < 10 ? "0"+jumlahSoal : jumlahSoal}/${jumlahSoal < 10 ? "10" : jumlahSoal}</span>
+          <!-- Sekarang menampilkan: [Siswa Submit] / [Total Soal] -->
+          <span class="badge-soal" title="Jumlah Siswa yang Sudah Submit / Total Soal">${siswaFmt}/${soalFmt}</span>
           <button class="btn btn-sm btn-danger fw-bold px-2 py-1" style="font-size:0.72rem;border-radius:6px;" onclick="deleteUjian('${esc(u.id)}')">Hapus</button>
         </div>
       </div>
     </div>`;
   }).join("");
-  // Tambahkan event klik edit
+
   document.querySelectorAll(".ujian-card").forEach((card, i) => {
     card.style.cursor = "pointer";
     card.addEventListener("click", (e) => {
@@ -437,17 +492,14 @@ function filterUjian() {
 // ── SOAL PANEL ─────────────────────────────────────────────────────────────
 async function showSoalPanel(ujian) {
   editUjianId = ujian ? ujian.id : null;
-
-  // populate mapel display
   document.getElementById("editor-mapel-display").textContent = guruInfo.mapel_id || "—";
   document.getElementById("editor-title").textContent = ujian ? "Edit Ujian" : "Buat Ujian Baru";
 
-  // Kelas choices — semua kelas 10 s/d 12
   const allKelas = [10, 11, 12];
   const selectedKelas = ujian ? (ujian.kelas || []).map(String) : [];
   const checks = document.getElementById("kelas-checks");
   checks.innerHTML = "";
-  // Sub-kelas 10.1..10.6, 11.1..11.6, 12.1..12.6
+  
   allKelas.forEach(k => {
     [1,2,3,4,5,6].forEach(sub => {
       const label = `${k}.${sub}`;
@@ -464,12 +516,9 @@ async function showSoalPanel(ujian) {
     el.addEventListener("click", updateKelasFilterDisplay);
   });
 
-  // kunci
   document.getElementById("editor-kunci").value = ujian ? (ujian.kunci||"") : "";
 
-  // soal draft
   if (ujian && ujian.id) {
-    // Ambil soal penuh dari server
     try {
       const res = await fetch("/api/ujian", {
         method:"POST", headers:{"Content-Type":"application/json","x-guru-key":guruKey},
@@ -591,7 +640,7 @@ async function deleteUjian(id) {
   } catch(err) { toast(err.message,"danger"); }
 }
 
-// ── HASIL & FILTER ─────────────────────────────────────────────────────────
+// ── HASIL & FILTER SISTEMATIK ──────────────────────────────────────────────
 async function loadHasil() {
   try {
     const res = await fetch("/api/hasil", {headers:{"x-guru-key":guruKey}});
@@ -603,42 +652,66 @@ async function loadHasil() {
   renderHasil();
 }
 
-// Update Opsi Filter Dropdown Kelas berdasarkan data yang tersedia
 function updateFilterKelasOptions() {
-  const select = document.getElementById("filter-kelas-hasil");
-  const currentVal = select.value;
+  const uniqueKelas = [...new Set(hasilData.map(h => String(h.kelas)))].sort((a, b) => 
+    a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'})
+  );
   
-  // Dapatkan daftar kelas unik yang tersedia di hasilData
-  const uniqueKelas = [...new Set(hasilData.map(h => String(h.kelas)))].sort();
+  const singleSelect = document.getElementById("filter-single-kelas");
+  const dariSelect = document.getElementById("filter-range-dari");
+  const sampaiSelect = document.getElementById("filter-range-sampai");
   
-  let html = `<option value="all">Semua Kelas</option>`;
+  let optionsHtml = "";
   uniqueKelas.forEach(k => {
-    html += `<option value="${esc(k)}">Kelas ${esc(k)}</option>`;
+    optionsHtml += `<option value="${esc(k)}">Kelas ${esc(k)}</option>`;
   });
   
-  select.innerHTML = html;
+  if(singleSelect) singleSelect.innerHTML = optionsHtml;
+  if(dariSelect) dariSelect.innerHTML = optionsHtml;
+  if(sampaiSelect) sampaiSelect.innerHTML = optionsHtml;
   
-  // Jika nilai sebelumnya masih ada di daftar kelas yang baru, kembalikan ke pilihan itu
-  if (currentVal !== "all" && uniqueKelas.includes(currentVal)) {
-    select.value = currentVal;
-  } else {
-    select.value = "all";
+  if (uniqueKelas.length > 0 && sampaiSelect) {
+    sampaiSelect.value = uniqueKelas[uniqueKelas.length - 1];
   }
 }
 
-// Ambil data hasil berdasarkan filter saat ini
+function toggleFilterMode() {
+  const mode = document.getElementById("filter-mode").value;
+  
+  document.getElementById("col-single-kelas").classList.toggle("d-none", mode !== "single");
+  document.getElementById("col-range-dari").classList.toggle("d-none", mode !== "range");
+  document.getElementById("col-range-sampai").classList.toggle("d-none", mode !== "range");
+  
+  renderHasil();
+}
+
 function getFilteredHasilData() {
-  const selectedKelas = document.getElementById("filter-kelas-hasil").value;
-  if (selectedKelas === "all") return hasilData;
-  return hasilData.filter(h => String(h.kelas) === selectedKelas);
+  const mode = document.getElementById("filter-mode").value;
+  if (mode === "all" || !hasilData.length) return hasilData;
+  
+  if (mode === "single") {
+    const targetKelas = document.getElementById("filter-single-kelas").value;
+    return hasilData.filter(h => String(h.kelas) === targetKelas);
+  }
+  
+  if (mode === "range") {
+    const dari = document.getElementById("filter-range-dari").value;
+    const sampai = document.getElementById("filter-range-sampai").value;
+    return htmlData = hasilData.filter(h => {
+      const k = String(h.kelas);
+      return k >= dari && k <= sampai;
+    });
+  }
+  return hasilData;
 }
 
 function renderHasil() {
   const tbody = document.getElementById("tbody-hasil");
   const filteredData = getFilteredHasilData();
 
+  if (!tbody) return;
   if (!filteredData.length) {
-    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-3">Tidak ada data untuk kelas ini.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-3">Tidak ada data hasil ujian yang sesuai filter.</td></tr>';
     return;
   }
   tbody.innerHTML = filteredData.slice().reverse().map(h => `
@@ -659,28 +732,41 @@ function showHasilPanel() {
   loadHasil();
 }
 
-// ── EXPORT (Excel/Word/PDF) ────────────────────────────────────────────────
+// ── EKSTRAK DATA BERDASARKAN FILTER SELEKTIF ──────────────────────────────
+function getExportContextInfo() {
+  const mode = document.getElementById("filter-mode").value;
+  if (mode === "all") return { suffix: "Semua-Kelas", label: "Semua Kelas" };
+  if (mode === "single") {
+    const val = document.getElementById("filter-single-kelas").value;
+    return { suffix: `Kelas-${val}`, label: `Kelas ${val}` };
+  }
+  if (mode === "range") {
+    const dari = document.getElementById("filter-range-dari").value;
+    const sampai = document.getElementById("filter-range-sampai").value;
+    return { suffix: `Dari-Kelas-${dari}-Ke-${sampai}`, label: `Rentang Kelas ${dari} s.d ${sampai}` };
+  }
+}
+
 function exportExcel() {
   const dataToExport = getFilteredHasilData();
   if (!dataToExport.length) { toast("Tidak ada data untuk diekspor!","warning"); return; }
   
+  const ctx = getExportContextInfo();
   const ws = XLSX.utils.json_to_sheet(dataToExport.map((h,i)=>({
     No:i+1, Nama:h.nama, Kelas:`Kelas ${h.kelas}`, Nilai:h.nilai, Benar:h.benar, Total:h.total,
     Status: h.nilai>=70?"LULUS":"REMIDI"
   })));
   const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Hasil");
   
-  const filterLabel = document.getElementById("filter-kelas-hasil").value;
-  const fileName = filterLabel === "all" ? "Hasil-Ujian-Semua-Kelas" : `Hasil-Ujian-Kelas-${filterLabel}`;
-  
-  XLSX.writeFile(wb, `${fileName}-${new Date().toISOString().slice(0,10)}.xlsx`);
-  toast("Excel berhasil diunduh!","success");
+  XLSX.writeFile(wb, `Hasil-Ujian-${ctx.suffix}-${new Date().toISOString().slice(0,10)}.xlsx`);
+  toast(`Excel data (${ctx.label}) diunduh!`, "success");
 }
 
 function exportDocx() {
   const dataToExport = getFilteredHasilData();
   if (!dataToExport.length) { toast("Tidak ada data untuk diekspor!","warning"); return; }
   
+  const ctx = getExportContextInfo();
   let rows = dataToExport.map((h,i) => `<tr>
     <td style="border:1px solid #000;padding:6px;text-align:center;">${i+1}</td>
     <td style="border:1px solid #000;padding:6px;font-weight:bold;">${h.nama}</td>
@@ -691,31 +777,29 @@ function exportDocx() {
     <td style="border:1px solid #000;padding:6px;text-align:center;font-weight:bold;">${h.nilai>=70?"LULUS":"REMIDI"}</td>
   </tr>`).join("");
   
-  const filterLabel = document.getElementById("filter-kelas-hasil").value;
-  const subtitle = filterLabel === "all" ? "Semua Kelas" : `Kelas ${filterLabel}`;
-  
   const html = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
   <head><meta charset="utf-8"></head><body style="font-family:Arial,sans-serif;margin:30px;">
-  <h3 style="text-align:center; margin-bottom: 5px;">Rekap Hasil Ujian — ${new Date().toLocaleDateString("id-ID")}</h3>
-  <h4 style="text-align:center; margin-top: 0; color: #555;">Filter: ${subtitle}</h4>
-  <table border="1" cellspacing="0" style="width:100%;border-collapse:collapse; margin-top: 20px;">
+  <h3 style="text-align:center; margin-bottom:2px;">Rekap Hasil Ujian Siswa</h3>
+  <p style="text-align:center; margin-top:0; font-size:10pt; color:#555;">Filter Ekstrak: <strong>${ctx.label}</strong> | Tanggal Unduh: ${new Date().toLocaleDateString("id-ID")}</p>
+  <table border="1" cellspacing="0" style="width:100%;border-collapse:collapse;margin-top:15px;">
     <thead><tr style="background:#1e293b;color:#fff;">
       <th style="border:1px solid #000;padding:6px;">No</th><th style="border:1px solid #000;padding:6px;">Nama</th>
       <th style="border:1px solid #000;padding:6px;">Kelas</th><th style="border:1px solid #000;padding:6px;">Nilai</th>
       <th style="border:1px solid #000;padding:6px;">Benar</th><th style="border:1px solid #000;padding:6px;">Total</th>
       <th style="border:1px solid #000;padding:6px;">Status</th>
     </tr></thead><tbody>${rows}</tbody></table></body></html>`;
-  
+    
   const blob = new Blob(['\ufeff'+html], {type:'application/msword'});
   const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
-  a.download = `Hasil-${subtitle.replace(' ','-')}-${new Date().toISOString().slice(0,10)}.doc`; a.click();
-  toast("Word berhasil diunduh!","success");
+  a.download = `Hasil-Ujian-${ctx.suffix}-${new Date().toISOString().slice(0,10)}.doc`; a.click();
+  toast(`Word data (${ctx.label}) diunduh!`, "success");
 }
 
 function exportPdf() {
   const dataToExport = getFilteredHasilData();
   if (!dataToExport.length) { toast("Tidak ada data untuk dicetak!","warning"); return; }
   
+  const ctx = getExportContextInfo();
   let rows = dataToExport.map((h,i) => `<tr>
     <td style="border:1px solid #000;padding:6px;text-align:center;">${i+1}</td>
     <td style="border:1px solid #000;padding:6px;">${h.nama}</td>
@@ -726,16 +810,13 @@ function exportPdf() {
     <td style="border:1px solid #000;padding:6px;text-align:center;">${h.nilai>=70?"LULUS":"REMIDI"}</td>
   </tr>`).join("");
   
-  const filterLabel = document.getElementById("filter-kelas-hasil").value;
-  const subtitle = filterLabel === "all" ? "Semua Kelas" : `Kelas ${filterLabel}`;
-
   document.getElementById("print-area").innerHTML = `
-  <div style="text-align:center;font-family:Arial;margin-bottom:20px;">
-    <h3 style="margin-bottom:5px;">Rekap Hasil Ujian</h3>
-    <h4 style="margin-top:0;color:#555;">Filter: ${subtitle} | Tanggal: ${new Date().toLocaleDateString("id-ID")}</h4>
+  <div style="text-align:center;font-family:Arial;margin-bottom:15px;">
+    <h3 style="margin-bottom:2px;">Rekap Hasil Ujian</h3>
+    <h4 style="margin-top:0;color:#475569;font-weight:normal;font-size:11pt;">Filter Dokumen: ${ctx.label} | Cetak: ${new Date().toLocaleDateString("id-ID")}</h4>
   </div>
   <table style="width:100%;border-collapse:collapse;font-family:Arial;font-size:10pt;">
-    <thead><tr style="background:#f2f2f2;">
+    <thead><tr style="background:#f1f5f9;">
       <th style="border:1px solid #000;padding:6px;text-align:center;">No</th>
       <th style="border:1px solid #000;padding:6px;">Nama</th>
       <th style="border:1px solid #000;padding:6px;text-align:center;">Kelas</th>
