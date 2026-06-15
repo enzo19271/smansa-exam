@@ -16,173 +16,99 @@
       --bg-body: #f8fafc;
       --card-bg: #ffffff;
       --blue-gradient: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-      --blue-accent: #3b82f6;
       --text-dark: #0f172a;
       --text-muted: #64748b;
       --border-color: #cbd5e1;
       --border-focus: #2563eb;
     }
-    
     body { 
       background-color: var(--bg-body); 
       font-family: 'Plus Jakarta Sans', sans-serif;
       color: var(--text-dark);
       -webkit-font-smoothing: antialiased;
     }
-
-    /* ANIMATIONS KEYFRAMES */
     @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(15px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(15px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
-
-    /* NAVBAR STYLES */
     .navbar { 
       background: #ffffff;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      border-bottom: 1px solid rgba(0,0,0,0.05);
       padding: 0.85rem 1rem;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.02);
     }
     .navbar-brand { 
-      font-size: 1.25rem;
-      font-weight: 500;
-      letter-spacing: -0.3px;
-      color: var(--text-dark) !important;
-      text-decoration: none;
+      font-size: 1.25rem; font-weight: 500;
+      letter-spacing: -0.3px; color: var(--text-dark) !important; text-decoration: none;
     }
     .navbar-brand span { 
-      font-style: italic;
-      font-weight: 800;
+      font-style: italic; font-weight: 800;
       background: var(--blue-gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
     .btn-back-arrow {
-      border: none;
-      background: #f1f5f9;
-      color: var(--text-dark);
-      font-size: 1.1rem;
-      padding: 0.5rem 0.65rem;
-      border-radius: 10px;
-      transition: all 0.2s ease;
+      border: none; background: #f1f5f9; color: var(--text-dark);
+      font-size: 1.1rem; padding: 0.5rem 0.65rem;
+      border-radius: 10px; transition: all 0.2s ease;
     }
-    .btn-back-arrow:hover {
-      background: #e2e8f0;
-      transform: translateX(-2px);
-    }
+    .btn-back-arrow:hover { background: #e2e8f0; transform: translateX(-2px); }
 
-    /* PREMIUM APP PILLS */
     .mapel-pill {
-      background: #ffffff; 
-      color: var(--text-dark);
-      border: 1px solid var(--border-color);
-      border-radius: 50px; 
-      padding: 0.4rem 1rem;
-      font-weight: 700; 
-      display: inline-block; 
-      font-size: .82rem;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-    }
-    .kelas-pill {
-      background: #ffffff; 
-      color: var(--blue-focus);
-      border: 1px solid var(--border-color);
-      border-radius: 50px; 
-      padding: 0.4rem 1rem;
-      font-weight: 700; 
-      display: inline-block; 
-      font-size: .82rem;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+      background: #eff6ff; color: #2563eb;
+      border: 1.5px solid #bfdbfe;
+      border-radius: 50px; padding: 0.4rem 1.1rem;
+      font-weight: 700; display: inline-block; font-size: .82rem;
     }
 
-    /* FORM CARD INTEGRATION */
     .form-card {
       background: var(--card-bg);
       border: 1.5px solid var(--border-color);
-      border-radius: 18px;
-      padding: 2rem 1.75rem;
+      border-radius: 18px; padding: 2rem 1.75rem;
       box-shadow: 0 6px 15px -4px rgba(0,0,0,0.03);
-      animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation: fadeInUp 0.5s cubic-bezier(0.16,1,0.3,1) both;
     }
-
-    /* ANDROID MODERN FORM CONTROLS */
     .step-badge {
       width: 28px; height: 28px; border-radius: 50%;
       background: #f1f5f9; color: var(--text-dark);
       display: inline-flex; align-items: center; justify-content: center;
       font-weight: 800; font-size: .8rem; flex-shrink: 0;
-      border: 1px solid var(--border-color);
-      margin-top: 2px;
+      border: 1px solid var(--border-color); margin-top: 2px;
     }
-    .form-label {
-      font-size: 0.9rem;
-      font-weight: 700 !important;
-      color: var(--text-dark);
-    }
+    .form-label { font-size: 0.9rem; font-weight: 700 !important; color: var(--text-dark); }
     .form-control, .form-select {
       padding: 0.75rem 1rem;
-      background: #ffffff;
-      border: 1.5px solid var(--border-color);
-      border-radius: 12px;
-      font-size: 0.92rem;
-      font-weight: 500;
-      color: var(--text-dark);
-      transition: all 0.2s ease;
+      background: #ffffff; border: 1.5px solid var(--border-color);
+      border-radius: 12px; font-size: 0.92rem; font-weight: 500;
+      color: var(--text-dark); transition: all 0.2s ease;
     }
     .form-control:focus, .form-select:focus {
-      outline: none;
-      border-color: var(--border-focus);
-      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
-      background: #ffffff;
+      outline: none; border-color: var(--border-focus);
+      box-shadow: 0 0 0 4px rgba(37,99,235,0.12); background: #ffffff;
     }
     .key-input { 
-      letter-spacing: .12em; 
-      font-family: 'Plus Jakarta Sans', monospace; 
-      font-size: 1rem; 
-      font-weight: 700;
-      text-transform: uppercase;
+      letter-spacing: .12em; font-size: 1rem; 
+      font-weight: 700; text-transform: uppercase;
     }
-    .form-text {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      margin-top: 0.35rem;
-    }
+    .form-text { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.35rem; }
+    .invalid-feedback { font-size: 0.78rem; font-weight: 600; margin-top: 0.35rem; }
 
-    /* PRIMARY BLUE ACTION BUTTON */
     #btn-submit { 
-      background: var(--blue-gradient); 
-      border: none; 
-      font-weight: 800; 
-      font-size: 0.95rem;
-      border-radius: 14px;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+      background: var(--blue-gradient); border: none; 
+      font-weight: 800; font-size: 0.95rem;
+      border-radius: 14px; transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(37,99,235,0.2);
     }
-    #btn-submit:hover { 
-      transform: translateY(-1px);
-      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.3);
-    }
-    #btn-submit:active {
-      transform: translateY(1px);
+    #btn-submit:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(37,99,235,0.3); }
+    #btn-submit:active { transform: translateY(1px); }
+    #btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .alert-dup {
+      background: #fff1f2; border: 1.5px solid #fecdd3;
+      border-radius: 14px; padding: 1rem 1.1rem;
     }
 
-    /* ERROR FEEDBACK REFINEMENT */
-    .invalid-feedback {
-      font-size: 0.78rem;
-      font-weight: 600;
-      margin-top: 0.35rem;
-    }
-
-    /* RESPONSIVE TUNING */
     @media (max-width: 576px) {
       .form-card { padding: 1.5rem 1.25rem; border-radius: 16px; }
-      .navbar-brand { font-size: 1.15rem; }
     }
   </style>
 </head>
@@ -193,27 +119,23 @@
     <a href="index.html" class="btn-back-arrow me-2" title="Kembali">
       <i class="bi bi-arrow-left"></i>
     </a>
-    
     <div class="mx-auto navbar-brand">
       <span>Smansanam</span> Exam Portal
     </div>
-    
-    <div style="width: 36px;"></div> </div>
+    <div style="width:36px;"></div>
+  </div>
 </nav>
 
 <div class="container py-4" style="max-width:520px">
-  <div class="text-center mb-3" style="animation: fadeInUp 0.4s ease both;">
-    <h4 class="fw-bold text-dark mb-1" style="letter-spacing: -0.3px;">Formulir Pendaftaran Ujian</h4>
-    <p class="text-muted small">Isi data identitas diri kamu sebelum memulai pengerjaan soal</p>
-  </div>
-
-  <div class="mb-4 text-center" style="animation: fadeInUp 0.45s ease both;">
-    <span class="mapel-pill me-1" id="info-mapel">—</span>
-    <span class="kelas-pill" id="info-kelas">—</span>
+  <div class="text-center mb-3" style="animation:fadeInUp 0.4s ease both">
+    <h4 class="fw-bold text-dark mb-1" style="letter-spacing:-0.3px">Formulir Pendaftaran Ujian</h4>
+    <p class="text-muted small">Isi data diri kamu sebelum memulai pengerjaan soal</p>
+    <span class="mapel-pill" id="info-mapel">—</span>
   </div>
 
   <div class="form-card">
-    
+
+    <!-- Step 1: Nama -->
     <div class="d-flex align-items-start gap-3 mb-4">
       <span class="step-badge">1</span>
       <div class="w-100">
@@ -223,32 +145,54 @@
       </div>
     </div>
 
+    <!-- Step 2: Kelas (pilihan dropdown) -->
     <div class="d-flex align-items-start gap-3 mb-4">
       <span class="step-badge">2</span>
       <div class="w-100">
-        <label class="form-label mb-1">Rincian Kelas</label>
-        <div id="display-subkelas" class="form-control" style="background:#f1f5f9;border:1.5px solid #cbd5e1;display:flex;align-items:center;padding:0.75rem 1rem;">
-          <strong id="subkelas-display">—</strong>
-        </div>
-        <input type="hidden" id="inp-subkelas"/>
-        <div class="invalid-feedback"><i class="bi bi-exclamation-circle me-1"></i>Kelas tidak valid.</div>
+        <label class="form-label mb-1">Pilih Kelas</label>
+        <select id="inp-kelas" class="form-select">
+          <option value="">— Pilih kelas kamu —</option>
+          <optgroup label="Kelas 10">
+            <option value="10.1">10.1</option>
+            <option value="10.2">10.2</option>
+            <option value="10.3">10.3</option>
+            <option value="10.4">10.4</option>
+            <option value="10.5">10.5</option>
+            <option value="10.6">10.6</option>
+          </optgroup>
+          <optgroup label="Kelas 11">
+            <option value="11.1">11.1</option>
+            <option value="11.2">11.2</option>
+            <option value="11.3">11.3</option>
+            <option value="11.4">11.4</option>
+            <option value="11.5">11.5</option>
+            <option value="11.6">11.6</option>
+          </optgroup>
+          <optgroup label="Kelas 12">
+            <option value="12.1">12.1</option>
+            <option value="12.2">12.2</option>
+            <option value="12.3">12.3</option>
+            <option value="12.4">12.4</option>
+            <option value="12.5">12.5</option>
+            <option value="12.6">12.6</option>
+          </optgroup>
+        </select>
+        <div class="invalid-feedback"><i class="bi bi-exclamation-circle me-1"></i>Kelas harus dipilih.</div>
       </div>
     </div>
 
-    <div class="d-flex align-items-start gap-4 mb-4">
+    <!-- Step 3: Key Ujian -->
+    <div class="d-flex align-items-start gap-3 mb-4">
       <span class="step-badge">3</span>
       <div class="w-100">
         <label class="form-label mb-1">Key Ujian dari Guru</label>
         <input type="text" id="inp-key" class="form-control key-input" placeholder="CONTOH: XYZ123" autocomplete="off"/>
-        <div class="form-text">Minta kunci token akses kepada pengawas atau guru pengampu ruang ujian.</div>
-        <div class="invalid-feedback"><i class="bi bi-exclamation-circle me-1"></i>Key token wajib diisi.</div>
-        
+        <div class="form-text">Minta kunci token akses kepada guru pengampu atau pengawas ruangan.</div>
+        <div class="invalid-feedback"><i class="bi bi-exclamation-circle me-1"></i>Key ujian wajib diisi.</div>
         <div id="key-error" class="text-danger small mt-2 d-none fw-semibold">
           <i class="bi bi-x-circle-fill me-1"></i>Key tidak valid atau tidak sesuai kelas/mapel ini.
         </div>
-
-        <!-- Blokir duplikat -->
-        <div id="duplicate-error" class="d-none mt-3 p-3 rounded-3" style="background:#fff1f2; border:1.5px solid #fecdd3;">
+        <div id="duplicate-error" class="alert-dup mt-3 d-none">
           <div class="fw-bold text-danger mb-1"><i class="bi bi-slash-circle-fill me-1"></i>Ujian Sudah Dikerjakan</div>
           <div class="small text-danger" id="duplicate-msg"></div>
           <div class="small text-muted mt-1" id="duplicate-waktu"></div>
@@ -256,10 +200,10 @@
       </div>
     </div>
 
-    <button class="btn btn-primary w-100 py-2.5 mt-2" id="btn-submit" onclick="submitForm()">
+    <button class="btn btn-primary w-100 py-2 mt-1" id="btn-submit" onclick="submitForm()">
       <span id="btn-text"><i class="bi bi-arrow-right-circle-fill me-2"></i>Lanjut ke Instruksi</span>
       <span id="btn-loading" class="d-none">
-        <span class="spinner-border spinner-border-sm me-2" role="status"></span>Memeriksa Token...
+        <span class="spinner-border spinner-border-sm me-2" role="status"></span><span id="loading-msg">Memeriksa...</span>
       </span>
     </button>
   </div>
@@ -269,91 +213,96 @@
 <script>
 const mapelId   = sessionStorage.getItem("exam_mapel_id");
 const mapelNama = sessionStorage.getItem("exam_mapel_nama");
-const kelas     = sessionStorage.getItem("exam_kelas");
 
-// Proteksi jika masuk langsung tanpa memilih dari dashboard utama
-if (!mapelId || !kelas) location.href = "index.html";
+// Proteksi jika masuk langsung tanpa memilih dari index
+if (!mapelId) location.href = "index.html";
 
 document.getElementById("info-mapel").textContent = mapelNama || mapelId;
-document.getElementById("info-kelas").textContent = `Kelas ${kelas}`;
 
-// Auto-set sub-kelas dari index.html (kelas sudah berupa sub-kelas: 10.1, 10.2, dst)
-document.getElementById("inp-subkelas").value = kelas;
-document.getElementById("subkelas-display").textContent = `Kelas ${kelas}`;
+function setLoading(on, msg = "Memeriksa...") {
+  document.getElementById("btn-text").classList.toggle("d-none", on);
+  document.getElementById("btn-loading").classList.toggle("d-none", !on);
+  document.getElementById("btn-submit").disabled = on;
+  document.getElementById("loading-msg").textContent = msg;
+}
 
-function setLoading(v, msg) {
-  document.getElementById("btn-text").classList.toggle("d-none", v);
-  document.getElementById("btn-loading").classList.toggle("d-none", !v);
-  document.getElementById("btn-submit").disabled = v;
-  if (msg) document.getElementById("btn-loading").innerHTML =
-    `<span class="spinner-border spinner-border-sm me-2" role="status"></span>${msg}`;
+function clearErrors() {
+  ["inp-nama","inp-kelas","inp-key"].forEach(id => {
+    document.getElementById(id).classList.remove("is-invalid");
+  });
+  document.getElementById("key-error").classList.add("d-none");
+  document.getElementById("duplicate-error").classList.add("d-none");
 }
 
 async function submitForm() {
-  const nama     = document.getElementById("inp-nama").value.trim();
-  const subkelas = document.getElementById("inp-subkelas").value;
-  const key      = document.getElementById("inp-key").value.trim();
-  const keyErr   = document.getElementById("key-error");
-  const dupErr   = document.getElementById("duplicate-error");
+  clearErrors();
 
-  document.getElementById("inp-nama").classList.toggle("is-invalid", !nama);
-  document.getElementById("inp-subkelas").classList.toggle("is-invalid", !subkelas);
-  document.getElementById("inp-key").classList.toggle("is-invalid", !key);
-  if (!nama || !subkelas || !key) return;
+  const nama  = document.getElementById("inp-nama").value.trim();
+  const kelas = document.getElementById("inp-kelas").value;
+  const key   = document.getElementById("inp-key").value.trim().toUpperCase();
 
-  keyErr.classList.add("d-none");
-  dupErr.classList.add("d-none");
+  let valid = true;
+  if (!nama)  { document.getElementById("inp-nama").classList.add("is-invalid");  valid = false; }
+  if (!kelas) { document.getElementById("inp-kelas").classList.add("is-invalid"); valid = false; }
+  if (!key)   { document.getElementById("inp-key").classList.add("is-invalid");   valid = false; }
+  if (!valid) return;
+
   setLoading(true, "Memeriksa Token...");
 
   try {
-    // Langkah 1: verifikasi key guru
+    // 1. Verifikasi key guru
     const keyRes  = await fetch("/api/verify-key", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ mapel_id: mapelId, kelas: Number(kelas), key }),
+      body: JSON.stringify({ mapel_id: mapelId, kelas, key }),
     });
     const keyJson = await keyRes.json();
 
     if (!keyJson.valid) {
-      keyErr.classList.remove("d-none");
+      document.getElementById("key-error").classList.remove("d-none");
       document.getElementById("inp-key").classList.add("is-invalid");
       setLoading(false);
       return;
     }
 
-    // Langkah 2: cek apakah nama sudah pernah submit ujian ini
+    // 2. Cek duplikat
     setLoading(true, "Memeriksa Data Peserta...");
     const cekRes  = await fetch(
-      `/api/submit?nama=${encodeURIComponent(nama)}&kelas=${encodeURIComponent(subkelas)}&mapel_id=${encodeURIComponent(mapelId)}`
+      `/api/submit?nama=${encodeURIComponent(nama)}&kelas=${encodeURIComponent(kelas)}&mapel_id=${encodeURIComponent(mapelId)}`
     );
     const cekJson = await cekRes.json();
 
     if (cekJson.sudah) {
-      const tgl = cekJson.waktu
-        ? new Date(cekJson.waktu).toLocaleString("id-ID")
-        : "—";
+      const tgl = cekJson.waktu ? new Date(cekJson.waktu).toLocaleString("id-ID") : "—";
       document.getElementById("duplicate-msg").textContent =
         `Kamu sudah mengerjakan ujian ini dengan nilai ${cekJson.nilai ?? "—"}.`;
       document.getElementById("duplicate-waktu").textContent =
         `Dikerjakan pada: ${tgl}. Hubungi guru untuk mengulang.`;
-      dupErr.classList.remove("d-none");
+      document.getElementById("duplicate-error").classList.remove("d-none");
       setLoading(false);
       return;
     }
 
-    // Langkah 3: semua ok → simpan sesi dan lanjut
-    sessionStorage.setItem("siswa_nama", nama);
-    sessionStorage.setItem("siswa_kelas", subkelas);
-    sessionStorage.setItem("siswa_kelas_main", kelas);
-    sessionStorage.setItem("exam_guru_nama", keyJson.guru_nama || "");
+    // 3. Simpan sesi, lanjut ke instruksi
+    sessionStorage.setItem("siswa_nama",      nama);
+    sessionStorage.setItem("siswa_kelas",     kelas);
+    sessionStorage.setItem("siswa_kelas_main", kelas.split(".")[0]);
+    sessionStorage.setItem("exam_guru_nama",  keyJson.guru_nama || "");
+    sessionStorage.setItem("exam_ujian_id",   keyJson.ujian_id  || "");
     location.href = "instruksi.html";
 
   } catch {
-    keyErr.innerHTML = '<i class="bi bi-exclamation-triangle-fill me-1"></i> Gagal terhubung ke server. Silakan coba lagi.';
-    keyErr.classList.remove("d-none");
+    document.getElementById("key-error").innerHTML =
+      '<i class="bi bi-exclamation-triangle-fill me-1"></i>Gagal terhubung ke server. Silakan coba lagi.';
+    document.getElementById("key-error").classList.remove("d-none");
     setLoading(false);
   }
 }
+
+// Enter key support
+document.addEventListener("keydown", e => {
+  if (e.key === "Enter") submitForm();
+});
 </script>
 </body>
 </html>
