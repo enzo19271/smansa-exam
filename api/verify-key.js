@@ -17,6 +17,8 @@ module.exports = async (req, res) => {
 
     // kelas dari form-ujian berupa string misal "10.2"
     const kelasStr = String(kelas);
+    // Normalisasi key ke uppercase agar perbandingan case-insensitive
+    const keyUpper = String(key).toUpperCase();
 
     const { data: ujianList } = await readFile("data/ujian.json", []);
     const ujianArr = Array.isArray(ujianList) ? ujianList : [];
@@ -24,7 +26,7 @@ module.exports = async (req, res) => {
     const matchUjian = ujianArr.find(u =>
       u.mapel_id === mapel_id &&
       u.aktif !== false &&
-      u.kunci === key &&
+      String(u.kunci).toUpperCase() === keyUpper &&
       (u.kelas || []).some(k => String(k) === kelasStr || kelasStr.startsWith(String(k) + "."))
     );
 
@@ -42,7 +44,7 @@ module.exports = async (req, res) => {
     // Fallback: cek dari guru.json (backward compat)
     const { data: guruList } = await readFile("data/guru.json", []);
     const guruMatch = (Array.isArray(guruList) ? guruList : []).find(
-      (g) => g.mapel_id === mapel_id && g.guru_key === key
+      (g) => g.mapel_id === mapel_id && String(g.guru_key).toUpperCase() === keyUpper
     );
     if (guruMatch) {
       return res.status(200).json({ valid: true, guru_id: guruMatch.id, guru_nama: guruMatch.nama });
