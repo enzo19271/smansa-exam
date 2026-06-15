@@ -101,5 +101,35 @@
     ],
     "aktif": true,
     "created_at": "2026-06-15T02:12:37.876Z"
+  },
+  {
+    "id": "ujian_1781500844568",
+    "guru_id": "003",
+    "mapel_id": "bio",
+    "mapel_nama": "bio",
+    "kelas": [
+      "11.1",
+      "11.2",
+      "11.3",
+      "11.4",
+      "11.5",
+      "11.6"
+    ],
+    "kunci": "bio11",
+    "soal": [
+      {
+        "id": "s1781500831066",
+        "pertanyaan": "Apakah balabalabla",
+        "opsi": {
+          "A": "ya",
+          "B": "tidak",
+          "C": "tidak ssma sekali",
+          "D": "ntah"
+        },
+        "jawaban": "A"
+      }
+    ],
+    "aktif": true,
+    "created_at": "2026-06-15T05:20:44.568Z"
   }
 ]
