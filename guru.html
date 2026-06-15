@@ -450,7 +450,7 @@ async function showSoalPanel(ujian) {
 
   // Kelas choices — semua kelas 10 s/d 12
   const allKelas = [10, 11, 12];
-  const selectedKelas = ujian ? (ujian.kelas || []).map(Number) : [];
+  const selectedKelas = ujian ? (ujian.kelas || []).map(String) : [];
   const checks = document.getElementById("kelas-checks");
   checks.innerHTML = "";
   // Sub-kelas 10.1..10.6, 11.1..11.6, 12.1..12.6
@@ -458,7 +458,7 @@ async function showSoalPanel(ujian) {
     [1,2,3,4,5,6].forEach(sub => {
       const label = `${k}.${sub}`;
       const div = document.createElement("div");
-      div.className = "kelas-check-item" + (selectedKelas.includes(Number(`${k}${sub}`)) || selectedKelas.map(String).includes(label) ? " checked" : "");
+      div.className = "kelas-check-item" + (selectedKelas.includes(label) ? " checked" : "");
       div.textContent = label;
       div.dataset.val = label;
       div.onclick = () => div.classList.toggle("checked");
