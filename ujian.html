@@ -358,13 +358,17 @@ const mapelNama = sessionStorage.getItem("exam_mapel_nama");
 const kelasMain = sessionStorage.getItem("siswa_kelas_main");
 const nama      = sessionStorage.getItem("siswa_nama");
 const kelas     = sessionStorage.getItem("siswa_kelas");
+const ujianId   = sessionStorage.getItem("exam_ujian_id") || "";
 
 if (!mapelId || !nama) location.href = "index.html";
 
 // ── localStorage keys untuk persist antar refresh ──────────────────────────
-const LS_JAWABAN = `jawaban_${mapelId}_${kelas}`;
-const LS_TIMER   = `timer_${mapelId}_${kelas}`;
-const LS_SOAL    = `soal_${mapelId}_${kelas}`;
+// ujianId disertakan di key agar tidak tercampur dengan cache ujian lain
+// (misal mapel+kelas sama tapi kunci/ujian berbeda)
+const cacheSuffix = `${mapelId}_${kelas}${ujianId ? "_" + ujianId : ""}`;
+const LS_JAWABAN = `jawaban_${cacheSuffix}`;
+const LS_TIMER   = `timer_${cacheSuffix}`;
+const LS_SOAL    = `soal_${cacheSuffix}`;
 
 document.getElementById("tb-mapel").innerHTML = `<span>Smansanam</span> — ${mapelNama || mapelId}`;
 
@@ -382,8 +386,13 @@ async function loadSoal() {
     soalList = JSON.parse(cachedSoal);
   } else {
     try {
-      // Ambil soal dari API soal.js (tanpa jawaban benar untuk siswa)
-      const res = await fetch(`/api/ujian?mapel_id=${mapelId}&kelas=${encodeURIComponent(kelas)}`);
+      // Ambil soal dari API ujian.js (tanpa jawaban benar untuk siswa)
+      // ujian_id dikirim agar server cocokkan ujian yang BENAR sesuai kunci
+      // yang diverifikasi siswa, bukan asal ambil ujian pertama yang cocok
+      // mapel+kelas (penting saat ada >1 ujian aktif untuk mapel+kelas sama).
+      const qs = new URLSearchParams({ mapel_id: mapelId, kelas });
+      if (ujianId) qs.set("ujian_id", ujianId);
+      const res = await fetch(`/api/ujian?${qs.toString()}`);
       soalList  = await res.json();
       if (soalList.length) localStorage.setItem(LS_SOAL, JSON.stringify(soalList));
     } catch {
@@ -532,7 +541,6 @@ async function submitUjian() {
     const res = await fetch("/api/submit", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      const ujianId = sessionStorage.getItem("exam_ujian_id") || "";
       body: JSON.stringify({ nama, kelas, mapel_id: mapelId, jawaban, ujian_id: ujianId }),
     });
     const result = await res.json();
