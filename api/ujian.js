@@ -14,22 +14,37 @@ module.exports = async (req, res) => {
   try {
     // ── GET PUBLIC: untuk siswa ambil soal (tanpa jawaban) ─────────────────
     if (req.method === "GET") {
-      const { mapel_id, kelas } = req.query;
+      const { mapel_id, kelas, ujian_id } = req.query;
       if (!mapel_id || !kelas) return res.status(400).json({ error: "mapel_id dan kelas wajib" });
 
       const { data: ujianAll } = await readFile("data/ujian.json", []);
       const list = Array.isArray(ujianAll) ? ujianAll : [];
 
-      // Cari ujian aktif untuk mapel+kelas ini
       // kelas dari siswa = "10.2"; ujian.kelas bisa ["10"] atau ["10.1","10.2"]
       const kelasStr = String(kelas);
-      const ujian = list.find(
-        (u) => u.mapel_id === mapel_id && u.aktif !== false &&
-               (u.kelas || []).some(k => {
-                 const ks = String(k);
-                 return ks === kelasStr || kelasStr.startsWith(ks + ".");
-               })
-      );
+      const kelasMatch = (u) => (u.kelas || []).some(k => {
+        const ks = String(k);
+        return ks === kelasStr || kelasStr.startsWith(ks + ".");
+      });
+
+      let ujian = null;
+
+      // 1) PRIORITAS: cocokkan berdasarkan ujian_id yang sudah diverifikasi
+      //    via verify-key.js (dikirim siswa dari sessionStorage). Ini penting
+      //    saat ada >1 ujian aktif untuk mapel+kelas yang sama (kunci berbeda).
+      if (ujian_id) {
+        const byId = list.find(u => u.id === ujian_id);
+        if (byId && byId.mapel_id === mapel_id && byId.aktif !== false && kelasMatch(byId)) {
+          ujian = byId;
+        }
+      }
+
+      // 2) FALLBACK: perilaku lama, cari ujian aktif pertama untuk mapel+kelas
+      //    (untuk sesi lama yang belum punya exam_ujian_id di sessionStorage)
+      if (!ujian) {
+        ujian = list.find((u) => u.mapel_id === mapel_id && u.aktif !== false && kelasMatch(u));
+      }
+
       if (!ujian) return res.status(200).json([]);
 
       // Hapus jawaban sebelum dikirim ke siswa
