@@ -92,7 +92,11 @@
     ],
     "aktif": true,
     "created_at": "2026-06-15T01:53:59.930Z",
-    "updated_at": "2026-06-16T01:44:53.654Z"
+    "updated_at": "2026-06-16T02:48:13.240Z",
+    "acak_soal": false,
+    "waktu_mulai": "2026-06-16T02:55:00.000Z",
+    "waktu_selesai": "2026-06-16T04:55:00.000Z",
+    "waktu_menit": 90
   },
   {
     "id": "ujian_1781489557876",
