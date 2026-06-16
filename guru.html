@@ -13,7 +13,6 @@
 
   <style>
     :root {
-      /* Light Mode Palette */
       --primary-blue: #2563eb;
       --secondary-blue: #60a5fa;
       --blue-gradient: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
@@ -27,7 +26,6 @@
     }
 
     [data-bs-theme="dark"] {
-      /* Dark Mode Palette */
       --primary-blue: #3b82f6;
       --secondary-blue: #93c5fd;
       --blue-gradient: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
@@ -49,12 +47,10 @@
       min-height: 100vh;
     }
 
-    /* Scrollbar */
     ::-webkit-scrollbar { width: 8px; height: 8px; }
     ::-webkit-scrollbar-track { background: var(--bg-dashboard); }
     ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
 
-    /* ─── NAVBAR ─── */
     .topnav {
       background: var(--glass-bg);
       backdrop-filter: blur(12px);
@@ -75,7 +71,6 @@
       font-weight: 800;
     }
 
-    /* THEME TOGGLE */
     .theme-toggle {
       background: var(--card-bg);
       border: 1px solid var(--border-color);
@@ -87,7 +82,6 @@
     }
     .theme-toggle:hover { border-color: var(--primary-blue); color: var(--primary-blue); }
 
-    /* ─── LOGIN GATE ─── */
     #login-gate { 
       min-height: 100vh; 
       display: flex; 
@@ -118,11 +112,9 @@
       outline: none;
     }
 
-    /* ─── MAIN CONTENT ─── */
     #guru-content { display: none; }
     .main-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
 
-    /* Profile banner */
     .profile-banner {
       background: var(--blue-gradient);
       border-radius: 20px;
@@ -142,7 +134,6 @@
     .profile-banner h5 { font-weight: 800; font-size: 1.6rem; margin-bottom: 0.2rem; }
     .profile-banner small { opacity: 0.9; font-size: 0.9rem; font-weight: 500; }
 
-    /* Search */
     .search-box { position: relative; margin-bottom: 2rem; }
     .search-box input {
       width: 100%; padding: 1rem 3rem 1rem 1.5rem;
@@ -155,7 +146,6 @@
     .search-box input:focus { outline: none; border-color: var(--primary-blue); box-shadow: 0 0 0 4px rgba(37,99,235,0.15); }
     .search-box .si { position: absolute; right: 1.25rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 1.2rem; }
 
-    /* Dynamic CSS for JS Generated Ujian Card */
     .ujian-card {
       background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px;
       padding: 1.25rem 1.5rem; margin-bottom: 1rem; transition: all 0.3s ease;
@@ -164,12 +154,10 @@
     }
     .ujian-card:hover { transform: translateY(-3px); border-color: var(--primary-blue); box-shadow: 0 10px 20px rgba(0,0,0,0.06); }
     
-    /* REVISI CSS: Badge Aktif & Soal */
     .badge-aktif { background: #22c55e; color: #fff; font-size: 0.75rem; padding: 4px 10px; border-radius: 6px; font-weight: 700; }
     .badge-soal { background: #f59e0b; color: #fff; font-size: 0.85rem; border-radius: 8px; font-weight: 700; }
     .password-tag { font-size: 0.85rem; background: var(--bg-dashboard); border: 1px dashed var(--border-color); border-radius: 8px; padding: 6px 12px; color: var(--text-main); display: inline-block; }
 
-    /* ─── SOAL EDITOR PANEL ─── */
     #soal-panel { display: none; }
     .soal-editor-header {
       background: var(--card-bg); color: var(--text-main);
@@ -200,7 +188,6 @@
     .form-check-input-soal { width: 1.25rem; height: 1.25rem; cursor: pointer; }
     .form-check-input-soal:checked { background-color: #22c55e; border-color: #22c55e; }
 
-    /* Kelas checkboxes */
     .kelas-check-grid { display: flex; flex-wrap: wrap; gap: 8px; }
     .kelas-check-item {
       border: 1px solid var(--border-color); border-radius: 10px;
@@ -210,7 +197,6 @@
     }
     .kelas-check-item.checked { background: var(--primary-blue); border-color: var(--primary-blue); color: #fff; }
 
-    /* ─── HASIL TAB ─── */
     #hasil-panel { display: none; }
     .filter-card {
       background: var(--card-bg);
@@ -232,18 +218,21 @@
     .table td { border-bottom: 1px solid var(--border-color); padding: 1rem; vertical-align: middle; }
     .table-hover tbody tr:hover { background-color: var(--bg-dashboard); color: var(--text-main); }
 
-    /* General Form elements dark mode fixes */
     .form-select, .form-control { background-color: var(--input-bg); color: var(--text-main); border-color: var(--border-color); }
     .form-select:focus, .form-control:focus { border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(37,99,235,0.15); }
     .bg-light { background-color: var(--bg-dashboard) !important; }
     .bg-white { background-color: var(--card-bg) !important; }
 
-    /* Custom Buttons */
     .btn-primary { background: var(--blue-gradient); border: none; }
     .btn-primary:hover { opacity: 0.9; }
 
-    /* ─── TOAST ─── */
     #toast-guru { position: fixed; bottom: 1.5rem; right: 1rem; z-index: 9999; border-radius: 14px; }
+
+    /* ── BADGE INTEGRITAS ── */
+    .badge-jujur    { background: #dcfce7; color: #166534; border: 1px solid #86efac; font-size: 0.73rem; font-weight: 700; border-radius: 8px; padding: 3px 8px; white-space: nowrap; }
+    .badge-warn1c   { background: #fef9c3; color: #92400e; border: 1px solid #fde68a; font-size: 0.73rem; font-weight: 700; border-radius: 8px; padding: 3px 8px; white-space: nowrap; }
+    .badge-curang   { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; font-size: 0.73rem; font-weight: 700; border-radius: 8px; padding: 3px 8px; white-space: nowrap; }
+    .badge-autosubmit { background: #1e1b4b; color: #c7d2fe; border: 1px solid #3730a3; font-size: 0.73rem; font-weight: 700; border-radius: 8px; padding: 3px 8px; white-space: nowrap; }
 
     @media print {
       .topnav, #login-gate, #toast-guru, .theme-toggle, .btn { display: none !important; }
@@ -308,7 +297,6 @@
       <p class="mb-1 text-white-50 fw-semibold small text-uppercase tracking-wider">Selamat Datang,</p>
       <h5 id="guru-nama-display" class="text-white">Nama guru</h5>
       
-      <!-- REVISI: Kontras maksimal untuk Banner ID Login -->
       <div class="mt-3 d-inline-flex align-items-center bg-white rounded-pill px-3 py-2 shadow-sm">
         <small class="fw-bold text-primary"><i class="bi bi-key-fill me-1"></i> ID Login: <span id="guru-key-display" class="text-dark ms-1">—</span></small>
       </div>
@@ -396,7 +384,6 @@
           <h5 class="fw-bold mb-0">Hasil Ujian Siswa</h5>
         </div>
         
-        <!-- Tombol Aksi Ekspor -->
         <div class="d-flex flex-wrap gap-2">
           <button class="btn btn-success fw-bold shadow-sm rounded-3" onclick="exportExcel()" title="Ekspor ke Excel"><i class="bi bi-file-earmark-excel me-1"></i>Excel</button>
           <button class="btn btn-primary fw-bold shadow-sm rounded-3" onclick="exportDocx()" title="Ekspor ke Word"><i class="bi bi-file-earmark-word me-1"></i>Word</button>
@@ -416,31 +403,23 @@
             </select>
           </div>
           
-          <!-- Wrapper Pilihan Kelas Tunggal -->
           <div class="col-12 col-md-8 d-none" id="col-single-kelas">
             <label class="form-label small fw-bold text-muted mb-2 text-uppercase">Pilih Kelas</label>
-            <select id="filter-single-kelas" class="form-select fw-semibold border-2 rounded-3 py-2" onchange="renderHasil()">
-              <!-- Generated via JS -->
-            </select>
+            <select id="filter-single-kelas" class="form-select fw-semibold border-2 rounded-3 py-2" onchange="renderHasil()"></select>
           </div>
 
-          <!-- Wrapper Rentang Kelas (Dari - Sampai) -->
           <div class="col-6 col-md-4 d-none" id="col-range-dari">
             <label class="form-label small fw-bold text-muted mb-2 text-uppercase">Dari Kelas</label>
-            <select id="filter-range-dari" class="form-select fw-semibold border-2 rounded-3 py-2" onchange="renderHasil()">
-              <!-- Generated via JS -->
-            </select>
+            <select id="filter-range-dari" class="form-select fw-semibold border-2 rounded-3 py-2" onchange="renderHasil()"></select>
           </div>
           <div class="col-6 col-md-4 d-none" id="col-range-sampai">
             <label class="form-label small fw-bold text-muted mb-2 text-uppercase">Sampai Kelas</label>
-            <select id="filter-range-sampai" class="form-select fw-semibold border-2 rounded-3 py-2" onchange="renderHasil()">
-              <!-- Generated via JS -->
-            </select>
+            <select id="filter-range-sampai" class="form-select fw-semibold border-2 rounded-3 py-2" onchange="renderHasil()"></select>
           </div>
         </div>
       </div>
 
-      <!-- Tabel Hasil -->
+      <!-- Tabel Hasil — ditambah kolom Integritas -->
       <div class="table-responsive shadow-sm border-0 rounded-4">
         <table class="table table-hover align-middle mb-0 text-nowrap" id="table-hasil-siswa">
           <thead class="table-light">
@@ -449,11 +428,12 @@
               <th>Kelas</th>
               <th class="text-center">Nilai</th>
               <th class="text-center">Benar/Total</th>
+              <th class="text-center">Integritas</th>
               <th>Waktu Pengumpulan</th>
             </tr>
           </thead>
           <tbody id="tbody-hasil">
-            <tr><td colspan="5" class="text-center text-muted py-5"><div class="spinner-border text-primary mb-2" role="status"></div><br>Memuat data...</td></tr>
+            <tr><td colspan="6" class="text-center text-muted py-5"><div class="spinner-border text-primary mb-2" role="status"></div><br>Memuat data...</td></tr>
           </tbody>
         </table>
       </div>
@@ -472,39 +452,31 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-/**
- * THEME SWITCHER LOGIC
- */
+// ── THEME SWITCHER ─────────────────────────────────────────────────────────
 const themeSwitcher = document.getElementById('themeSwitcher');
 const htmlTag = document.documentElement;
 const themeIcon = document.getElementById('themeIcon');
 
 if(themeSwitcher) {
   themeSwitcher.addEventListener('click', () => {
-      const currentTheme = htmlTag.getAttribute('data-bs-theme');
-      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-      htmlTag.setAttribute('data-bs-theme', newTheme);
-      themeIcon.className = newTheme === 'light' ? 'bi bi-moon-stars-fill' : 'bi bi-sun-fill';
-      localStorage.setItem('theme', newTheme);
+    const currentTheme = htmlTag.getAttribute('data-bs-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    htmlTag.setAttribute('data-bs-theme', newTheme);
+    themeIcon.className = newTheme === 'light' ? 'bi bi-moon-stars-fill' : 'bi bi-sun-fill';
+    localStorage.setItem('theme', newTheme);
   });
   const savedTheme = localStorage.getItem('theme') || 'light';
   htmlTag.setAttribute('data-bs-theme', savedTheme);
   themeIcon.className = savedTheme === 'light' ? 'bi bi-moon-stars-fill' : 'bi bi-sun-fill';
 }
 
-/**
- * ============================================================================
- * ORIGINAL JAVASCRIPT LOGIC
- * ============================================================================
- */
-
 // ── STATE ──────────────────────────────────────────────────────────────────
-let guruKey   = "";
-let guruInfo  = null;
-let ujianList = [];
-let soalDraft = [];      // soal untuk editor aktif
-let editUjianId = null;  // null = baru
-let hasilData = [];
+let guruKey     = "";
+let guruInfo    = null;
+let ujianList   = [];
+let soalDraft   = [];
+let editUjianId = null;
+let hasilData   = [];
 
 // ── UTILS ──────────────────────────────────────────────────────────────────
 function toast(msg, type="success") {
@@ -514,6 +486,24 @@ function toast(msg, type="success") {
   bootstrap.Toast.getOrCreateInstance(el).show();
 }
 function esc(s) { return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;"); }
+
+// ── Render badge integritas ────────────────────────────────────────────────
+function cheatBadgeHtml(h) {
+  const count    = Number(h.cheat_count) || 0;
+  const autoSub  = Boolean(h.auto_submit_cheat);
+
+  if (count === 0) {
+    return `<span class="badge-jujur">✓ Jujur</span>`;
+  }
+  if (autoSub) {
+    return `<span class="badge-autosubmit" title="${count}x pelanggaran — Auto Submit">🔴 Auto Submit (${count}x)</span>`;
+  }
+  if (count >= 2) {
+    return `<span class="badge-curang" title="${count}x pelanggaran terdeteksi">🚨 Curang ${count}x</span>`;
+  }
+  // count === 1
+  return `<span class="badge-warn1c" title="1 peringatan">⚠️ 1 Peringatan</span>`;
+}
 
 // ── AUTH ──────────────────────────────────────────────────────────────────
 async function loginGuru() {
@@ -593,40 +583,29 @@ function renderUjianList(keyword="") {
   
   container.innerHTML = filtered.map(u => {
     const totalSoal = Array.isArray(u.soal) ? u.soal.length : 0;
-    
-    // REVISI: Mengubah list kelas menjadi deretan badge yang rapi
     const kelasBadges = Array.isArray(u.kelas) && u.kelas.length > 0 
       ? u.kelas.map(k => `<span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle rounded-pill">Kelas ${esc(k)}</span>`).join("")
       : `<span class="badge bg-secondary bg-opacity-10 text-secondary border rounded-pill">—</span>`;
     
     const jumlahSiswaSubmit = hasilData.filter(h => String(h.kunci_ujian || '').toLowerCase() === String(u.kunci || '').toLowerCase()).length;
-    
     const siswaFmt = jumlahSiswaSubmit < 10 ? "0" + jumlahSiswaSubmit : jumlahSiswaSubmit;
     const soalFmt  = totalSoal < 10 ? "0" + totalSoal : totalSoal;
 
-    // REVISI: Menggunakan Grid Layout (row & col) agar lebih responsif di layar HP
     return `
     <div class="ujian-card">
       <div class="row g-3 align-items-center">
-        <!-- Kiri: Info Utama -->
         <div class="col-12 col-sm-8">
           <div class="d-flex align-items-center gap-2 mb-2">
             <h6 class="mb-0 fs-5 fw-bold">${esc(u.mapel_nama || u.mapel_id)}</h6>
             <span class="badge-aktif">${u.aktif !== false ? "Aktif" : "Nonaktif"}</span>
           </div>
-          
-          <div class="d-flex flex-wrap gap-1 mb-3">
-            ${kelasBadges}
-          </div>
-          
+          <div class="d-flex flex-wrap gap-1 mb-3">${kelasBadges}</div>
           <div class="password-tag">
             <i class="bi bi-key-fill text-muted me-1"></i>Password: <strong class="text-primary ms-1">${esc(u.kunci||"—")}</strong>
           </div>
         </div>
-        
-        <!-- Kanan: Statistik & Aksi -->
         <div class="col-12 col-sm-4 d-flex flex-row flex-sm-column gap-2">
-          <div class="badge-soal d-flex justify-content-center align-items-center flex-grow-1 py-2 m-0" title="Jumlah Siswa yang Sudah Submit / Total Soal">
+          <div class="badge-soal d-flex justify-content-center align-items-center flex-grow-1 py-2 m-0" title="Siswa Submit | Total Soal">
             <i class="bi bi-people-fill me-1"></i> ${siswaFmt} 
             <span class="mx-2 opacity-50">|</span> 
             <i class="bi bi-journal-text me-1"></i> ${soalFmt}
@@ -716,7 +695,7 @@ function backToMain() {
   document.getElementById("main-panel").style.display = "block";
 }
 
-// ── RENDER SOAL ────────────────────────────────────────────────────────────
+// ── RENDER SOAL EDITOR ────────────────────────────────────────────────────
 function renderSoalEditor() {
   const container = document.getElementById("soal-container-editor");
   if (!soalDraft.length) {
@@ -808,7 +787,7 @@ async function deleteUjian(id) {
   } catch(err) { toast(err.message,"danger"); }
 }
 
-// ── HASIL & FILTER SISTEMATIK ──────────────────────────────────────────────
+// ── HASIL & FILTER ─────────────────────────────────────────────────────────
 async function loadHasil() {
   try {
     const res = await fetch("/api/hasil", {headers:{"x-guru-key":guruKey}});
@@ -826,16 +805,14 @@ function updateFilterKelasOptions() {
   );
   
   const singleSelect = document.getElementById("filter-single-kelas");
-  const dariSelect = document.getElementById("filter-range-dari");
+  const dariSelect   = document.getElementById("filter-range-dari");
   const sampaiSelect = document.getElementById("filter-range-sampai");
   
   let optionsHtml = "";
-  uniqueKelas.forEach(k => {
-    optionsHtml += `<option value="${esc(k)}">Kelas ${esc(k)}</option>`;
-  });
+  uniqueKelas.forEach(k => { optionsHtml += `<option value="${esc(k)}">Kelas ${esc(k)}</option>`; });
   
   if(singleSelect) singleSelect.innerHTML = optionsHtml;
-  if(dariSelect) dariSelect.innerHTML = optionsHtml;
+  if(dariSelect)   dariSelect.innerHTML   = optionsHtml;
   if(sampaiSelect) sampaiSelect.innerHTML = optionsHtml;
   
   if (uniqueKelas.length > 0 && sampaiSelect) {
@@ -845,11 +822,9 @@ function updateFilterKelasOptions() {
 
 function toggleFilterMode() {
   const mode = document.getElementById("filter-mode").value;
-  
   document.getElementById("col-single-kelas").classList.toggle("d-none", mode !== "single");
-  document.getElementById("col-range-dari").classList.toggle("d-none", mode !== "range");
+  document.getElementById("col-range-dari").classList.toggle("d-none",   mode !== "range");
   document.getElementById("col-range-sampai").classList.toggle("d-none", mode !== "range");
-  
   renderHasil();
 }
 
@@ -863,9 +838,9 @@ function getFilteredHasilData() {
   }
   
   if (mode === "range") {
-    const dari = document.getElementById("filter-range-dari").value;
+    const dari   = document.getElementById("filter-range-dari").value;
     const sampai = document.getElementById("filter-range-sampai").value;
-    return htmlData = hasilData.filter(h => {
+    return hasilData.filter(h => {
       const k = String(h.kelas);
       return k >= dari && k <= sampai;
     });
@@ -874,12 +849,12 @@ function getFilteredHasilData() {
 }
 
 function renderHasil() {
-  const tbody = document.getElementById("tbody-hasil");
+  const tbody       = document.getElementById("tbody-hasil");
   const filteredData = getFilteredHasilData();
 
   if (!tbody) return;
   if (!filteredData.length) {
-    tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-5"><i class="bi bi-inbox fs-1 d-block mb-2 opacity-50"></i>Tidak ada data hasil ujian yang sesuai filter.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-5"><i class="bi bi-inbox fs-1 d-block mb-2 opacity-50"></i>Tidak ada data hasil ujian yang sesuai filter.</td></tr>';
     return;
   }
   tbody.innerHTML = filteredData.slice().reverse().map(h => `
@@ -888,6 +863,7 @@ function renderHasil() {
       <td><span class="badge bg-secondary bg-opacity-25 text-secondary border">Kelas ${esc(String(h.kelas))}</span></td>
       <td class="text-center"><span class="badge ${h.nilai>=70?"bg-success":"bg-danger"} fs-6 px-3 py-2 shadow-sm">${h.nilai}</span></td>
       <td class="text-center fw-bold"><span class="text-success">${h.benar}</span> <span class="text-muted fw-normal">/ ${h.total}</span></td>
+      <td class="text-center">${cheatBadgeHtml(h)}</td>
       <td class="text-muted small"><i class="bi bi-clock me-1"></i>${new Date(h.waktu).toLocaleString("id-ID",{dateStyle:"short",timeStyle:"short"})}</td>
     </tr>`).join("");
 }
@@ -899,16 +875,16 @@ function showHasilPanel() {
   loadHasil();
 }
 
-// ── EKSTRAK DATA BERDASARKAN FILTER SELEKTIF ──────────────────────────────
+// ── EXPORT ─────────────────────────────────────────────────────────────────
 function getExportContextInfo() {
   const mode = document.getElementById("filter-mode").value;
-  if (mode === "all") return { suffix: "Semua-Kelas", label: "Semua Kelas" };
+  if (mode === "all")    return { suffix: "Semua-Kelas",  label: "Semua Kelas" };
   if (mode === "single") {
     const val = document.getElementById("filter-single-kelas").value;
     return { suffix: `Kelas-${val}`, label: `Kelas ${val}` };
   }
   if (mode === "range") {
-    const dari = document.getElementById("filter-range-dari").value;
+    const dari   = document.getElementById("filter-range-dari").value;
     const sampai = document.getElementById("filter-range-sampai").value;
     return { suffix: `Dari-Kelas-${dari}-Ke-${sampai}`, label: `Rentang Kelas ${dari} s.d ${sampai}` };
   }
@@ -920,11 +896,18 @@ function exportExcel() {
   
   const ctx = getExportContextInfo();
   const ws = XLSX.utils.json_to_sheet(dataToExport.map((h,i)=>({
-    No:i+1, Nama:h.nama, Kelas:`Kelas ${h.kelas}`, Nilai:h.nilai, Benar:h.benar, Total:h.total,
-    Status: h.nilai>=70?"LULUS":"REMIDI"
+    No:      i+1,
+    Nama:    h.nama,
+    Kelas:   `Kelas ${h.kelas}`,
+    Nilai:   h.nilai,
+    Benar:   h.benar,
+    Total:   h.total,
+    Status:  h.nilai>=70?"LULUS":"REMIDI",
+    Integritas: Number(h.cheat_count||0)===0 ? "Jujur"
+              : h.auto_submit_cheat          ? `Auto Submit (${h.cheat_count}x)`
+              : `${h.cheat_count}x Pelanggaran`,
   })));
   const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Hasil");
-  
   XLSX.writeFile(wb, `Hasil-Ujian-${ctx.suffix}-${new Date().toISOString().slice(0,10)}.xlsx`);
   toast(`Excel data (${ctx.label}) diunduh!`, "success");
 }
@@ -934,15 +917,21 @@ function exportDocx() {
   if (!dataToExport.length) { toast("Tidak ada data untuk diekspor!","warning"); return; }
   
   const ctx = getExportContextInfo();
-  let rows = dataToExport.map((h,i) => `<tr>
-    <td style="border:1px solid #000;padding:6px;text-align:center;">${i+1}</td>
-    <td style="border:1px solid #000;padding:6px;font-weight:bold;">${h.nama}</td>
-    <td style="border:1px solid #000;padding:6px;text-align:center;">Kelas ${h.kelas}</td>
-    <td style="border:1px solid #000;padding:6px;text-align:center;font-weight:bold;">${h.nilai}</td>
-    <td style="border:1px solid #000;padding:6px;text-align:center;">${h.benar}</td>
-    <td style="border:1px solid #000;padding:6px;text-align:center;">${h.total}</td>
-    <td style="border:1px solid #000;padding:6px;text-align:center;font-weight:bold;">${h.nilai>=70?"LULUS":"REMIDI"}</td>
-  </tr>`).join("");
+  let rows = dataToExport.map((h,i) => {
+    const integritas = Number(h.cheat_count||0)===0 ? "Jujur"
+                     : h.auto_submit_cheat           ? `Auto Submit (${h.cheat_count}x)`
+                     : `${h.cheat_count}x Pelanggaran`;
+    return `<tr>
+      <td style="border:1px solid #000;padding:6px;text-align:center;">${i+1}</td>
+      <td style="border:1px solid #000;padding:6px;font-weight:bold;">${h.nama}</td>
+      <td style="border:1px solid #000;padding:6px;text-align:center;">Kelas ${h.kelas}</td>
+      <td style="border:1px solid #000;padding:6px;text-align:center;font-weight:bold;">${h.nilai}</td>
+      <td style="border:1px solid #000;padding:6px;text-align:center;">${h.benar}</td>
+      <td style="border:1px solid #000;padding:6px;text-align:center;">${h.total}</td>
+      <td style="border:1px solid #000;padding:6px;text-align:center;font-weight:bold;">${h.nilai>=70?"LULUS":"REMIDI"}</td>
+      <td style="border:1px solid #000;padding:6px;text-align:center;">${integritas}</td>
+    </tr>`;
+  }).join("");
   
   const html = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
   <head><meta charset="utf-8"></head><body style="font-family:Arial,sans-serif;margin:30px;">
@@ -950,10 +939,14 @@ function exportDocx() {
   <p style="text-align:center; margin-top:0; font-size:10pt; color:#555;">Filter Ekstrak: <strong>${ctx.label}</strong> | Tanggal Unduh: ${new Date().toLocaleDateString("id-ID")}</p>
   <table border="1" cellspacing="0" style="width:100%;border-collapse:collapse;margin-top:15px;">
     <thead><tr style="background:#1e293b;color:#fff;">
-      <th style="border:1px solid #000;padding:6px;">No</th><th style="border:1px solid #000;padding:6px;">Nama</th>
-      <th style="border:1px solid #000;padding:6px;">Kelas</th><th style="border:1px solid #000;padding:6px;">Nilai</th>
-      <th style="border:1px solid #000;padding:6px;">Benar</th><th style="border:1px solid #000;padding:6px;">Total</th>
+      <th style="border:1px solid #000;padding:6px;">No</th>
+      <th style="border:1px solid #000;padding:6px;">Nama</th>
+      <th style="border:1px solid #000;padding:6px;">Kelas</th>
+      <th style="border:1px solid #000;padding:6px;">Nilai</th>
+      <th style="border:1px solid #000;padding:6px;">Benar</th>
+      <th style="border:1px solid #000;padding:6px;">Total</th>
       <th style="border:1px solid #000;padding:6px;">Status</th>
+      <th style="border:1px solid #000;padding:6px;">Integritas</th>
     </tr></thead><tbody>${rows}</tbody></table></body></html>`;
     
   const blob = new Blob(['\ufeff'+html], {type:'application/msword'});
@@ -967,15 +960,21 @@ function exportPdf() {
   if (!dataToExport.length) { toast("Tidak ada data untuk dicetak!","warning"); return; }
   
   const ctx = getExportContextInfo();
-  let rows = dataToExport.map((h,i) => `<tr>
-    <td style="border:1px solid #000;padding:6px;text-align:center;">${i+1}</td>
-    <td style="border:1px solid #000;padding:6px;">${h.nama}</td>
-    <td style="border:1px solid #000;padding:6px;text-align:center;">Kelas ${h.kelas}</td>
-    <td style="border:1px solid #000;padding:6px;text-align:center;font-weight:bold;">${h.nilai}</td>
-    <td style="border:1px solid #000;padding:6px;text-align:center;">${h.benar}</td>
-    <td style="border:1px solid #000;padding:6px;text-align:center;">${h.total}</td>
-    <td style="border:1px solid #000;padding:6px;text-align:center;">${h.nilai>=70?"LULUS":"REMIDI"}</td>
-  </tr>`).join("");
+  let rows = dataToExport.map((h,i) => {
+    const integritas = Number(h.cheat_count||0)===0 ? "Jujur"
+                     : h.auto_submit_cheat           ? `Auto Submit (${h.cheat_count}x)`
+                     : `${h.cheat_count}x Pelanggaran`;
+    return `<tr>
+      <td style="border:1px solid #000;padding:6px;text-align:center;">${i+1}</td>
+      <td style="border:1px solid #000;padding:6px;">${h.nama}</td>
+      <td style="border:1px solid #000;padding:6px;text-align:center;">Kelas ${h.kelas}</td>
+      <td style="border:1px solid #000;padding:6px;text-align:center;font-weight:bold;">${h.nilai}</td>
+      <td style="border:1px solid #000;padding:6px;text-align:center;">${h.benar}</td>
+      <td style="border:1px solid #000;padding:6px;text-align:center;">${h.total}</td>
+      <td style="border:1px solid #000;padding:6px;text-align:center;">${h.nilai>=70?"LULUS":"REMIDI"}</td>
+      <td style="border:1px solid #000;padding:6px;text-align:center;">${integritas}</td>
+    </tr>`;
+  }).join("");
   
   document.getElementById("print-area").innerHTML = `
   <div style="text-align:center;font-family:Arial;margin-bottom:15px;">
@@ -991,6 +990,7 @@ function exportPdf() {
       <th style="border:1px solid #000;padding:6px;text-align:center;">Benar</th>
       <th style="border:1px solid #000;padding:6px;text-align:center;">Total</th>
       <th style="border:1px solid #000;padding:6px;text-align:center;">Status</th>
+      <th style="border:1px solid #000;padding:6px;text-align:center;">Integritas</th>
     </tr></thead><tbody>${rows}</tbody></table>`;
   window.print();
 }
