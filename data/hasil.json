@@ -114,5 +114,16 @@
     "nilai": 0,
     "ujian_id": "ujian_1781489557876",
     "waktu": "2026-06-15T08:53:12.428Z"
+  },
+  {
+    "id": "1781574342852_h8rr0",
+    "nama": "Anjay",
+    "kelas": "10.3",
+    "mapel_id": "bindo",
+    "benar": 3,
+    "total": 3,
+    "nilai": 100,
+    "ujian_id": "ujian_1781488439930",
+    "waktu": "2026-06-16T01:45:42.852Z"
   }
 ]
