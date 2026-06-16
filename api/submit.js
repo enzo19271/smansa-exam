@@ -41,6 +41,10 @@ module.exports = async (req, res) => {
     const body = await parseBody(req);
     const { nama, kelas, mapel_id, jawaban, ujian_id } = body;
 
+    // Ambil field anti-cheat (opsional, default 0 / false)
+    const cheat_count       = Number(body.cheat_count)       || 0;
+    const auto_submit_cheat = Boolean(body.auto_submit_cheat) || false;
+
     if (!nama || !kelas || !mapel_id || !jawaban)
       return res.status(400).json({ error: "Data tidak lengkap" });
 
@@ -100,12 +104,20 @@ module.exports = async (req, res) => {
     const total = soal.length;
     const nilai = Math.round((benar / total) * 100);
 
-    // Simpan hasil
+    // Simpan hasil — termasuk data anti-cheat
     list.push({
-      id: `${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
-      nama, kelas, mapel_id, benar, total, nilai,
-      ujian_id: ujianMatch?.id || null,
-      waktu: new Date().toISOString(),
+      id:                `${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+      nama,
+      kelas,
+      mapel_id,
+      benar,
+      total,
+      nilai,
+      ujian_id:          ujianMatch?.id || null,
+      waktu:             new Date().toISOString(),
+      // ── Field anti-cheat ──────────────────────────────────────────────
+      cheat_count,                  // 0 = jujur, 1 = 1 peringatan, dst
+      auto_submit_cheat,            // true = dikumpul paksa karena 3x curang
     });
     await writeFile("data/hasil.json", list, hasilSha);
 
