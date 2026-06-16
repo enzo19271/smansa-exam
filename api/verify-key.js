@@ -15,9 +15,7 @@ module.exports = async (req, res) => {
     if (!mapel_id || !kelas || !key)
       return res.status(400).json({ error: "Data tidak lengkap" });
 
-    // kelas dari form-ujian berupa string misal "10.2"
     const kelasStr = String(kelas);
-    // Normalisasi key → case-insensitive (guru bisa tulis "Bindo12" / "BINDO12" / "bindo12")
     const keyNorm  = String(key).toUpperCase();
 
     const { data: ujianList } = await readFile("data/ujian.json", []);
@@ -31,6 +29,31 @@ module.exports = async (req, res) => {
     );
 
     if (matchUjian) {
+      // ── Cek window waktu ──────────────────────────────────────────────────
+      const now = new Date();
+      if (matchUjian.waktu_mulai && now < new Date(matchUjian.waktu_mulai)) {
+        const fmt = new Date(matchUjian.waktu_mulai).toLocaleString("id-ID", {
+          dateStyle: "short", timeStyle: "short"
+        });
+        return res.status(403).json({
+          valid: false,
+          code: "BELUM_MULAI",
+          error: `Ujian belum dimulai. Dibuka pada ${fmt}`,
+          waktu_mulai: matchUjian.waktu_mulai
+        });
+      }
+      if (matchUjian.waktu_selesai && now > new Date(matchUjian.waktu_selesai)) {
+        const fmt = new Date(matchUjian.waktu_selesai).toLocaleString("id-ID", {
+          dateStyle: "short", timeStyle: "short"
+        });
+        return res.status(403).json({
+          valid: false,
+          code: "SUDAH_SELESAI",
+          error: `Waktu ujian sudah berakhir sejak ${fmt}`,
+          waktu_selesai: matchUjian.waktu_selesai
+        });
+      }
+
       const { data: guruList } = await readFile("data/guru.json", []);
       const guru = (Array.isArray(guruList) ? guruList : []).find(g => g.id === matchUjian.guru_id);
       return res.status(200).json({
