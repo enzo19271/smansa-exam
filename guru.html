@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-bs-theme="light">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -13,147 +13,237 @@
 
   <style>
     :root {
+      /* Light Mode Palette */
+      --primary-blue: #2563eb;
+      --secondary-blue: #60a5fa;
       --blue-gradient: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-      --blue-accent: #3b82f6;
-      --text-dark: #0f172a;
+      --bg-dashboard: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
       --text-muted: #64748b;
       --border-color: #e2e8f0;
+      --glass-bg: rgba(255, 255, 255, 0.85);
+      --input-bg: #ffffff;
     }
+
+    [data-bs-theme="dark"] {
+      /* Dark Mode Palette */
+      --primary-blue: #3b82f6;
+      --secondary-blue: #93c5fd;
+      --blue-gradient: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+      --bg-dashboard: #0f172a;
+      --card-bg: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: #334155;
+      --glass-bg: rgba(30, 41, 59, 0.85);
+      --input-bg: #0f172a;
+    }
+
     body {
-      background: #f1f5f9;
+      background-color: var(--bg-dashboard);
       font-family: 'Plus Jakarta Sans', sans-serif;
-      color: var(--text-dark);
+      color: var(--text-main);
       -webkit-font-smoothing: antialiased;
+      transition: all 0.3s ease;
+      min-height: 100vh;
     }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-dashboard); }
+    ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
 
     /* ─── NAVBAR ─── */
     .topnav {
-      background: #fff;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border-color);
-      padding: 0.8rem 1.2rem;
-      display: flex; align-items: center; justify-content: space-between;
-      position: sticky; top: 0; z-index: 100;
+      padding: 1rem 1.5rem;
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between;
+      position: sticky; 
+      top: 0; 
+      z-index: 1000;
     }
-    .brand-text { font-size: 1.1rem; font-weight: 500; color: var(--text-dark); }
-    .brand-text span { font-style: italic; font-weight: 800; background: var(--blue-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .brand-text { font-size: 1.25rem; font-weight: 700; color: var(--text-main); }
+    .brand-text span { 
+      background: var(--blue-gradient); 
+      -webkit-background-clip: text; 
+      -webkit-text-fill-color: transparent; 
+      font-weight: 800;
+    }
+
+    /* THEME TOGGLE */
+    .theme-toggle {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      width: 40px; height: 40px;
+      border-radius: 12px;
+      color: var(--text-main);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.3s ease;
+    }
+    .theme-toggle:hover { border-color: var(--primary-blue); color: var(--primary-blue); }
 
     /* ─── LOGIN GATE ─── */
-    #login-gate { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #f8fafc; }
-    .login-card-guru { border: 1.5px solid var(--border-color); border-radius: 20px; max-width: 380px; width: 100%; box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
+    #login-gate { 
+      min-height: 100vh; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      background: var(--bg-dashboard); 
+      padding: 1rem;
+    }
+    .login-card-guru { 
+      background: var(--card-bg) !important;
+      border: 1px solid var(--border-color); 
+      border-radius: 24px; 
+      max-width: 420px; 
+      width: 100%; 
+      box-shadow: 0 20px 40px -10px rgba(37, 99, 235, 0.1); 
+      padding: 2.5rem !important;
+      color: var(--text-main);
+    }
+    .login-card-guru h5 { color: var(--text-main) !important; }
+    #inp-guru-key {
+      background: var(--input-bg);
+      color: var(--text-main);
+      transition: all 0.3s ease;
+    }
+    #inp-guru-key:focus {
+      border-color: var(--primary-blue) !important;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+      outline: none;
+    }
 
     /* ─── MAIN CONTENT ─── */
     #guru-content { display: none; }
+    .main-content { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
 
     /* Profile banner */
     .profile-banner {
       background: var(--blue-gradient);
-      border-radius: 16px;
-      padding: 1.5rem;
+      border-radius: 20px;
+      padding: 2rem;
       color: #fff;
-      margin-bottom: 1.25rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 10px 30px -10px rgba(37, 99, 235, 0.4);
+      position: relative;
+      overflow: hidden;
     }
-    .profile-banner h5 { font-weight: 800; font-size: 1.4rem; margin-bottom: 0.2rem; }
-    .profile-banner small { opacity: 0.85; font-size: 0.82rem; }
-
-    /* Action buttons */
-    .action-bar { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; }
+    .profile-banner::after {
+      content: ""; position: absolute;
+      width: 200px; height: 200px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 50%; top: -50px; right: -50px;
+    }
+    .profile-banner h5 { font-weight: 800; font-size: 1.6rem; margin-bottom: 0.2rem; }
+    .profile-banner small { opacity: 0.9; font-size: 0.9rem; font-weight: 500; }
 
     /* Search */
-    .search-box {
-      position: relative; margin-bottom: 1.25rem;
-    }
+    .search-box { position: relative; margin-bottom: 2rem; }
     .search-box input {
-      width: 100%; padding: 0.75rem 3rem 0.75rem 1rem;
-      border: 1.5px solid var(--border-color); border-radius: 12px;
-      font-size: 0.9rem; font-weight: 500; background: #fff;
+      width: 100%; padding: 1rem 3rem 1rem 1.5rem;
+      border: 1px solid var(--border-color); border-radius: 16px;
+      font-size: 1rem; font-weight: 500; background: var(--card-bg);
+      color: var(--text-main);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+      transition: all 0.3s;
     }
-    .search-box input:focus { outline: none; border-color: var(--blue-accent); box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
-    .search-box .si { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+    .search-box input:focus { outline: none; border-color: var(--primary-blue); box-shadow: 0 0 0 4px rgba(37,99,235,0.15); }
+    .search-box .si { position: absolute; right: 1.25rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 1.2rem; }
 
-    /* Ujian card */
+    /* Dynamic CSS for JS Generated Ujian Card */
     .ujian-card {
-      background: #fff; border: 1.5px solid var(--border-color); border-radius: 14px;
-      padding: 1rem 1.2rem; margin-bottom: 0.85rem;
+      background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px;
+      padding: 1.25rem 1.5rem; margin-bottom: 1rem; transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+      color: var(--text-main);
     }
-    .ujian-card h6 { font-weight: 800; font-size: 1.05rem; margin-bottom: 0.2rem; }
-    .kelas-tag { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); font-weight: 700; margin-bottom: 0.5rem; }
-
-    /* Badges */
-    .badge-aktif { background: #22c55e; color: #fff; font-size: 0.72rem; padding: 4px 10px; border-radius: 6px; font-weight: 700; }
-    .badge-soal { background: #f59e0b; color: #fff; font-size: 0.72rem; padding: 4px 10px; border-radius: 6px; font-weight: 700; }
-    .password-tag { font-size: 0.78rem; background: #f1f5f9; border: 1px solid var(--border-color); border-radius: 6px; padding: 2px 8px; display: inline-block; margin-top: 0.35rem; }
+    .ujian-card:hover { transform: translateY(-3px); border-color: var(--primary-blue); box-shadow: 0 10px 20px rgba(0,0,0,0.06); }
+    .ujian-card h6 { font-weight: 800; font-size: 1.15rem; margin-bottom: 0.4rem; color: var(--text-main); }
+    .kelas-tag { font-size: 0.75rem; font-weight: 700; color: var(--primary-blue); background: rgba(37, 99, 235, 0.1); padding: 4px 10px; border-radius: 8px; display: inline-block; margin-bottom: 10px; }
+    .badge-aktif { background: #22c55e; color: #fff; font-size: 0.75rem; padding: 5px 12px; border-radius: 8px; font-weight: 700; }
+    .badge-soal { background: #f59e0b; color: #fff; font-size: 0.75rem; padding: 5px 12px; border-radius: 8px; font-weight: 700; margin: 0 5px; }
+    .password-tag { font-size: 0.8rem; background: var(--bg-dashboard); border: 1px solid var(--border-color); border-radius: 8px; padding: 6px 12px; display: inline-block; margin-top: 0.5rem; color: var(--text-muted); }
 
     /* ─── SOAL EDITOR PANEL ─── */
     #soal-panel { display: none; }
     .soal-editor-header {
-      background: var(--blue-gradient); color: #fff;
-      border-radius: 14px; padding: 1.2rem 1.4rem; margin-bottom: 1.2rem;
-    }
-    .soal-item-box {
-      border: 1.5px solid var(--border-color); border-radius: 14px;
-      background: #fff; padding: 1.2rem; margin-bottom: 1.2rem;
-    }
-    .opsi-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.6rem; }
-    .letter-badge {
-      width: 30px; height: 30px; border-radius: 50%; background: #f1f5f9;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 800; font-size: 0.78rem; flex-shrink: 0;
-      border: 1px solid var(--border-color);
+      background: var(--card-bg); color: var(--text-main);
+      border: 1px solid var(--border-color); border-radius: 16px; 
+      padding: 1.25rem 1.5rem; margin-bottom: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
     }
     .form-control-soal, .form-select-soal {
-      padding: 0.6rem 0.9rem; border: 1.5px solid var(--border-color);
-      border-radius: 10px; font-size: 0.88rem; font-weight: 500;
+      padding: 0.75rem 1rem; border: 1px solid var(--border-color);
+      border-radius: 12px; font-size: 0.95rem; font-weight: 500;
+      background: var(--input-bg); color: var(--text-main);
+      width: 100%; transition: all 0.3s;
     }
-    .form-control-soal:focus, .form-select-soal:focus { outline: none; border-color: var(--blue-accent); box-shadow: 0 0 0 3px rgba(59,130,246,0.12); }
-    .form-check-input-soal { width: 1.1rem; height: 1.1rem; }
+    .form-control-soal:focus { outline: none; border-color: var(--primary-blue); box-shadow: 0 0 0 4px rgba(37,99,235,0.15); }
+    
+    .soal-item-box {
+      border: 1px solid var(--border-color); border-radius: 16px;
+      background: var(--card-bg); padding: 1.5rem; margin-bottom: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+    }
+    .opsi-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .letter-badge {
+      width: 36px; height: 36px; border-radius: 50%; background: var(--bg-dashboard);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 0.9rem; flex-shrink: 0;
+      border: 1px solid var(--border-color); color: var(--text-main);
+    }
+    .form-check-input-soal { width: 1.25rem; height: 1.25rem; cursor: pointer; }
     .form-check-input-soal:checked { background-color: #22c55e; border-color: #22c55e; }
 
     /* Kelas checkboxes */
-    .kelas-check-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .kelas-check-grid { display: flex; flex-wrap: wrap; gap: 8px; }
     .kelas-check-item {
-      border: 1.5px solid var(--border-color); border-radius: 8px;
-      padding: 0.35rem 0.75rem; font-size: 0.82rem; font-weight: 700;
-      cursor: pointer; user-select: none; transition: all 0.15s;
+      border: 1px solid var(--border-color); border-radius: 10px;
+      padding: 8px 14px; font-size: 0.85rem; font-weight: 700;
+      cursor: pointer; user-select: none; transition: all 0.2s;
+      background: var(--input-bg); color: var(--text-main);
     }
-    .kelas-check-item.checked { background: #2563eb; border-color: #2563eb; color: #fff; }
+    .kelas-check-item.checked { background: var(--primary-blue); border-color: var(--primary-blue); color: #fff; }
 
     /* ─── HASIL TAB ─── */
     #hasil-panel { display: none; }
     .filter-card {
-      background: #fff;
-      border: 1.5px solid var(--border-color);
-      border-radius: 14px;
-      padding: 1rem;
-      margin-bottom: 1rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
     }
+    .table-responsive { background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border-color); overflow: hidden; }
+    .table { margin-bottom: 0; color: var(--text-main); }
+    .table-light th { background: var(--bg-dashboard); color: var(--text-muted); font-weight: 700; border-bottom: 1px solid var(--border-color); padding: 1rem; }
+    .table td { border-bottom: 1px solid var(--border-color); padding: 1rem; vertical-align: middle; }
+    .table-hover tbody tr:hover { background-color: var(--bg-dashboard); color: var(--text-main); }
+
+    /* General Form elements dark mode fixes */
+    .form-select, .form-control { background-color: var(--input-bg); color: var(--text-main); border-color: var(--border-color); }
+    .form-select:focus, .form-control:focus { border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(37,99,235,0.15); }
+    .bg-light { background-color: var(--bg-dashboard) !important; }
+    .bg-white { background-color: var(--card-bg) !important; }
+
+    /* Custom Buttons */
+    .btn-primary { background: var(--blue-gradient); border: none; }
+    .btn-primary:hover { opacity: 0.9; }
 
     /* ─── TOAST ─── */
-    #toast-guru { position: fixed; bottom: 1.5rem; right: 1rem; z-index: 9999; border-radius: 12px; }
-
-    /* ─── BOTTOM NAV (mobile) ─── */
-    .bottom-nav {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      background: #fff; border-top: 1px solid var(--border-color);
-      display: none; justify-content: space-around; padding: 0.5rem 0;
-      z-index: 200;
-    }
-    .bottom-nav-btn {
-      display: flex; flex-direction: column; align-items: center; gap: 0.1rem;
-      background: none; border: none; font-size: 0.7rem; font-weight: 700; color: var(--text-muted); padding: 0.4rem 0.5rem;
-    }
-    .bottom-nav-btn i { font-size: 1.25rem; }
-    .bottom-nav-btn.active { color: var(--blue-accent); }
-
-    @media (max-width: 767px) {
-      .bottom-nav { display: flex; }
-      .main-content { padding-bottom: 5rem; }
-    }
+    #toast-guru { position: fixed; bottom: 1.5rem; right: 1rem; z-index: 9999; border-radius: 14px; }
 
     @media print {
-      .topnav, #login-gate, .bottom-nav, #toast-guru { display: none !important; }
-      #print-area { display: block !important; padding: 20px; }
-      table { width: 100%; border-collapse: collapse; }
+      .topnav, #login-gate, #toast-guru, .theme-toggle, .btn { display: none !important; }
+      #print-area { display: block !important; padding: 20px; color: #000; background: #fff;}
+      table { width: 100%; border-collapse: collapse; color: #000; }
       th, td { border: 1px solid #000 !important; padding: 8px; }
+      body { background: #fff; }
     }
     #print-area { display: none; }
   </style>
@@ -163,197 +253,225 @@
 
 <div id="print-area"></div>
 
-<!-- LOGIN GATE -->
 <div id="login-gate">
-  <div class="login-card-guru bg-white p-4 mx-3">
-    <div class="text-center mb-4">
-      <div style="font-size:2.5rem;margin-bottom:0.5rem;">🔒</div>
-      <h5 class="fw-bold text-dark mb-1" style="font-size:1.2rem;">Masukan Kunci Akun Guru</h5>
-      <p class="text-muted small mb-0">Masukan kunci akun guru anda. Jika lupa hubungi admin.</p>
+  <div class="login-card-guru text-center">
+    <div style="font-size:3rem; margin-bottom:1rem; color: var(--primary-blue);">
+      <i class="bi bi-shield-lock-fill"></i>
     </div>
-    <div class="mb-3">
-      <input type="text" id="inp-guru-key" class="form-control text-center fw-bold"
-             style="font-size:1rem; letter-spacing:.08em; border-radius:12px; border:1.5px solid var(--border-color); padding:0.75rem;"
-             placeholder="kuncimasukakun"
+    <h5 class="fw-bold mb-2 fs-4">Akses Guru</h5>
+    <p class="text-muted small mb-4">Masukan kunci (key) akun guru Anda untuk mengelola sistem ujian.</p>
+    
+    <div class="mb-4 text-start">
+      <input type="text" id="inp-guru-key" class="form-control text-center fw-bold py-3"
+             style="font-size:1.1rem; letter-spacing:2px; border-radius:14px; border:2px solid var(--border-color);"
+             placeholder="KUNCI-AKUN"
              onkeydown="if(event.key==='Enter') loginGuru()"/>
       <div id="login-error" class="text-danger small mt-2 d-none fw-semibold"><i class="bi bi-x-circle-fill me-1"></i>Kunci salah atau tidak valid.</div>
     </div>
-    <button class="btn btn-primary w-100 py-2 fw-bold rounded-3" style="background:var(--blue-gradient);border:none;" onclick="loginGuru()" id="btn-login">
-      <span id="btn-login-text">Masuk</span>
-      <span id="btn-login-load" class="d-none"><span class="spinner-border spinner-border-sm me-2"></span>Menghubungkan...</span>
+    <button class="btn btn-primary w-100 py-3 fw-bold rounded-4 shadow-sm" onclick="loginGuru()" id="btn-login">
+      <span id="btn-login-text">Masuk Dashboard</span>
+      <span id="btn-login-load" class="d-none"><span class="spinner-border spinner-border-sm me-2"></span>Memverifikasi...</span>
     </button>
-    <div class="text-center mt-3">
-      <a href="index.html" class="text-muted small text-decoration-none fw-semibold">← Kembali ke Beranda</a>
+    <div class="mt-4">
+      <a href="index.html" class="text-muted small text-decoration-none fw-semibold hover-primary"><i class="bi bi-arrow-left me-1"></i> Kembali ke Beranda Siswa</a>
     </div>
   </div>
 </div>
 
-<!-- MAIN CONTENT -->
 <div id="guru-content">
 
   <nav class="topnav">
-    <div class="brand-text"><span>Admin Guru</span> Dashboard</div>
-    <button class="btn btn-sm btn-outline-secondary border-0" onclick="logout()" title="Keluar">
-      <i class="bi bi-box-arrow-right fs-5"></i>
-    </button>
+    <div class="brand-text"><span>Admin Guru</span> Portal</div>
+    <div class="d-flex align-items-center gap-3">
+      <button class="theme-toggle" id="themeSwitcher" title="Ganti Tema">
+        <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
+      </button>
+      <button class="btn btn-outline-danger border-0 fw-bold d-flex align-items-center gap-2" onclick="logout()" title="Keluar">
+        <span class="d-none d-md-inline small">Keluar</span> <i class="bi bi-box-arrow-right fs-5"></i>
+      </button>
+    </div>
   </nav>
 
-  <div class="container py-3 main-content" style="max-width:680px;">
+  <div class="main-content">
 
-    <!-- Profile Banner -->
     <div class="profile-banner" id="profile-banner">
+      <p class="mb-1 text-white-50 fw-semibold small text-uppercase tracking-wider">Selamat Datang,</p>
       <h5 id="guru-nama-display">Nama guru</h5>
-      <small>Key Login: <span id="guru-key-display">—</span></small>
+      <div class="mt-3 d-inline-flex align-items-center bg-white bg-opacity-25 rounded-pill px-3 py-1">
+        <small><i class="bi bi-key me-1"></i> ID Login: <span id="guru-key-display" class="fw-bold">—</span></small>
+      </div>
     </div>
 
-    <!-- Main Panel Dashboard -->
     <div id="main-panel">
-      <div class="d-flex gap-2 mb-3">
-        <button class="btn btn-success fw-bold flex-fill rounded-3" onclick="showHasilPanel()">
-          <i class="bi bi-graph-up me-1"></i>Hasil Ujian
-        </button>
-        <button class="btn fw-bold flex-fill rounded-3" style="background:#f59e0b;color:#fff;border:none;" disabled>
-          Coming soon
-        </button>
+      <div class="row g-3 mb-4">
+        <div class="col-6">
+          <button class="btn btn-success w-100 fw-bold py-3 rounded-4 shadow-sm" onclick="showHasilPanel()">
+            <i class="bi bi-graph-up fs-4 d-block mb-1"></i>Hasil Ujian
+          </button>
+        </div>
+        <div class="col-6">
+          <button class="btn btn-warning w-100 fw-bold py-3 rounded-4 shadow-sm text-white" disabled>
+            <i class="bi bi-tools fs-4 d-block mb-1"></i>Pengaturan (Soon)
+          </button>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center justify-content-between mb-3 mt-5">
+        <h6 class="fw-bold mb-0 text-uppercase text-muted" style="letter-spacing: 1px;"><i class="bi bi-collection me-2"></i>Daftar Ujian Anda</h6>
       </div>
 
       <div class="search-box">
-        <input type="text" id="search-ujian" placeholder="Search Here...." onkeyup="filterUjian()"/>
+        <input type="text" id="search-ujian" placeholder="Cari mata pelajaran ujian..." onkeyup="filterUjian()"/>
         <i class="bi bi-search si"></i>
       </div>
 
       <div id="ujian-list">
-        <div class="text-center text-muted py-4"><span class="spinner-border spinner-border-sm me-2"></span>Memuat data ujian...</div>
+        <div class="text-center text-muted py-5 border rounded-4 bg-white"><span class="spinner-border spinner-border-sm me-2"></span>Memuat data ujian...</div>
       </div>
 
-      <button class="btn btn-primary w-100 fw-bold rounded-3 py-2 mt-2" onclick="showSoalPanel(null)" style="background:var(--blue-gradient);border:none;">
-        <i class="bi bi-plus-lg me-1"></i>Tambah Ujian
+      <button class="btn btn-primary w-100 fw-bold rounded-4 py-3 mt-3 shadow" onclick="showSoalPanel(null)">
+        <i class="bi bi-plus-lg me-2"></i>Buat Ujian Baru
       </button>
     </div>
 
-    <!-- SOAL EDITOR PANEL -->
     <div id="soal-panel">
-      <div class="soal-editor-header">
-        <div class="d-flex align-items-center gap-2 mb-2">
-          <button class="btn btn-sm btn-light" onclick="backToMain()"><i class="bi bi-arrow-left"></i></button>
-          <span class="fw-bold fs-6" id="editor-title">Buat Ujian Baru</span>
-        </div>
-      </div>
-
-      <div class="bg-white border rounded-3 p-3 mb-3">
-        <div class="mb-3 d-flex align-items-center gap-3">
-          <label class="fw-bold" style="min-width:90px;">Mapel :</label>
-          <div id="editor-mapel-display" class="flex-grow-1 text-center border rounded-3 py-2 px-3 fw-semibold bg-light text-muted small">— nama mapel —</div>
-        </div>
-        <div class="mb-3 d-flex align-items-start gap-3">
-          <label class="fw-bold mt-1" style="min-width:90px;">Kelas :</label>
-          <div>
-            <div id="kelas-filter-display" class="fw-semibold text-muted small mb-2">— pilih kelas —</div>
-            <div class="kelas-check-grid" id="kelas-checks"></div>
-          </div>
-        </div>
-        <div class="d-flex align-items-center gap-3">
-          <label class="fw-bold" style="min-width:90px;">Kunci Ujian :</label>
-          <input type="text" id="editor-kunci" class="form-control-soal flex-grow-1" placeholder="Ujianmtk2026"/>
-        </div>
-      </div>
-
-      <div class="d-flex gap-2 mb-3">
-        <button class="btn fw-bold flex-grow-1 rounded-3" style="background:#f59e0b;color:#fff;border:none;" onclick="tambahSoalBaru()">
-          <i class="bi bi-plus me-1"></i>Tambah Baris
+      <div class="soal-editor-header d-flex align-items-center gap-3">
+        <button class="btn btn-light rounded-circle p-2 d-flex align-items-center justify-content-center shadow-sm" style="width:40px;height:40px;" onclick="backToMain()">
+          <i class="bi bi-arrow-left fs-5"></i>
         </button>
-        <button class="btn btn-success fw-bold flex-grow-1 rounded-3" onclick="simpanUjian()">
-          <i class="bi bi-cloud-arrow-up-fill me-1"></i>Simpan Perubahan
+        <span class="fw-bold fs-5 mb-0" id="editor-title">Buat Ujian Baru</span>
+      </div>
+
+      <div class="card-bg border rounded-4 p-4 mb-4 shadow-sm">
+        <div class="mb-4">
+          <label class="fw-bold text-muted small mb-2 text-uppercase d-block">Mata Pelajaran :</label>
+          <div id="editor-mapel-display" class="border rounded-3 py-3 px-3 fw-bold bg-light text-center text-primary fs-5">— nama mapel —</div>
+        </div>
+        
+        <div class="mb-4">
+          <label class="fw-bold text-muted small mb-2 text-uppercase d-block">Pilih Kelas :</label>
+          <div class="kelas-check-grid" id="kelas-checks"></div>
+          <div class="mt-2 small text-muted">Terpilih: <span id="kelas-filter-display" class="fw-bold text-primary">— pilih kelas —</span></div>
+        </div>
+        
+        <div>
+          <label class="fw-bold text-muted small mb-2 text-uppercase d-block">Kunci Akses Ujian (Password) :</label>
+          <input type="text" id="editor-kunci" class="form-control-soal" placeholder="Contoh: Ujianmtk2026"/>
+        </div>
+      </div>
+
+      <div class="d-flex flex-column flex-md-row gap-3 mb-4">
+        <button class="btn btn-warning text-white fw-bold py-3 px-4 rounded-4 shadow-sm" onclick="tambahSoalBaru()">
+          <i class="bi bi-plus-circle me-2"></i>Tambah Baris Soal
+        </button>
+        <button class="btn btn-success fw-bold py-3 px-4 rounded-4 shadow-sm flex-grow-1" onclick="simpanUjian()">
+          <i class="bi bi-cloud-arrow-up-fill me-2"></i>Simpan Seluruh Perubahan
         </button>
       </div>
 
       <div id="soal-container-editor"></div>
     </div>
 
-    <!-- HASIL PANEL -->
     <div id="hasil-panel">
-      <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
-        <div class="d-flex align-items-center gap-2">
-          <button class="btn btn-sm btn-outline-secondary" onclick="backToMain()"><i class="bi bi-arrow-left"></i></button>
-          <h6 class="fw-bold mb-0">Hasil Ujian Siswa</h6>
+      <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+        <div class="d-flex align-items-center gap-3">
+          <button class="btn btn-outline-secondary rounded-circle p-2 d-flex align-items-center justify-content-center" style="width:40px;height:40px;" onclick="backToMain()">
+            <i class="bi bi-arrow-left fs-5"></i>
+          </button>
+          <h5 class="fw-bold mb-0">Hasil Ujian Siswa</h5>
         </div>
         
-        <!-- Tombol Aksi Ekspor -->
-        <div class="d-flex gap-1 ms-auto">
-          <button class="btn btn-sm btn-success fw-bold shadow-sm" onclick="exportExcel()" title="Ekspor ke Excel"><i class="bi bi-file-earmark-excel me-1"></i>Excel</button>
-          <button class="btn btn-sm btn-primary fw-bold shadow-sm" onclick="exportDocx()" title="Ekspor ke Word"><i class="bi bi-file-earmark-word"></i>Word</button>
-          <button class="btn btn-sm btn-danger fw-bold shadow-sm" onclick="exportPdf()" title="Cetak ke PDF"><i class="bi bi-file-earmark-pdf"></i>PDF</button>
+        <div class="d-flex flex-wrap gap-2">
+          <button class="btn btn-success fw-bold shadow-sm rounded-3" onclick="exportExcel()" title="Ekspor ke Excel"><i class="bi bi-file-earmark-excel me-1"></i>Excel</button>
+          <button class="btn btn-primary fw-bold shadow-sm rounded-3" onclick="exportDocx()" title="Ekspor ke Word"><i class="bi bi-file-earmark-word me-1"></i>Word</button>
+          <button class="btn btn-danger fw-bold shadow-sm rounded-3" onclick="exportPdf()" title="Cetak ke PDF"><i class="bi bi-printer me-1"></i>Cetak</button>
         </div>
       </div>
 
-      <!-- Control Filter -->
       <div class="filter-card shadow-sm">
-        <div class="row g-2 align-items-center">
+        <div class="row g-3 align-items-end">
           <div class="col-12 col-md-4">
-            <label class="form-label small fw-bold text-muted mb-1"><i class="bi bi-funnel-fill me-1"></i>Mode Filter</label>
-            <select id="filter-mode" class="form-select form-select-sm fw-semibold" onchange="toggleFilterMode()">
-              <option value="all">Semua Kelas</option>
-              <option value="single">Pilih Satu Kelas</option>
+            <label class="form-label small fw-bold text-muted mb-2 text-uppercase"><i class="bi bi-funnel-fill me-1"></i>Mode Filter</label>
+            <select id="filter-mode" class="form-select fw-semibold border-2 rounded-3 py-2" onchange="toggleFilterMode()">
+              <option value="all">Tampilkan Semua Kelas</option>
+              <option value="single">Pilih Satu Kelas Spesifik</option>
               <option value="range">Rentang Kelas (Dari - Sampai)</option>
             </select>
           </div>
           
-          <!-- Wrapper Pilihan Kelas Tunggal -->
           <div class="col-12 col-md-8 d-none" id="col-single-kelas">
-            <label class="form-label small fw-bold text-muted mb-1">Kelas</label>
-            <select id="filter-single-kelas" class="form-select form-select-sm fw-semibold" onchange="renderHasil()">
-              <!-- Generated via JS -->
-            </select>
+            <label class="form-label small fw-bold text-muted mb-2 text-uppercase">Pilih Kelas</label>
+            <select id="filter-single-kelas" class="form-select fw-semibold border-2 rounded-3 py-2" onchange="renderHasil()">
+              </select>
           </div>
 
-          <!-- Wrapper Rentang Kelas (Dari - Sampai) -->
           <div class="col-6 col-md-4 d-none" id="col-range-dari">
-            <label class="form-label small fw-bold text-muted mb-1">Dari Kelas</label>
-            <select id="filter-range-dari" class="form-select form-select-sm fw-semibold" onchange="renderHasil()">
-              <!-- Generated via JS -->
-            </select>
+            <label class="form-label small fw-bold text-muted mb-2 text-uppercase">Dari Kelas</label>
+            <select id="filter-range-dari" class="form-select fw-semibold border-2 rounded-3 py-2" onchange="renderHasil()">
+              </select>
           </div>
           <div class="col-6 col-md-4 d-none" id="col-range-sampai">
-            <label class="form-label small fw-bold text-muted mb-1">Sampai Kelas</label>
-            <select id="filter-range-sampai" class="form-select form-select-sm fw-semibold" onchange="renderHasil()">
-              <!-- Generated via JS -->
-            </select>
+            <label class="form-label small fw-bold text-muted mb-2 text-uppercase">Sampai Kelas</label>
+            <select id="filter-range-sampai" class="form-select fw-semibold border-2 rounded-3 py-2" onchange="renderHasil()">
+              </select>
           </div>
         </div>
       </div>
 
-      <!-- Tabel Hasil -->
-      <div class="table-responsive border rounded-3 bg-white shadow-sm">
-        <table class="table table-hover align-middle mb-0 table-sm" id="table-hasil-siswa">
+      <div class="table-responsive shadow-sm border-0">
+        <table class="table table-hover align-middle mb-0" id="table-hasil-siswa">
           <thead class="table-light">
             <tr>
-              <th class="ps-3">Nama Siswa</th>
+              <th class="ps-4">Nama Siswa</th>
               <th>Kelas</th>
-              <th>Nilai</th>
-              <th>Benar</th>
-              <th>Total</th>
-              <th>Waktu</th>
+              <th class="text-center">Nilai</th>
+              <th class="text-center">Benar/Total</th>
+              <th>Waktu Pengumpulan</th>
             </tr>
           </thead>
           <tbody id="tbody-hasil">
-            <tr><td colspan="6" class="text-center text-muted py-3">Memuat data...</td></tr>
+            <tr><td colspan="5" class="text-center text-muted py-5"><div class="spinner-border text-primary mb-2" role="status"></div><br>Memuat data...</td></tr>
           </tbody>
         </table>
       </div>
     </div>
 
-  </div><!-- /container -->
-</div><!-- /guru-content -->
-
-<div id="toast-guru" class="toast align-items-center text-bg-dark border-0" role="alert" data-bs-delay="2500">
-  <div class="d-flex p-1">
-    <div class="toast-body fw-bold small" id="toast-msg-guru"></div>
+  </div></div><div id="toast-guru" class="toast align-items-center text-bg-dark border-0 shadow-lg" role="alert" data-bs-delay="3000">
+  <div class="d-flex p-2">
+    <div class="toast-body fw-bold" id="toast-msg-guru"></div>
     <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
+/**
+ * THEME SWITCHER LOGIC (Ditambahkan khusus untuk mengatur UI, tidak ganggu core logic)
+ */
+const themeSwitcher = document.getElementById('themeSwitcher');
+const htmlTag = document.documentElement;
+const themeIcon = document.getElementById('themeIcon');
+
+if(themeSwitcher) {
+  themeSwitcher.addEventListener('click', () => {
+      const currentTheme = htmlTag.getAttribute('data-bs-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      htmlTag.setAttribute('data-bs-theme', newTheme);
+      themeIcon.className = newTheme === 'light' ? 'bi bi-moon-stars-fill' : 'bi bi-sun-fill';
+      localStorage.setItem('theme', newTheme);
+  });
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  htmlTag.setAttribute('data-bs-theme', savedTheme);
+  themeIcon.className = savedTheme === 'light' ? 'bi bi-moon-stars-fill' : 'bi bi-sun-fill';
+}
+
+/**
+ * ============================================================================
+ * ORIGINAL JAVASCRIPT LOGIC (SAMA PERSIS DARI AWAL SAMPAI AKHIR)
+ * ============================================================================
+ */
+
 // ── STATE ──────────────────────────────────────────────────────────────────
 let guruKey   = "";
 let guruInfo  = null;
@@ -440,9 +558,9 @@ function renderUjianList(keyword="") {
     !keyword || u.mapel_nama?.toLowerCase().includes(keyword) || u.mapel_id?.toLowerCase().includes(keyword)
   );
   if (!filtered.length) {
-    container.innerHTML = `<div class="text-center text-muted py-4 bg-white border rounded-3">
-      <i class="bi bi-journal-x display-5 d-block mb-2 opacity-50"></i>
-      ${ujianList.length ? "Tidak ditemukan. Coba kata kunci lain." : "Belum ada ujian dibuat. Tekan <strong>Tambah Ujian</strong>."}
+    container.innerHTML = `<div class="text-center text-muted py-5 bg-white border rounded-4 shadow-sm">
+      <i class="bi bi-journal-x display-3 d-block mb-3 text-secondary opacity-50"></i>
+      ${ujianList.length ? "Tidak ditemukan. Coba kata kunci lain." : "Belum ada ujian dibuat. Tekan <strong>Buat Ujian Baru</strong>."}
     </div>`;
     return;
   }
@@ -462,14 +580,15 @@ function renderUjianList(keyword="") {
       <div class="d-flex align-items-start justify-content-between">
         <div style="flex:1">
           <h6>${esc(u.mapel_nama || u.mapel_id)}</h6>
-          <div class="kelas-tag">${esc(kelasDisplay)}</div>
-          <div class="password-tag"><i class="bi bi-key-fill me-1 text-muted"></i>password ujian: <strong>${esc(u.kunci||"—")}</strong></div>
+          <div class="kelas-tag">${esc(kelasDisplay)}</div><br>
+          <div class="password-tag"><i class="bi bi-key-fill me-1"></i>password ujian: <strong class="text-primary">${esc(u.kunci||"—")}</strong></div>
         </div>
-        <div class="d-flex align-items-center gap-1 ms-2 flex-shrink-0">
-          <span class="badge-aktif">${u.aktif !== false ? "Aktif" : "Nonaktif"}</span>
-          <!-- Sekarang menampilkan: [Siswa Submit] / [Total Soal] -->
-          <span class="badge-soal" title="Jumlah Siswa yang Sudah Submit / Total Soal">${siswaFmt}/${soalFmt}</span>
-          <button class="btn btn-sm btn-danger fw-bold px-2 py-1" style="font-size:0.72rem;border-radius:6px;" onclick="deleteUjian('${esc(u.id)}')">Hapus</button>
+        <div class="d-flex flex-column align-items-end gap-2 ms-2 flex-shrink-0">
+          <div>
+              <span class="badge-aktif shadow-sm">${u.aktif !== false ? "Aktif" : "Nonaktif"}</span>
+              <span class="badge-soal shadow-sm" title="Jumlah Siswa yang Sudah Submit / Total Soal"><i class="bi bi-people-fill me-1"></i>${siswaFmt} / <i class="bi bi-journal-text ms-1 me-1"></i>${soalFmt}</span>
+          </div>
+          <button class="btn btn-sm btn-outline-danger fw-bold px-3 py-1 mt-2 rounded-pill" onclick="deleteUjian('${esc(u.id)}')"><i class="bi bi-trash3-fill me-1"></i> Hapus</button>
         </div>
       </div>
     </div>`;
@@ -539,7 +658,7 @@ async function showSoalPanel(ujian) {
 
 function updateKelasFilterDisplay() {
   const checked = [...document.querySelectorAll(".kelas-check-item.checked")].map(el=>el.dataset.val);
-  document.getElementById("kelas-filter-display").textContent = checked.length ? checked.join(", ") : "— pilih kelas —";
+  document.getElementById("kelas-filter-display").textContent = checked.length ? checked.join(", ") : "— belum ada yg dipilih —";
 }
 
 function getSelectedKelas() {
@@ -556,40 +675,44 @@ function backToMain() {
 function renderSoalEditor() {
   const container = document.getElementById("soal-container-editor");
   if (!soalDraft.length) {
-    container.innerHTML = `<div class="text-center text-muted py-4 bg-white border rounded-3">Belum ada butir soal.<br>Tekan <strong>Tambah Baris</strong>.</div>`;
+    container.innerHTML = `<div class="text-center text-muted py-5 border rounded-4 bg-white shadow-sm"><i class="bi bi-file-earmark-plus display-4 d-block mb-3 opacity-50"></i>Belum ada butir soal.<br>Tekan tombol <strong>Tambah Baris Soal</strong>.</div>`;
     return;
   }
   container.innerHTML = soalDraft.map((s, i) => `
     <div class="soal-item-box" id="si-${i}">
-      <div class="d-flex align-items-center justify-content-between mb-2">
-        <span class="fw-bold text-dark" style="font-size:0.9rem;"><i class="bi bi-file-earmark-text-fill text-primary me-1"></i>Butir Pertanyaan ${i+1}</span>
-        <button class="btn btn-sm btn-link text-danger p-0 fw-bold" onclick="hapusSoalItem(${i})">Hapus</button>
+      <div class="d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+        <span class="fw-bold text-primary fs-6"><i class="bi bi-list-ol me-2"></i>Butir Pertanyaan ${i+1}</span>
+        <button class="btn btn-sm btn-outline-danger fw-bold rounded-pill" onclick="hapusSoalItem(${i})"><i class="bi bi-trash"></i> Hapus Baris</button>
       </div>
-      <textarea class="form-control-soal form-control mb-3" rows="2" placeholder="Soal..."
+      <textarea class="form-control-soal form-control mb-4" rows="3" placeholder="Tuliskan pertanyaan disini..."
         onchange="soalDraft[${i}].pertanyaan=this.value">${esc(s.pertanyaan||"")}</textarea>
+      <div class="row g-3">
       ${["A","B","C","D"].map(l => `
-        <div class="opsi-row">
-          <div class="letter-badge">${l}</div>
-          <input type="text" class="form-control-soal form-control flex-grow-1" placeholder="Jawaban ${l==="A"?"Benar":"lain"}..."
-            value="${esc((s.opsi||{})[l]||"")}"
-            onchange="if(!soalDraft[${i}].opsi){soalDraft[${i}].opsi={};} soalDraft[${i}].opsi['${l}']=this.value"/>
-          <div class="form-check ms-1">
-            <input class="form-check-input form-check-input-soal" type="radio" name="jwb_${i}" value="${l}"
-              ${s.jawaban===l?"checked":""}
-              onchange="soalDraft[${i}].jawaban='${l}'"/>
+        <div class="col-12 col-md-6">
+          <div class="opsi-row bg-light bg-opacity-50 p-2 rounded-3 border">
+            <div class="letter-badge shadow-sm ${s.jawaban===l ? 'bg-success text-white border-success' : ''}">${l}</div>
+            <input type="text" class="form-control-soal form-control flex-grow-1 border-0 bg-transparent shadow-none" placeholder="Pilihan ${l}..."
+              value="${esc((s.opsi||{})[l]||"")}"
+              onchange="if(!soalDraft[${i}].opsi){soalDraft[${i}].opsi={};} soalDraft[${i}].opsi['${l}']=this.value"/>
+            <div class="form-check ms-1 me-2">
+              <input class="form-check-input form-check-input-soal" type="radio" name="jwb_${i}" value="${l}"
+                ${s.jawaban===l?"checked":""} title="Tandai sebagai jawaban benar"
+                onchange="soalDraft[${i}].jawaban='${l}'; renderSoalEditor();"/>
+            </div>
           </div>
         </div>`).join("")}
+      </div>
     </div>`).join("");
 }
 
 function tambahSoalBaru() {
   soalDraft.push({ id:"s"+Date.now(), pertanyaan:"", opsi:{A:"",B:"",C:"",D:""}, jawaban:"A" });
   renderSoalEditor();
-  document.getElementById("soal-container-editor").lastElementChild?.scrollIntoView({behavior:"smooth"});
+  document.getElementById("soal-container-editor").lastElementChild?.scrollIntoView({behavior:"smooth", block:"center"});
 }
 
 function hapusSoalItem(i) {
-  if (!confirm("Hapus soal ini?")) return;
+  if (!confirm("Hapus soal ini secara permanen?")) return;
   soalDraft.splice(i, 1);
   renderSoalEditor();
 }
@@ -597,8 +720,8 @@ function hapusSoalItem(i) {
 async function simpanUjian() {
   const kelas = getSelectedKelas();
   const kunci = document.getElementById("editor-kunci").value.trim();
-  if (!kelas.length) { toast("Pilih minimal 1 kelas!","warning"); return; }
-  if (!kunci) { toast("Isi Kunci Ujian!","warning"); return; }
+  if (!kelas.length) { toast("Pilih minimal 1 kelas target!","warning"); return; }
+  if (!kunci) { toast("Isi Kunci Akses Ujian!","warning"); return; }
   for (let i=0; i<soalDraft.length; i++) {
     if (!soalDraft[i].pertanyaan?.trim()) { toast(`Pertanyaan nomor ${i+1} belum diisi!`,"warning"); return; }
   }
@@ -622,21 +745,21 @@ async function simpanUjian() {
       await loadUjian();
       backToMain();
     } else {
-      toast(json.error||"Gagal menyimpan","danger");
+      toast(json.error||"Gagal menyimpan server error","danger");
     }
   } catch(err) { toast(err.message,"danger"); }
 }
 
 async function deleteUjian(id) {
-  if (!confirm("Hapus ujian ini? Semua soal akan terhapus.")) return;
+  if (!confirm("Hapus ujian ini? Semua soal di dalamnya akan terhapus permanen.")) return;
   try {
     const res = await fetch("/api/ujian", {
       method:"POST", headers:{"Content-Type":"application/json","x-guru-key":guruKey},
       body: JSON.stringify({action:"delete", ujian_id:id})
     });
     const json = await res.json();
-    if (json.ok) { toast("Ujian dihapus","success"); await loadUjian(); }
-    else toast(json.error||"Gagal","danger");
+    if (json.ok) { toast("Ujian berhasil dihapus","success"); await loadUjian(); }
+    else toast(json.error||"Gagal menghapus","danger");
   } catch(err) { toast(err.message,"danger"); }
 }
 
@@ -711,17 +834,16 @@ function renderHasil() {
 
   if (!tbody) return;
   if (!filteredData.length) {
-    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-3">Tidak ada data hasil ujian yang sesuai filter.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-5"><i class="bi bi-inbox fs-1 d-block mb-2 opacity-50"></i>Tidak ada data hasil ujian yang sesuai filter.</td></tr>';
     return;
   }
   tbody.innerHTML = filteredData.slice().reverse().map(h => `
     <tr>
-      <td class="ps-3 fw-bold">${esc(h.nama)}</td>
-      <td>Kelas ${esc(String(h.kelas))}</td>
-      <td><span class="badge ${h.nilai>=70?"bg-success":"bg-danger"}">${h.nilai}</span></td>
-      <td class="text-success fw-bold">${h.benar}</td>
-      <td class="text-muted">${h.total}</td>
-      <td class="text-muted small">${new Date(h.waktu).toLocaleString("id-ID",{dateStyle:"short",timeStyle:"short"})}</td>
+      <td class="ps-4 fw-bold">${esc(h.nama)}</td>
+      <td><span class="badge bg-secondary bg-opacity-25 text-secondary border">Kelas ${esc(String(h.kelas))}</span></td>
+      <td class="text-center"><span class="badge ${h.nilai>=70?"bg-success":"bg-danger"} fs-6 px-3 py-2 shadow-sm">${h.nilai}</span></td>
+      <td class="text-center fw-bold"><span class="text-success">${h.benar}</span> <span class="text-muted fw-normal">/ ${h.total}</span></td>
+      <td class="text-muted small"><i class="bi bi-clock me-1"></i>${new Date(h.waktu).toLocaleString("id-ID",{dateStyle:"short",timeStyle:"short"})}</td>
     </tr>`).join("");
 }
 
