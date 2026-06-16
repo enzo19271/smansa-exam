@@ -58,7 +58,6 @@
       margin-top: 0.15rem;
     }
 
-    /* TIMER — now with pulse animation when active */
     .exam-topbar .timer {
       background: #f1f5f9; 
       border-radius: 10px;
@@ -94,7 +93,6 @@
     .exam-topbar .timer.warning::before { background: #dc2626; animation: none; }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.6} }
 
-    /* PROGRESS BAR */
     .exam-progress-bar {
       height: 3px;
       background: #e2e8f0;
@@ -124,12 +122,24 @@
       font-size: 0.95rem;
       border: 1px solid var(--border-color);
     }
+
+    /* ── BLOKIR SELEKSI TEKS SOAL ── */
     .q-text-style {
       font-size: 1rem;
       font-weight: 600;
       line-height: 1.65;
       color: var(--text-dark);
       padding-top: 0.2rem;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+    #q-options {
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
     }
 
     .option-label {
@@ -230,7 +240,6 @@
       box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
     }
 
-    /* answered count indicator */
     .answered-count {
       font-size: 0.75rem;
       font-weight: 700;
@@ -255,7 +264,6 @@
       transform: translateY(-1px);
     }
 
-    /* Slide transition */
     .q-card { animation: slideIn 0.2s ease; }
     @keyframes slideIn {
       from { opacity: 0.6; transform: translateY(6px); }
@@ -268,9 +276,92 @@
       .exam-topbar .timer { font-size: 0.82rem; padding: 0.3rem 0.6rem; }
       .q-text-style { font-size: 0.95rem; }
     }
+
+    /* ════════════════════════════════════════════
+       ANTI-CHEAT OVERLAY
+    ════════════════════════════════════════════ */
+    #cheat-overlay {
+      display: none;
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(15, 23, 42, 0.88);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      align-items: center; justify-content: center;
+    }
+    #cheat-overlay.show { display: flex; }
+
+    .cheat-box {
+      background: #fff;
+      border-radius: 22px;
+      padding: 2rem 1.75rem;
+      max-width: 380px;
+      width: 92%;
+      text-align: center;
+      box-shadow: 0 24px 70px rgba(0,0,0,0.35);
+      animation: popIn 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.82) translateY(20px); }
+      to   { opacity: 1; transform: scale(1)    translateY(0); }
+    }
+    .cheat-icon  { font-size: 3.2rem; margin-bottom: 0.4rem; line-height: 1; }
+    .cheat-title { font-weight: 800; font-size: 1.1rem; color: #0f172a; margin-bottom: 0.4rem; }
+    .cheat-desc  { font-size: 0.855rem; color: #475569; margin-bottom: 1.2rem; line-height: 1.6; }
+
+    .cheat-badge {
+      display: inline-block;
+      padding: 0.28rem 0.85rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      margin-bottom: 0.9rem;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+    .badge-warn1 { background: #fef9c3; color: #92400e; border: 1px solid #fde68a; }
+    .badge-warn2 { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+    .badge-warn3 { background: #1e1b4b; color: #c7d2fe; border: 1px solid #3730a3; }
+
+    .cheat-btn-dismiss {
+      font-weight: 700;
+      font-size: 0.9rem;
+      border-radius: 12px;
+      padding: 0.7rem 1rem;
+      width: 100%;
+      background: var(--blue-gradient);
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .cheat-btn-dismiss:hover:not(:disabled) {
+      box-shadow: 0 4px 14px rgba(37,99,235,0.3);
+      transform: translateY(-1px);
+    }
+    .cheat-btn-dismiss:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .cheat-countdown {
+      font-size: 0.8rem; color: #94a3b8; margin-top: 0.75rem; font-weight: 600;
+      display: none;
+    }
+    .cheat-countdown.show { display: block; }
   </style>
 </head>
 <body>
+
+<!-- ════════ ANTI-CHEAT OVERLAY ════════ -->
+<div id="cheat-overlay">
+  <div class="cheat-box">
+    <div class="cheat-icon" id="cheat-icon">⚠️</div>
+    <div class="cheat-badge badge-warn1" id="cheat-badge">PERINGATAN 1 DARI 3</div>
+    <div class="cheat-title" id="cheat-title">Jangan Meninggalkan Halaman!</div>
+    <div class="cheat-desc" id="cheat-desc">Terdeteksi kamu membuka tab lain atau berpindah jendela. Ini adalah peringatan pertama. Lanjutkan ujian dengan jujur.</div>
+    <button class="cheat-btn-dismiss" id="cheat-btn" onclick="dismissCheatWarning()">
+      Mengerti, Kembali ke Ujian
+    </button>
+    <div class="cheat-countdown" id="cheat-countdown"></div>
+  </div>
+</div>
 
 <div class="exam-topbar">
   <div>
@@ -280,7 +371,6 @@
   <div class="timer" id="timer">00:00</div>
 </div>
 
-<!-- thin progress bar -->
 <div class="exam-progress-bar">
   <div class="exam-progress-fill" id="progress-fill" style="width:0%"></div>
 </div>
@@ -335,7 +425,7 @@
       </div>
       <div class="modal-footer border-0 pt-0 pb-4 px-4 gap-2">
         <button class="btn btn-light rounded-3 fw-bold flex-fill small" data-bs-dismiss="modal" style="border:1px solid var(--border-color);">Periksa Kembali</button>
-        <button class="btn btn-danger rounded-3 fw-bold flex-fill small" id="btn-confirm-submit" onclick="submitUjian()">Kumpulkan</button>
+        <button class="btn btn-danger rounded-3 fw-bold flex-fill small" id="btn-confirm-submit" onclick="submitUjian(false)">Kumpulkan</button>
       </div>
     </div>
   </div>
@@ -362,34 +452,169 @@ const ujianId   = sessionStorage.getItem("exam_ujian_id") || "";
 
 if (!mapelId || !nama) location.href = "index.html";
 
-// ── localStorage keys untuk persist antar refresh ──────────────────────────
-// ujianId disertakan di key agar tidak tercampur dengan cache ujian lain
-// (misal mapel+kelas sama tapi kunci/ujian berbeda)
 const cacheSuffix = `${mapelId}_${kelas}${ujianId ? "_" + ujianId : ""}`;
-const LS_JAWABAN = `jawaban_${cacheSuffix}`;
-const LS_TIMER   = `timer_${cacheSuffix}`;
-const LS_SOAL    = `soal_${cacheSuffix}`;
+const LS_JAWABAN  = `jawaban_${cacheSuffix}`;
+const LS_TIMER    = `timer_${cacheSuffix}`;
+const LS_SOAL     = `soal_${cacheSuffix}`;
 
 document.getElementById("tb-mapel").innerHTML = `<span>Smansanam</span> — ${mapelNama || mapelId}`;
 
-let soalList  = [];
-let jawaban   = {};
-let current   = 0;
-let timerSecs = 0;
+let soalList     = [];
+let jawaban      = {};
+let current      = 0;
+let timerSecs    = 0;
 let timerInterval;
 
-// ── Load soal ──────────────────────────────────────────────────────────────
+// ════════════════════════════════════════════
+//  ANTI-CHEAT SYSTEM
+// ════════════════════════════════════════════
+let cheatCount     = 0;
+const MAX_CHEAT    = 3;
+let overlayActive  = false;   // true = overlay sedang tampil
+let examStarted    = false;   // jangan deteksi sebelum soal dimuat
+
+const CHEAT_CONFIG = [
+  {
+    icon:      "⚠️",
+    badge:     "PERINGATAN 1 DARI 3",
+    badgeCls:  "badge-warn1",
+    title:     "Jangan Meninggalkan Halaman!",
+    desc:      "Terdeteksi kamu membuka tab lain atau berpindah jendela. Ini peringatan pertama — belum dilaporkan ke guru. Lanjutkan ujian dengan jujur.",
+    btnText:   "Mengerti, Kembali ke Ujian",
+    autoSubmit: false,
+  },
+  {
+    icon:      "🚨",
+    badge:     "PERINGATAN 2 DARI 3",
+    badgeCls:  "badge-warn2",
+    title:     "Percobaan Curang Tercatat!",
+    desc:      "Pelanggaran ke-2 sudah dicatat dan TERLIHAT oleh guru di panel hasil ujian. Satu pelanggaran lagi dan ujianmu akan dikumpulkan OTOMATIS.",
+    btnText:   "Kembali ke Ujian",
+    autoSubmit: false,
+  },
+  {
+    icon:      "🔴",
+    badge:     "PERINGATAN 3 — AUTO SUBMIT",
+    badgeCls:  "badge-warn3",
+    title:     "Ujian Dikumpulkan Otomatis!",
+    desc:      "Kamu telah melakukan 3 kali pelanggaran. Ujian dikumpulkan secara otomatis sekarang. Hasil dicatat beserta riwayat kecurangan.",
+    btnText:   "Mengumpulkan Jawaban...",
+    autoSubmit: true,
+  },
+];
+
+function triggerCheat() {
+  // Jangan aktif sebelum ujian dimuat atau saat overlay sudah terbuka
+  if (!examStarted || overlayActive) return;
+
+  cheatCount++;
+  overlayActive = true;
+
+  const cfg = CHEAT_CONFIG[Math.min(cheatCount - 1, MAX_CHEAT - 1)];
+
+  // Update isi overlay
+  document.getElementById("cheat-icon").textContent  = cfg.icon;
+  document.getElementById("cheat-title").textContent = cfg.title;
+  document.getElementById("cheat-desc").textContent  = cfg.desc;
+
+  const badge = document.getElementById("cheat-badge");
+  badge.textContent = cfg.badge;
+  badge.className   = `cheat-badge ${cfg.badgeCls}`;
+
+  const btn = document.getElementById("cheat-btn");
+  btn.textContent = cfg.btnText;
+  btn.disabled    = cfg.autoSubmit;
+
+  const countdown = document.getElementById("cheat-countdown");
+  countdown.textContent = "";
+  countdown.classList.remove("show");
+
+  // Tampilkan overlay
+  document.getElementById("cheat-overlay").classList.add("show");
+
+  // Kirim laporan ke server mulai peringatan ke-2
+  if (cheatCount >= 2) {
+    reportCheatToServer(cheatCount);
+  }
+
+  // Peringatan ke-3: hitung mundur lalu auto submit
+  if (cfg.autoSubmit) {
+    countdown.classList.add("show");
+    let sisa = 3;
+    countdown.textContent = `Mengumpulkan dalam ${sisa} detik...`;
+    const cd = setInterval(() => {
+      sisa--;
+      if (sisa <= 0) {
+        clearInterval(cd);
+        submitUjian(true);
+      } else {
+        countdown.textContent = `Mengumpulkan dalam ${sisa} detik...`;
+      }
+    }, 1000);
+  }
+}
+
+function dismissCheatWarning() {
+  if (cheatCount >= MAX_CHEAT) return;
+  document.getElementById("cheat-overlay").classList.remove("show");
+  overlayActive = false;
+}
+
+async function reportCheatToServer(count) {
+  try {
+    await fetch("/api/cheat-report", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        nama,
+        kelas,
+        mapel_id: mapelId,
+        ujian_id: ujianId || null,
+        cheat_count: count,
+        waktu: new Date().toISOString(),
+      }),
+    });
+  } catch { /* silent — jangan ganggu ujian */ }
+}
+
+// ── Deteksi pindah tab / minimize window ─────────────────────────────────
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) triggerCheat();
+});
+
+// ── Deteksi alt+tab / klik luar browser ──────────────────────────────────
+window.addEventListener("blur", () => {
+  triggerCheat();
+});
+
+// ── Blokir klik kanan ────────────────────────────────────────────────────
+document.addEventListener("contextmenu", e => e.preventDefault());
+
+// ── Blokir keyboard shortcut copy/select/print/view-source ───────────────
+document.addEventListener("keydown", e => {
+  const ctrl = e.ctrlKey || e.metaKey;
+  // Blokir Ctrl+C, Ctrl+A, Ctrl+U, Ctrl+S, Ctrl+P
+  if (ctrl && ["c","a","u","s","p"].includes(e.key.toLowerCase())) {
+    e.preventDefault();
+    return;
+  }
+  // Blokir F12 dan Ctrl+Shift+I/J (DevTools)
+  if (e.key === "F12") { e.preventDefault(); return; }
+  if (ctrl && e.shiftKey && ["i","j","c"].includes(e.key.toLowerCase())) {
+    e.preventDefault();
+    return;
+  }
+});
+
+// ════════════════════════════════════════════
+//  LOAD SOAL
+// ════════════════════════════════════════════
 async function loadSoal() {
-  // Cek cache soal di localStorage supaya refresh tidak re-fetch
   const cachedSoal = localStorage.getItem(LS_SOAL);
   if (cachedSoal) {
     soalList = JSON.parse(cachedSoal);
   } else {
     try {
-      // Ambil soal dari API ujian.js (tanpa jawaban benar untuk siswa)
-      // ujian_id dikirim agar server cocokkan ujian yang BENAR sesuai kunci
-      // yang diverifikasi siswa, bukan asal ambil ujian pertama yang cocok
-      // mapel+kelas (penting saat ada >1 ujian aktif untuk mapel+kelas sama).
       const qs = new URLSearchParams({ mapel_id: mapelId, kelas });
       if (ujianId) qs.set("ujian_id", ujianId);
       const res = await fetch(`/api/ujian?${qs.toString()}`);
@@ -407,16 +632,14 @@ async function loadSoal() {
     return;
   }
 
-  // Restore jawaban dari localStorage
   const savedJawaban = localStorage.getItem(LS_JAWABAN);
   if (savedJawaban) jawaban = JSON.parse(savedJawaban);
 
-  // Restore atau inisialisasi timer
   const savedTimer = localStorage.getItem(LS_TIMER);
   if (savedTimer) {
     timerSecs = parseInt(savedTimer);
   } else {
-    timerSecs = soalList.length * 120; // 2 menit per soal
+    timerSecs = soalList.length * 120;
     localStorage.setItem(LS_TIMER, timerSecs);
   }
 
@@ -424,16 +647,21 @@ async function loadSoal() {
   startTimer();
   buildNomorGrid();
   renderSoal(0);
+
+  // Aktifkan anti-cheat SETELAH soal siap
+  examStarted = true;
 }
 
-// ── Timer — disimpan ke localStorage setiap tick ───────────────────────────
+// ════════════════════════════════════════════
+//  TIMER
+// ════════════════════════════════════════════
 function startTimer() {
   updateTimerDisplay(timerSecs);
   timerInterval = setInterval(() => {
     timerSecs--;
     localStorage.setItem(LS_TIMER, timerSecs);
     updateTimerDisplay(timerSecs);
-    if (timerSecs <= 0) { clearInterval(timerInterval); submitUjian(); }
+    if (timerSecs <= 0) { clearInterval(timerInterval); submitUjian(false); }
   }, 1000);
 }
 
@@ -445,22 +673,22 @@ function updateTimerDisplay(secs) {
   el.classList.toggle("warning", secs <= 60);
 }
 
-// ── Render soal ────────────────────────────────────────────────────────────
+// ════════════════════════════════════════════
+//  RENDER SOAL
+// ════════════════════════════════════════════
 function renderSoal(idx) {
   current = idx;
   const s = soalList[idx];
 
-  // Animate
   const qcard = document.getElementById("q-card");
   qcard.style.animation = "none";
-  qcard.offsetHeight; // reflow
+  qcard.offsetHeight;
   qcard.style.animation = "";
 
   document.getElementById("q-num").textContent  = idx + 1;
   document.getElementById("q-text").textContent = s.pertanyaan;
   document.getElementById("tb-progress").textContent = `Soal ${idx + 1} dari ${soalList.length}`;
 
-  // Update progress bar
   document.getElementById("progress-fill").style.width =
     `${Math.round(((idx + 1) / soalList.length) * 100)}%`;
 
@@ -482,10 +710,9 @@ function renderSoal(idx) {
   updateNomorGrid();
 }
 
-// ── Pilih jawaban — simpan ke localStorage ─────────────────────────────────
 function pilihJawaban(soalId, letter, el) {
   jawaban[soalId] = letter;
-  localStorage.setItem(LS_JAWABAN, JSON.stringify(jawaban)); // persist!
+  localStorage.setItem(LS_JAWABAN, JSON.stringify(jawaban));
   document.querySelectorAll(".option-label").forEach(e => e.classList.remove("selected"));
   el.classList.add("selected");
   updateNomorGrid();
@@ -496,7 +723,6 @@ function navigate(dir) {
   if (next >= 0 && next < soalList.length) renderSoal(next);
 }
 
-// ── Nomor grid ─────────────────────────────────────────────────────────────
 function buildNomorGrid() {
   const grid = document.getElementById("nomor-grid");
   grid.innerHTML = "";
@@ -522,7 +748,9 @@ function updateNomorGrid() {
   document.getElementById("count-answered").textContent = answered;
 }
 
-// ── Submit ─────────────────────────────────────────────────────────────────
+// ════════════════════════════════════════════
+//  SUBMIT
+// ════════════════════════════════════════════
 function konfirmasiSelesai() {
   const total   = soalList.length;
   const dijawab = Object.keys(jawaban).length;
@@ -532,8 +760,9 @@ function konfirmasiSelesai() {
   new bootstrap.Modal(document.getElementById("modalSelesai")).show();
 }
 
-async function submitUjian() {
+async function submitUjian(autoByCheat = false) {
   clearInterval(timerInterval);
+  examStarted = false; // matikan deteksi saat proses submit
   bootstrap.Modal.getInstance(document.getElementById("modalSelesai"))?.hide();
   new bootstrap.Modal(document.getElementById("modalLoading")).show();
 
@@ -541,11 +770,18 @@ async function submitUjian() {
     const res = await fetch("/api/submit", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ nama, kelas, mapel_id: mapelId, jawaban, ujian_id: ujianId }),
+      body: JSON.stringify({
+        nama,
+        kelas,
+        mapel_id:         mapelId,
+        jawaban,
+        ujian_id:         ujianId,
+        cheat_count:      cheatCount,
+        auto_submit_cheat: autoByCheat,
+      }),
     });
     const result = await res.json();
 
-    // Bersihkan localStorage ujian ini
     localStorage.removeItem(LS_JAWABAN);
     localStorage.removeItem(LS_TIMER);
     localStorage.removeItem(LS_SOAL);
@@ -554,6 +790,7 @@ async function submitUjian() {
     location.href = "selesai.html";
   } catch(err) {
     bootstrap.Modal.getInstance(document.getElementById("modalLoading"))?.hide();
+    examStarted = true; // aktifkan kembali jika submit gagal
     alert("Gagal mengumpulkan jawaban. Periksa koneksi internet, lalu coba lagi.\n\nJawaban kamu aman tersimpan di perangkat.");
   }
 }
