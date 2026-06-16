@@ -125,5 +125,16 @@
     "nilai": 100,
     "ujian_id": "ujian_1781488439930",
     "waktu": "2026-06-16T01:45:42.852Z"
+  },
+  {
+    "id": "1781574381124_ctz9c",
+    "nama": "Putri Medan",
+    "kelas": "10.4",
+    "mapel_id": "bindo",
+    "benar": 1,
+    "total": 3,
+    "nilai": 33,
+    "ujian_id": "ujian_1781488439930",
+    "waktu": "2026-06-16T01:46:21.124Z"
   }
 ]
