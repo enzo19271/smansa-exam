@@ -163,11 +163,11 @@
       color: var(--text-main);
     }
     .ujian-card:hover { transform: translateY(-3px); border-color: var(--primary-blue); box-shadow: 0 10px 20px rgba(0,0,0,0.06); }
-    .ujian-card h6 { font-weight: 800; font-size: 1.15rem; margin-bottom: 0.4rem; color: var(--text-main); }
-    .kelas-tag { font-size: 0.75rem; font-weight: 700; color: var(--primary-blue); background: rgba(37, 99, 235, 0.1); padding: 4px 10px; border-radius: 8px; display: inline-block; margin-bottom: 10px; }
-    .badge-aktif { background: #22c55e; color: #fff; font-size: 0.75rem; padding: 5px 12px; border-radius: 8px; font-weight: 700; }
-    .badge-soal { background: #f59e0b; color: #fff; font-size: 0.75rem; padding: 5px 12px; border-radius: 8px; font-weight: 700; margin: 0 5px; }
-    .password-tag { font-size: 0.8rem; background: var(--bg-dashboard); border: 1px solid var(--border-color); border-radius: 8px; padding: 6px 12px; display: inline-block; margin-top: 0.5rem; color: var(--text-muted); }
+    
+    /* REVISI CSS: Badge Aktif & Soal */
+    .badge-aktif { background: #22c55e; color: #fff; font-size: 0.75rem; padding: 4px 10px; border-radius: 6px; font-weight: 700; }
+    .badge-soal { background: #f59e0b; color: #fff; font-size: 0.85rem; border-radius: 8px; font-weight: 700; }
+    .password-tag { font-size: 0.85rem; background: var(--bg-dashboard); border: 1px dashed var(--border-color); border-radius: 8px; padding: 6px 12px; color: var(--text-main); display: inline-block; }
 
     /* ─── SOAL EDITOR PANEL ─── */
     #soal-panel { display: none; }
@@ -220,13 +220,12 @@
       margin-bottom: 1.5rem;
     }
     
-    /* REVISI: Perbaikan Responsivitas Tabel */
     .table-responsive { 
       background: var(--card-bg); 
       border-radius: 16px; 
       border: 1px solid var(--border-color); 
       overflow-x: auto; 
-      -webkit-overflow-scrolling: touch; /* untuk scroll halus di iOS */
+      -webkit-overflow-scrolling: touch; 
     }
     .table { margin-bottom: 0; color: var(--text-main); }
     .table-light th { background: var(--bg-dashboard); color: var(--text-muted); font-weight: 700; border-bottom: 1px solid var(--border-color); padding: 1rem; }
@@ -308,9 +307,10 @@
     <div class="profile-banner" id="profile-banner">
       <p class="mb-1 text-white-50 fw-semibold small text-uppercase tracking-wider">Selamat Datang,</p>
       <h5 id="guru-nama-display" class="text-white">Nama guru</h5>
-      <!-- REVISI: Perbaikan visibilitas ID Login -->
-      <div class="mt-3 d-inline-flex align-items-center bg-white bg-opacity-25 text-white border border-white border-opacity-25 rounded-pill px-3 py-1 shadow-sm">
-        <small><i class="bi bi-key-fill me-1"></i> ID Login: <span id="guru-key-display" class="fw-bold ms-1">—</span></small>
+      
+      <!-- REVISI: Kontras maksimal untuk Banner ID Login -->
+      <div class="mt-3 d-inline-flex align-items-center bg-white rounded-pill px-3 py-2 shadow-sm">
+        <small class="fw-bold text-primary"><i class="bi bi-key-fill me-1"></i> ID Login: <span id="guru-key-display" class="text-dark ms-1">—</span></small>
       </div>
     </div>
 
@@ -441,7 +441,6 @@
       </div>
 
       <!-- Tabel Hasil -->
-      <!-- REVISI: Perbaikan pada div tabel hasil dengan menambahkan "text-nowrap" pada elemen table nya -->
       <div class="table-responsive shadow-sm border-0 rounded-4">
         <table class="table table-hover align-middle mb-0 text-nowrap" id="table-hasil-siswa">
           <thead class="table-light">
@@ -583,6 +582,7 @@ function renderUjianList(keyword="") {
   const filtered = ujianList.filter(u =>
     !keyword || u.mapel_nama?.toLowerCase().includes(keyword) || u.mapel_id?.toLowerCase().includes(keyword)
   );
+  
   if (!filtered.length) {
     container.innerHTML = `<div class="text-center text-muted py-5 bg-white border rounded-4 shadow-sm">
       <i class="bi bi-journal-x display-3 d-block mb-3 text-secondary opacity-50"></i>
@@ -590,29 +590,50 @@ function renderUjianList(keyword="") {
     </div>`;
     return;
   }
+  
   container.innerHTML = filtered.map(u => {
     const totalSoal = Array.isArray(u.soal) ? u.soal.length : 0;
-    const kelasDisplay = Array.isArray(u.kelas) ? u.kelas.map(k=>`KELAS ${k}`).join(" • ") : "—";
+    
+    // REVISI: Mengubah list kelas menjadi deretan badge yang rapi
+    const kelasBadges = Array.isArray(u.kelas) && u.kelas.length > 0 
+      ? u.kelas.map(k => `<span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle rounded-pill">Kelas ${esc(k)}</span>`).join("")
+      : `<span class="badge bg-secondary bg-opacity-10 text-secondary border rounded-pill">—</span>`;
     
     const jumlahSiswaSubmit = hasilData.filter(h => String(h.kunci_ujian || '').toLowerCase() === String(u.kunci || '').toLowerCase()).length;
     
     const siswaFmt = jumlahSiswaSubmit < 10 ? "0" + jumlahSiswaSubmit : jumlahSiswaSubmit;
     const soalFmt  = totalSoal < 10 ? "0" + totalSoal : totalSoal;
 
+    // REVISI: Menggunakan Grid Layout (row & col) agar lebih responsif di layar HP
     return `
     <div class="ujian-card">
-      <div class="d-flex align-items-start justify-content-between">
-        <div style="flex:1">
-          <h6>${esc(u.mapel_nama || u.mapel_id)}</h6>
-          <div class="kelas-tag">${esc(kelasDisplay)}</div><br>
-          <div class="password-tag"><i class="bi bi-key-fill me-1"></i>password ujian: <strong class="text-primary">${esc(u.kunci||"—")}</strong></div>
-        </div>
-        <div class="d-flex flex-column align-items-end gap-2 ms-2 flex-shrink-0">
-          <div>
-              <span class="badge-aktif shadow-sm">${u.aktif !== false ? "Aktif" : "Nonaktif"}</span>
-              <span class="badge-soal shadow-sm" title="Jumlah Siswa yang Sudah Submit / Total Soal"><i class="bi bi-people-fill me-1"></i>${siswaFmt} / <i class="bi bi-journal-text ms-1 me-1"></i>${soalFmt}</span>
+      <div class="row g-3 align-items-center">
+        <!-- Kiri: Info Utama -->
+        <div class="col-12 col-sm-8">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <h6 class="mb-0 fs-5 fw-bold">${esc(u.mapel_nama || u.mapel_id)}</h6>
+            <span class="badge-aktif">${u.aktif !== false ? "Aktif" : "Nonaktif"}</span>
           </div>
-          <button class="btn btn-sm btn-outline-danger fw-bold px-3 py-1 mt-2 rounded-pill" onclick="deleteUjian('${esc(u.id)}')"><i class="bi bi-trash3-fill me-1"></i> Hapus</button>
+          
+          <div class="d-flex flex-wrap gap-1 mb-3">
+            ${kelasBadges}
+          </div>
+          
+          <div class="password-tag">
+            <i class="bi bi-key-fill text-muted me-1"></i>Password: <strong class="text-primary ms-1">${esc(u.kunci||"—")}</strong>
+          </div>
+        </div>
+        
+        <!-- Kanan: Statistik & Aksi -->
+        <div class="col-12 col-sm-4 d-flex flex-row flex-sm-column gap-2">
+          <div class="badge-soal d-flex justify-content-center align-items-center flex-grow-1 py-2 m-0" title="Jumlah Siswa yang Sudah Submit / Total Soal">
+            <i class="bi bi-people-fill me-1"></i> ${siswaFmt} 
+            <span class="mx-2 opacity-50">|</span> 
+            <i class="bi bi-journal-text me-1"></i> ${soalFmt}
+          </div>
+          <button class="btn btn-outline-danger btn-sm fw-bold rounded-pill flex-grow-1 py-2" onclick="deleteUjian('${esc(u.id)}')">
+            <i class="bi bi-trash3-fill me-1"></i> Hapus
+          </button>
         </div>
       </div>
     </div>`;
