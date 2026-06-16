@@ -610,16 +610,65 @@ document.addEventListener("keydown", e => {
 //  LOAD SOAL
 // ════════════════════════════════════════════
 async function loadSoal() {
-  const cachedSoal = localStorage.getItem(LS_SOAL);
-  if (cachedSoal) {
+  const cachedSoal   = localStorage.getItem(LS_SOAL);
+  const cachedAcak   = localStorage.getItem(LS_SOAL + "_acak");   // sudah diacak?
+  const cachedMenit  = localStorage.getItem(LS_SOAL + "_menit");
+
+  if (cachedSoal && cachedAcak === "1") {
+    // Soal sudah diacak sebelumnya (resume sesi), pakai langsung
+    soalList = JSON.parse(cachedSoal);
+  } else if (cachedSoal) {
     soalList = JSON.parse(cachedSoal);
   } else {
     try {
       const qs = new URLSearchParams({ mapel_id: mapelId, kelas });
       if (ujianId) qs.set("ujian_id", ujianId);
-      const res = await fetch(`/api/ujian?${qs.toString()}`);
-      soalList  = await res.json();
-      if (soalList.length) localStorage.setItem(LS_SOAL, JSON.stringify(soalList));
+      const res  = await fetch(`/api/ujian?${qs.toString()}`);
+
+      // Handle deadline error dari server
+      if (res.status === 403) {
+        const err = await res.json();
+        const msg = err.code === "BELUM_MULAI"
+          ? `⏳ Ujian belum dimulai.\n\nAkan dibuka pada: ${new Date(err.waktu_mulai).toLocaleString("id-ID",{dateStyle:"long",timeStyle:"short"})}`
+          : `⛔ Waktu ujian sudah berakhir.\n\nDeadline: ${new Date(err.waktu_selesai).toLocaleString("id-ID",{dateStyle:"long",timeStyle:"short"})}`;
+        document.getElementById("q-text").textContent = err.code === "BELUM_MULAI"
+          ? "Ujian belum dimulai. Silakan kembali lagi nanti."
+          : "Waktu ujian sudah berakhir.";
+        document.getElementById("tb-progress").textContent = "—";
+        document.getElementById("btn-selesai").disabled = true;
+        alert(msg);
+        return;
+      }
+
+      const payload = await res.json();
+
+      // Support format baru { soal, acak_soal, waktu_menit }
+      // maupun format lama (array langsung, backward compat)
+      let rawSoal, acakSoal, waktuMenit;
+      if (Array.isArray(payload)) {
+        rawSoal   = payload;
+        acakSoal  = false;
+        waktuMenit = null;
+      } else {
+        rawSoal    = Array.isArray(payload.soal) ? payload.soal : [];
+        acakSoal   = payload.acak_soal === true;
+        waktuMenit = payload.waktu_menit || null;
+      }
+
+      // Fisher-Yates shuffle jika acak_soal aktif
+      if (acakSoal && rawSoal.length > 1) {
+        for (let i = rawSoal.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [rawSoal[i], rawSoal[j]] = [rawSoal[j], rawSoal[i]];
+        }
+        localStorage.setItem(LS_SOAL + "_acak", "1");
+      }
+
+      soalList = rawSoal;
+      if (soalList.length) {
+        localStorage.setItem(LS_SOAL, JSON.stringify(soalList));
+        if (waktuMenit) localStorage.setItem(LS_SOAL + "_menit", String(waktuMenit));
+      }
     } catch {
       soalList = [];
     }
@@ -639,7 +688,10 @@ async function loadSoal() {
   if (savedTimer) {
     timerSecs = parseInt(savedTimer);
   } else {
-    timerSecs = soalList.length * 120;
+    // Prioritas: waktu_menit dari server; fallback: 2 mnt × soal
+    const menitFromServer = cachedMenit ? Number(cachedMenit) : null;
+    const durMenit = menitFromServer || (soalList.length * 2);
+    timerSecs = durMenit * 60;
     localStorage.setItem(LS_TIMER, timerSecs);
   }
 
