@@ -362,6 +362,50 @@
         </div>
       </div>
 
+      <div class="card-bg border rounded-4 p-4 mb-4 shadow-sm">
+        <h6 class="fw-bold text-muted small text-uppercase mb-3"><i class="bi bi-gear-fill me-2"></i>Pengaturan Tambahan</h6>
+
+        <!-- Acak Soal -->
+        <div class="d-flex align-items-center justify-content-between mb-4 p-3 rounded-3 border">
+          <div>
+            <div class="fw-bold">Acak Urutan Soal</div>
+            <div class="small text-muted">Setiap siswa mendapat urutan soal yang berbeda-beda</div>
+          </div>
+          <div class="form-check form-switch mb-0 ms-3">
+            <input class="form-check-input" type="checkbox" role="switch" id="editor-acak-soal" style="width:3rem;height:1.5rem;cursor:pointer;">
+          </div>
+        </div>
+
+        <!-- Durasi Ujian -->
+        <div class="mb-4">
+          <label class="fw-bold text-muted small mb-2 text-uppercase d-block">
+            <i class="bi bi-stopwatch me-1"></i>Durasi Ujian (menit)
+          </label>
+          <div class="d-flex align-items-center gap-2">
+            <input type="number" id="editor-waktu-menit" class="form-control-soal" min="1" max="300" placeholder="Kosongkan = otomatis (2 mnt × jumlah soal)" style="max-width:320px;"/>
+          </div>
+          <div class="small text-muted mt-1">Jika dikosongkan, durasi = 2 menit × jumlah soal</div>
+        </div>
+
+        <!-- Window Waktu -->
+        <div class="row g-3">
+          <div class="col-12 col-md-6">
+            <label class="fw-bold text-muted small mb-2 text-uppercase d-block">
+              <i class="bi bi-calendar-check me-1"></i>Waktu Mulai
+            </label>
+            <input type="datetime-local" id="editor-waktu-mulai" class="form-control-soal"/>
+            <div class="small text-muted mt-1">Kosongkan = bisa dibuka kapan saja</div>
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="fw-bold text-muted small mb-2 text-uppercase d-block">
+              <i class="bi bi-calendar-x me-1"></i>Waktu Selesai (Deadline)
+            </label>
+            <input type="datetime-local" id="editor-waktu-selesai" class="form-control-soal"/>
+            <div class="small text-muted mt-1">Kosongkan = tidak ada deadline</div>
+          </div>
+        </div>
+      </div>
+
       <div class="d-flex flex-column flex-md-row gap-3 mb-4">
         <button class="btn btn-warning text-white fw-bold py-3 px-4 rounded-4 shadow-sm" onclick="tambahSoalBaru()">
           <i class="bi bi-plus-circle me-2"></i>Tambah Baris Soal
@@ -603,6 +647,13 @@ function renderUjianList(keyword="") {
           <div class="password-tag">
             <i class="bi bi-key-fill text-muted me-1"></i>Password: <strong class="text-primary ms-1">${esc(u.kunci||"—")}</strong>
           </div>
+          ${u.acak_soal ? `<div class="mt-2 small text-success fw-semibold"><i class="bi bi-shuffle me-1"></i>Soal diacak</div>` : ""}
+          ${u.waktu_mulai || u.waktu_selesai ? `
+          <div class="mt-2 small text-muted">
+            ${u.waktu_mulai ? `<i class="bi bi-calendar-check me-1 text-primary"></i><span class="me-3">Mulai: <strong>${new Date(u.waktu_mulai).toLocaleString("id-ID",{dateStyle:"short",timeStyle:"short"})}</strong></span>` : ""}
+            ${u.waktu_selesai ? `<i class="bi bi-calendar-x me-1 text-danger"></i>Deadline: <strong>${new Date(u.waktu_selesai).toLocaleString("id-ID",{dateStyle:"short",timeStyle:"short"})}</strong>` : ""}
+          </div>` : ""}
+          ${u.waktu_menit ? `<div class="mt-1 small text-muted"><i class="bi bi-stopwatch me-1"></i>Durasi: <strong>${u.waktu_menit} menit</strong></div>` : ""}
         </div>
         <div class="col-12 col-sm-4 d-flex flex-row flex-sm-column gap-2">
           <div class="badge-soal d-flex justify-content-center align-items-center flex-grow-1 py-2 m-0" title="Siswa Submit | Total Soal">
@@ -660,6 +711,20 @@ async function showSoalPanel(ujian) {
   });
 
   document.getElementById("editor-kunci").value = ujian ? (ujian.kunci||"") : "";
+
+  // ── Pengaturan tambahan ───────────────────────────────────────────────────
+  document.getElementById("editor-acak-soal").checked = ujian ? (ujian.acak_soal === true) : false;
+  document.getElementById("editor-waktu-menit").value = ujian && ujian.waktu_menit ? ujian.waktu_menit : "";
+
+  // Format ISO → datetime-local (potong detik + timezone)
+  const toLocalDT = (iso) => {
+    if (!iso) return "";
+    const d = new Date(iso);
+    const pad = n => String(n).padStart(2,"0");
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  };
+  document.getElementById("editor-waktu-mulai").value   = toLocalDT(ujian?.waktu_mulai);
+  document.getElementById("editor-waktu-selesai").value = toLocalDT(ujian?.waktu_selesai);
 
   if (ujian && ujian.id) {
     try {
@@ -750,6 +815,16 @@ async function simpanUjian() {
     if (!soalDraft[i].pertanyaan?.trim()) { toast(`Pertanyaan nomor ${i+1} belum diisi!`,"warning"); return; }
   }
   try {
+    const waktuMulaiVal   = document.getElementById("editor-waktu-mulai").value;
+    const waktuSelesaiVal = document.getElementById("editor-waktu-selesai").value;
+    const waktuMenitVal   = document.getElementById("editor-waktu-menit").value;
+
+    // Validasi: waktu selesai tidak boleh sebelum waktu mulai
+    if (waktuMulaiVal && waktuSelesaiVal && new Date(waktuSelesaiVal) <= new Date(waktuMulaiVal)) {
+      toast("Waktu selesai harus lebih dari waktu mulai!", "warning");
+      return;
+    }
+
     const body = {
       action: editUjianId ? "update" : "add",
       ujian_id: editUjianId,
@@ -757,7 +832,11 @@ async function simpanUjian() {
       mapel_nama: guruInfo.mapel_id,
       kelas, kunci,
       soal: soalDraft,
-      aktif: true
+      aktif: true,
+      acak_soal: document.getElementById("editor-acak-soal").checked,
+      waktu_menit: waktuMenitVal ? Number(waktuMenitVal) : null,
+      waktu_mulai:   waktuMulaiVal   ? new Date(waktuMulaiVal).toISOString()   : null,
+      waktu_selesai: waktuSelesaiVal ? new Date(waktuSelesaiVal).toISOString() : null,
     };
     const res = await fetch("/api/ujian", {
       method:"POST", headers:{"Content-Type":"application/json","x-guru-key":guruKey},
