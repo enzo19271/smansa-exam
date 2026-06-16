@@ -188,5 +188,18 @@
     "waktu": "2026-06-16T04:06:27.094Z",
     "cheat_count": 0,
     "auto_submit_cheat": false
+  },
+  {
+    "id": "1781582820007_n4hbw",
+    "nama": "Hendi",
+    "kelas": "11.3",
+    "mapel_id": "bio",
+    "benar": 2,
+    "total": 5,
+    "nilai": 40,
+    "ujian_id": "ujian_1781500844568",
+    "waktu": "2026-06-16T04:07:00.007Z",
+    "cheat_count": 0,
+    "auto_submit_cheat": false
   }
 ]
