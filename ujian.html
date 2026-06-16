@@ -268,9 +268,65 @@
       .exam-topbar .timer { font-size: 0.82rem; padding: 0.3rem 0.6rem; }
       .q-text-style { font-size: 0.95rem; }
     }
+    /* ── ANTI-CHEAT OVERLAY ── */
+#cheat-overlay {
+  display: none;
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(4px);
+  align-items: center; justify-content: center;
+}
+#cheat-overlay.show { display: flex; }
+.cheat-box {
+  background: #fff;
+  border-radius: 20px;
+  padding: 2rem;
+  max-width: 380px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  animation: popIn 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+@keyframes popIn {
+  from { opacity:0; transform: scale(0.85); }
+  to   { opacity:1; transform: scale(1); }
+}
+.cheat-icon { font-size: 3rem; margin-bottom: 0.5rem; }
+.cheat-title { font-weight: 800; font-size: 1.15rem; color: #0f172a; margin-bottom: 0.4rem; }
+.cheat-desc  { font-size: 0.875rem; color: #64748b; margin-bottom: 1.25rem; line-height: 1.5; }
+.cheat-badge {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+.badge-warn1 { background: #fef9c3; color: #a16207; }
+.badge-warn2 { background: #fee2e2; color: #b91c1c; }
+.badge-warn3 { background: #1e1b4b; color: #fff; }
+
+/* Blokir seleksi teks soal */
+#q-text, #q-options {
+  user-select: none;
+  -webkit-user-select: none;
+}
   </style>
 </head>
 <body>
+
+  <!-- Anti-Cheat Overlay -->
+<div id="cheat-overlay">
+  <div class="cheat-box" id="cheat-box">
+    <div class="cheat-icon" id="cheat-icon">⚠️</div>
+    <div class="cheat-badge" id="cheat-badge">PERINGATAN 1 dari 3</div>
+    <div class="cheat-title" id="cheat-title">Jangan Meninggalkan Halaman!</div>
+    <div class="cheat-desc" id="cheat-desc">Terdeteksi kamu membuka tab lain atau berpindah halaman. Ini akan dicatat.</div>
+    <button class="btn btn-primary-custom btn-nav-action w-100" id="cheat-btn" onclick="dismissCheatWarning()">
+      Kembali ke Ujian
+    </button>
+  </div>
+</div>
 
 <div class="exam-topbar">
   <div>
@@ -362,9 +418,6 @@ const ujianId   = sessionStorage.getItem("exam_ujian_id") || "";
 
 if (!mapelId || !nama) location.href = "index.html";
 
-// ── localStorage keys untuk persist antar refresh ──────────────────────────
-// ujianId disertakan di key agar tidak tercampur dengan cache ujian lain
-// (misal mapel+kelas sama tapi kunci/ujian berbeda)
 const cacheSuffix = `${mapelId}_${kelas}${ujianId ? "_" + ujianId : ""}`;
 const LS_JAWABAN = `jawaban_${cacheSuffix}`;
 const LS_TIMER   = `timer_${cacheSuffix}`;
@@ -378,18 +431,120 @@ let current   = 0;
 let timerSecs = 0;
 let timerInterval;
 
+// ── ANTI-CHEAT ─────────────────────────────────────────────────────────────
+let cheatCount    = 0;
+const MAX_CHEAT   = 3;
+let cheatDismissed = true; // true = tidak ada overlay aktif
+
+const cheatConfig = [
+  {
+    icon: "⚠️",
+    badge: "PERINGATAN 1 dari 3",
+    badgeClass: "badge-warn1",
+    title: "Jangan Meninggalkan Halaman!",
+    desc: "Terdeteksi kamu berpindah tab atau membuka jendela lain. Ini adalah peringatan pertama. Lanjutkan ujianmu dengan jujur.",
+    btnText: "Mengerti, Kembali ke Ujian",
+  },
+  {
+    icon: "🚨",
+    badge: "PERINGATAN 2 dari 3",
+    badgeClass: "badge-warn2",
+    title: "Percobaan Curang Tercatat!",
+    desc: "Pelanggaran ke-2 sudah dicatat dan akan terlihat oleh guru. Satu pelanggaran lagi dan ujianmu akan dikumpulkan otomatis.",
+    btnText: "Kembali ke Ujian",
+  },
+  {
+    icon: "🔴",
+    badge: "PERINGATAN 3 — AUTO SUBMIT",
+    badgeClass: "badge-warn3",
+    title: "Ujian Dikumpulkan Otomatis",
+    desc: "Kamu telah melakukan 3 pelanggaran. Ujianmu dikumpulkan secara otomatis sekarang.",
+    btnText: "Mengumpulkan...",
+  },
+];
+
+function triggerCheat() {
+  if (!cheatDismissed) return; // overlay sudah terbuka, abaikan
+  cheatCount++;
+  cheatDismissed = false;
+
+  const cfg = cheatConfig[Math.min(cheatCount - 1, MAX_CHEAT - 1)];
+  document.getElementById("cheat-icon").textContent  = cfg.icon;
+  document.getElementById("cheat-badge").textContent = cfg.badge;
+  document.getElementById("cheat-badge").className   = `cheat-badge ${cfg.badgeClass}`;
+  document.getElementById("cheat-title").textContent = cfg.title;
+  document.getElementById("cheat-desc").textContent  = cfg.desc;
+
+  const btn = document.getElementById("cheat-btn");
+  btn.textContent = cfg.btnText;
+
+  const overlay = document.getElementById("cheat-overlay");
+  overlay.classList.add("show");
+
+  // Peringatan 3 → auto submit setelah jeda singkat
+  if (cheatCount >= MAX_CHEAT) {
+    btn.disabled = true;
+    setTimeout(() => submitUjian(true), 2500);
+  }
+
+  // Kirim notifikasi ke server (peringatan 2 ke atas dicatat di hasil)
+  if (cheatCount >= 2) {
+    reportCheatToServer();
+  }
+}
+
+function dismissCheatWarning() {
+  if (cheatCount >= MAX_CHEAT) return;
+  document.getElementById("cheat-overlay").classList.remove("show");
+  cheatDismissed = true;
+}
+
+async function reportCheatToServer() {
+  // Kirim laporan pelanggaran ke server agar tercatat di data hasil
+  try {
+    await fetch("/api/cheat-report", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        nama, kelas, mapel_id: mapelId,
+        ujian_id: ujianId,
+        cheat_count: cheatCount,
+        waktu: new Date().toISOString(),
+      }),
+    });
+  } catch { /* silent fail */ }
+}
+
+// ── Deteksi visibility change (pindah tab / minimize) ─────────────────────
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden && soalList.length) triggerCheat();
+});
+
+// ── Deteksi window blur (alt+tab, klik di luar browser) ───────────────────
+window.addEventListener("blur", () => {
+  if (soalList.length) triggerCheat();
+});
+
+// ── Blokir klik kanan ─────────────────────────────────────────────────────
+document.addEventListener("contextmenu", e => e.preventDefault());
+
+// ── Blokir keyboard shortcut copy ─────────────────────────────────────────
+document.addEventListener("keydown", e => {
+  const forbidden = (e.ctrlKey || e.metaKey) && ["c","a","u","s","p"].includes(e.key.toLowerCase());
+  if (forbidden) e.preventDefault();
+  // Blokir F12, Ctrl+Shift+I (DevTools)
+  if (e.key === "F12" || (e.ctrlKey && e.shiftKey && ["i","j"].includes(e.key.toLowerCase()))) {
+    e.preventDefault();
+  }
+});
+
 // ── Load soal ──────────────────────────────────────────────────────────────
 async function loadSoal() {
-  // Cek cache soal di localStorage supaya refresh tidak re-fetch
   const cachedSoal = localStorage.getItem(LS_SOAL);
   if (cachedSoal) {
     soalList = JSON.parse(cachedSoal);
   } else {
     try {
-      // Ambil soal dari API ujian.js (tanpa jawaban benar untuk siswa)
-      // ujian_id dikirim agar server cocokkan ujian yang BENAR sesuai kunci
-      // yang diverifikasi siswa, bukan asal ambil ujian pertama yang cocok
-      // mapel+kelas (penting saat ada >1 ujian aktif untuk mapel+kelas sama).
       const qs = new URLSearchParams({ mapel_id: mapelId, kelas });
       if (ujianId) qs.set("ujian_id", ujianId);
       const res = await fetch(`/api/ujian?${qs.toString()}`);
@@ -407,16 +562,14 @@ async function loadSoal() {
     return;
   }
 
-  // Restore jawaban dari localStorage
   const savedJawaban = localStorage.getItem(LS_JAWABAN);
   if (savedJawaban) jawaban = JSON.parse(savedJawaban);
 
-  // Restore atau inisialisasi timer
   const savedTimer = localStorage.getItem(LS_TIMER);
   if (savedTimer) {
     timerSecs = parseInt(savedTimer);
   } else {
-    timerSecs = soalList.length * 120; // 2 menit per soal
+    timerSecs = soalList.length * 120;
     localStorage.setItem(LS_TIMER, timerSecs);
   }
 
@@ -426,14 +579,14 @@ async function loadSoal() {
   renderSoal(0);
 }
 
-// ── Timer — disimpan ke localStorage setiap tick ───────────────────────────
+// ── Timer ──────────────────────────────────────────────────────────────────
 function startTimer() {
   updateTimerDisplay(timerSecs);
   timerInterval = setInterval(() => {
     timerSecs--;
     localStorage.setItem(LS_TIMER, timerSecs);
     updateTimerDisplay(timerSecs);
-    if (timerSecs <= 0) { clearInterval(timerInterval); submitUjian(); }
+    if (timerSecs <= 0) { clearInterval(timerInterval); submitUjian(false); }
   }, 1000);
 }
 
@@ -450,17 +603,15 @@ function renderSoal(idx) {
   current = idx;
   const s = soalList[idx];
 
-  // Animate
   const qcard = document.getElementById("q-card");
   qcard.style.animation = "none";
-  qcard.offsetHeight; // reflow
+  qcard.offsetHeight;
   qcard.style.animation = "";
 
   document.getElementById("q-num").textContent  = idx + 1;
   document.getElementById("q-text").textContent = s.pertanyaan;
   document.getElementById("tb-progress").textContent = `Soal ${idx + 1} dari ${soalList.length}`;
 
-  // Update progress bar
   document.getElementById("progress-fill").style.width =
     `${Math.round(((idx + 1) / soalList.length) * 100)}%`;
 
@@ -482,10 +633,9 @@ function renderSoal(idx) {
   updateNomorGrid();
 }
 
-// ── Pilih jawaban — simpan ke localStorage ─────────────────────────────────
 function pilihJawaban(soalId, letter, el) {
   jawaban[soalId] = letter;
-  localStorage.setItem(LS_JAWABAN, JSON.stringify(jawaban)); // persist!
+  localStorage.setItem(LS_JAWABAN, JSON.stringify(jawaban));
   document.querySelectorAll(".option-label").forEach(e => e.classList.remove("selected"));
   el.classList.add("selected");
   updateNomorGrid();
@@ -496,7 +646,6 @@ function navigate(dir) {
   if (next >= 0 && next < soalList.length) renderSoal(next);
 }
 
-// ── Nomor grid ─────────────────────────────────────────────────────────────
 function buildNomorGrid() {
   const grid = document.getElementById("nomor-grid");
   grid.innerHTML = "";
@@ -522,7 +671,6 @@ function updateNomorGrid() {
   document.getElementById("count-answered").textContent = answered;
 }
 
-// ── Submit ─────────────────────────────────────────────────────────────────
 function konfirmasiSelesai() {
   const total   = soalList.length;
   const dijawab = Object.keys(jawaban).length;
@@ -532,7 +680,7 @@ function konfirmasiSelesai() {
   new bootstrap.Modal(document.getElementById("modalSelesai")).show();
 }
 
-async function submitUjian() {
+async function submitUjian(autoByCheat = false) {
   clearInterval(timerInterval);
   bootstrap.Modal.getInstance(document.getElementById("modalSelesai"))?.hide();
   new bootstrap.Modal(document.getElementById("modalLoading")).show();
@@ -541,11 +689,14 @@ async function submitUjian() {
     const res = await fetch("/api/submit", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ nama, kelas, mapel_id: mapelId, jawaban, ujian_id: ujianId }),
+      body: JSON.stringify({
+        nama, kelas, mapel_id: mapelId, jawaban, ujian_id: ujianId,
+        cheat_count: cheatCount,          // ← kirim jumlah pelanggaran
+        auto_submit_cheat: autoByCheat,   // ← flag apakah auto karena curang
+      }),
     });
     const result = await res.json();
 
-    // Bersihkan localStorage ujian ini
     localStorage.removeItem(LS_JAWABAN);
     localStorage.removeItem(LS_TIMER);
     localStorage.removeItem(LS_SOAL);
