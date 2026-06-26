@@ -42,41 +42,6 @@
     "diupdate_at": "2026-06-13T13:38:47.998Z"
   },
   {
-    "id": "ujian_1781489557876",
-    "guru_id": "001",
-    "mapel_id": "bindo",
-    "mapel_nama": "bindo",
-    "kelas": [
-      "11.1",
-      "11.2",
-      "11.3",
-      "11.4",
-      "11.5",
-      "11.6"
-    ],
-    "kunci": "Bindo11",
-    "soal": [
-      {
-        "id": "s1781489548923",
-        "pertanyaan": "Rindal",
-        "opsi": {
-          "A": "hsakjs",
-          "B": "bdbd",
-          "C": "vsvbs",
-          "D": "vsbs"
-        },
-        "jawaban": "C"
-      }
-    ],
-    "aktif": true,
-    "created_at": "2026-06-15T02:12:37.876Z",
-    "acak_soal": true,
-    "waktu_mulai": "2026-06-25T00:00:00.000Z",
-    "waktu_selesai": "2026-06-30T02:56:00.000Z",
-    "waktu_menit": null,
-    "updated_at": "2026-06-25T01:27:36.592Z"
-  },
-  {
     "id": "ujian_1781500844568",
     "guru_id": "003",
     "mapel_id": "bio",
