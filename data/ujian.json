@@ -42,63 +42,6 @@
     "diupdate_at": "2026-06-13T13:38:47.998Z"
   },
   {
-    "id": "ujian_1781488439930",
-    "guru_id": "001",
-    "mapel_id": "bindo",
-    "mapel_nama": "bindo",
-    "kelas": [
-      "10.1",
-      "10.2",
-      "10.3",
-      "10.4",
-      "10.5",
-      "10.6"
-    ],
-    "kunci": "Bindo10",
-    "soal": [
-      {
-        "id": "s1781488445635",
-        "pertanyaan": "Anjay",
-        "opsi": {
-          "A": "Gelo",
-          "B": "Keren",
-          "C": "Ghos",
-          "D": "Gah"
-        },
-        "jawaban": "A"
-      },
-      {
-        "id": "s1781573250280",
-        "pertanyaan": "ASas",
-        "opsi": {
-          "A": "assasa",
-          "B": "sasa",
-          "C": "sssa",
-          "D": "sasasa"
-        },
-        "jawaban": "B"
-      },
-      {
-        "id": "s1781574257698",
-        "pertanyaan": "hxsjak",
-        "opsi": {
-          "A": "hshs",
-          "B": "gsgss",
-          "C": "gsgs",
-          "D": "shssh"
-        },
-        "jawaban": "C"
-      }
-    ],
-    "aktif": true,
-    "created_at": "2026-06-15T01:53:59.930Z",
-    "updated_at": "2026-06-16T02:56:24.574Z",
-    "acak_soal": true,
-    "waktu_mulai": "2026-06-16T02:55:00.000Z",
-    "waktu_selesai": "2026-06-16T04:55:00.000Z",
-    "waktu_menit": 90
-  },
-  {
     "id": "ujian_1781489557876",
     "guru_id": "001",
     "mapel_id": "bindo",
