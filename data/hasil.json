@@ -240,5 +240,18 @@
     "waktu": "2026-06-26T07:52:10.888Z",
     "cheat_count": 2,
     "auto_submit_cheat": false
+  },
+  {
+    "id": "1782461282542_0p8at",
+    "nama": "Revi",
+    "kelas": "10.3",
+    "mapel_id": "bindo",
+    "benar": 1,
+    "total": 1,
+    "nilai": 100,
+    "ujian_id": "ujian_1782461237657",
+    "waktu": "2026-06-26T08:08:02.542Z",
+    "cheat_count": 1,
+    "auto_submit_cheat": false
   }
 ]
