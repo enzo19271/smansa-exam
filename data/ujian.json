@@ -119,5 +119,36 @@
     "waktu_mulai": "2026-06-16T04:04:00.000Z",
     "waktu_selesai": "2026-06-17T04:04:00.000Z",
     "waktu_menit": 60
+  },
+  {
+    "id": "ujian_1782461237657",
+    "guru_id": "001",
+    "mapel_id": "bindo",
+    "mapel_nama": "bindo",
+    "kelas": [
+      "10.1",
+      "10.2",
+      "10.3"
+    ],
+    "kunci": "bindo10ku",
+    "soal": [
+      {
+        "id": "s17824612176340",
+        "pertanyaan": "Test doang",
+        "opsi": {
+          "A": "anjay",
+          "B": "gawt",
+          "C": "galow",
+          "D": "gelwo"
+        },
+        "jawaban": "A"
+      }
+    ],
+    "aktif": true,
+    "acak_soal": true,
+    "waktu_mulai": "2026-06-25T08:06:00.000Z",
+    "waktu_selesai": "2026-07-17T08:06:00.000Z",
+    "waktu_menit": null,
+    "created_at": "2026-06-26T08:07:17.657Z"
   }
 ]
