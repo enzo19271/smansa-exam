@@ -407,12 +407,53 @@
       </div>
 
       <div class="d-flex flex-column flex-md-row gap-3 mb-4">
-        <button class="btn btn-warning text-white fw-bold py-3 px-4 rounded-4 shadow-sm" onclick="tambahSoalBaru()">
-          <i class="bi bi-plus-circle me-2"></i>Tambah Baris Soal
-        </button>
+        <div class="btn-group w-100 w-md-auto shadow-sm" role="group">
+          <button type="button" class="btn btn-warning text-white fw-bold py-3 px-4 rounded-start-4" onclick="tambahSoalBaru(1)" style="border-radius:12px 0 0 12px;">
+            <i class="bi bi-plus-circle me-2"></i>+1 Soal
+          </button>
+          <button type="button" class="btn btn-warning text-white fw-bold py-3 px-3 dropdown-toggle" data-bs-toggle="dropdown" style="border-radius:0 12px 12px 0;">
+            <i class="bi bi-speedometer2 me-1"></i>Batch
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item fw-semibold py-2" onclick="tambahSoalBaru(10)"><i class="bi bi-plus-lg me-2 text-warning"></i>+10 Soal</a></li>
+            <li><a class="dropdown-item fw-semibold py-2" onclick="tambahSoalBaru(20)"><i class="bi bi-plus-lg me-2 text-warning"></i>+20 Soal</a></li>
+            <li><a class="dropdown-item fw-semibold py-2" onclick="tambahSoalBaru(30)"><i class="bi bi-plus-lg me-2 text-warning"></i>+30 Soal</a></li>
+            <li><a class="dropdown-item fw-semibold py-2" onclick="tambahSoalBaru(40)"><i class="bi bi-plus-lg me-2 text-warning"></i>+40 Soal</a></li>
+            <li><a class="dropdown-item fw-semibold py-2" onclick="tambahSoalBaru(50)"><i class="bi bi-plus-lg me-2 text-warning"></i>+50 Soal</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item fw-semibold py-2 text-primary" onclick="showCustomAddSoal()"><i class="bi bi-pencil-square me-2"></i>Jumlah Custom...</a></li>
+          </ul>
+        </div>
         <button class="btn btn-success fw-bold py-3 px-4 rounded-4 shadow-sm flex-grow-1" onclick="simpanUjian()">
           <i class="bi bi-cloud-arrow-up-fill me-2"></i>Simpan Seluruh Perubahan
         </button>
+      </div>
+
+      <!-- Modal Custom Add Soal -->
+      <div class="modal fade" id="modalCustomAddSoal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content rounded-4 border-0 shadow-lg">
+            <div class="modal-header border-0 pb-0">
+              <h5 class="modal-title fw-bold"><i class="bi bi-plus-circle text-warning me-2"></i>Tambah Soal Kustom</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <label class="fw-bold text-muted small mb-2 text-uppercase d-block">Berapa banyak soal yang ingin ditambah?</label>
+              <div class="input-group input-group-lg">
+                <button class="btn btn-outline-secondary fw-bold" type="button" onclick="adjustCustomSoal(-1)">−</button>
+                <input type="number" id="customSoalCount" class="form-control text-center fw-bold" value="5" min="1" max="100" style="font-size:1.5rem;">
+                <button class="btn btn-outline-secondary fw-bold" type="button" onclick="adjustCustomSoal(1)">+</button>
+              </div>
+              <div class="text-muted small mt-2">Masukkan jumlah dari 1 hingga 100</div>
+            </div>
+            <div class="modal-footer border-0 pt-0 gap-2">
+              <button type="button" class="btn btn-secondary fw-bold rounded-3" data-bs-dismiss="modal">Batal</button>
+              <button type="button" class="btn btn-warning text-white fw-bold rounded-3" onclick="confirmCustomAddSoal()">
+                <i class="bi bi-plus-circle me-1"></i>Tambah
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div id="soal-container-editor"></div>
@@ -794,10 +835,38 @@ function renderSoalEditor() {
     </div>`).join("");
 }
 
-function tambahSoalBaru() {
-  soalDraft.push({ id:"s"+Date.now(), pertanyaan:"", opsi:{A:"",B:"",C:"",D:""}, jawaban:"A" });
+// ── TAMBAH SOAL BARU (DENGAN BATCH SUPPORT) ──────────────────────────────
+function tambahSoalBaru(quantity = 1) {
+  const jumlah = Math.min(Math.max(parseInt(quantity) || 1, 1), 100);
+  for (let i = 0; i < jumlah; i++) {
+    soalDraft.push({ 
+      id: "s" + Date.now() + i, 
+      pertanyaan: "", 
+      opsi: { A: "", B: "", C: "", D: "" }, 
+      jawaban: "A" 
+    });
+  }
   renderSoalEditor();
-  document.getElementById("soal-container-editor").lastElementChild?.scrollIntoView({behavior:"smooth", block:"center"});
+  toast(`${jumlah} soal berhasil ditambahkan!`, "success");
+  // Jangan auto-scroll ke bawah
+}
+
+function showCustomAddSoal() {
+  document.getElementById("customSoalCount").value = 5;
+  bootstrap.Modal.getOrCreateInstance(document.getElementById("modalCustomAddSoal")).show();
+}
+
+function adjustCustomSoal(delta) {
+  const input = document.getElementById("customSoalCount");
+  let val = parseInt(input.value) || 5;
+  val = Math.max(1, Math.min(100, val + delta));
+  input.value = val;
+}
+
+function confirmCustomAddSoal() {
+  const count = parseInt(document.getElementById("customSoalCount").value) || 5;
+  bootstrap.Modal.getInstance(document.getElementById("modalCustomAddSoal")).hide();
+  tambahSoalBaru(count);
 }
 
 function hapusSoalItem(i) {
