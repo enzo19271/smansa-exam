@@ -227,5 +227,18 @@
     "waktu": "2026-06-25T01:28:48.328Z",
     "cheat_count": 3,
     "auto_submit_cheat": true
+  },
+  {
+    "id": "1782460330888_oh22g",
+    "nama": "Rezi",
+    "kelas": "11.5",
+    "mapel_id": "bindo",
+    "benar": 0,
+    "total": 1,
+    "nilai": 0,
+    "ujian_id": "ujian_1781489557876",
+    "waktu": "2026-06-26T07:52:10.888Z",
+    "cheat_count": 2,
+    "auto_submit_cheat": false
   }
 ]
