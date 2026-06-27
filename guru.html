@@ -1297,28 +1297,34 @@ function showKonfirmasiHapus(pesan, onKonfirmasi) {
 }
 
 // ── KIRIM HAPUS KE API ─────────────────────────────────────────────────────
-// Fungsi ini mengirim array item hasil yang akan dihapus ke backend.
-// Sesuaikan payload (ids, timestamps, dsb) sesuai struktur API /api/hasil DELETE milikmu.
+// Backend hanya menerima satu { id } per request, jadi kita loop satu-satu.
 async function kirimHapusHasil(items) {
   if (!items.length) return false;
-  try {
-    // Mencoba mengirim array id unik; fallback ke field lain jika tidak ada id
-    const ids = items.map(h => h.id || h._id || `${h.nama}__${h.kelas}__${h.waktu}`);
-    const res = await fetch("/api/hasil", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json", "x-guru-key": guruKey },
-      body: JSON.stringify({ ids })
-    });
-    const json = await res.json().catch(() => ({}));
-    if (!res.ok || json.error) {
-      toast(json.error || `Gagal menghapus data (HTTP ${res.status}).`, "danger");
-      return false;
+  let gagal = 0;
+  for (const h of items) {
+    const id = h.id;
+    if (!id) { gagal++; continue; }
+    try {
+      const res = await fetch("/api/hasil", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json", "x-guru-key": guruKey },
+        body: JSON.stringify({ id })
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || json.error) {
+        console.error("Gagal hapus id=" + id, json.error);
+        gagal++;
+      }
+    } catch (err) {
+      console.error("Network error hapus id=" + id, err.message);
+      gagal++;
     }
-    return true;
-  } catch (err) {
-    toast("Error jaringan: " + err.message, "danger");
+  }
+  if (gagal > 0) {
+    toast(`${gagal} data gagal dihapus. Cek console untuk detail.`, "warning");
     return false;
   }
+  return true;
 }
 
 // ── EXPORT ─────────────────────────────────────────────────────────────────
