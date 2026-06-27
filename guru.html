@@ -234,6 +234,30 @@
     .badge-curang   { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; font-size: 0.73rem; font-weight: 700; border-radius: 8px; padding: 3px 8px; white-space: nowrap; }
     .badge-autosubmit { background: #1e1b4b; color: #c7d2fe; border: 1px solid #3730a3; font-size: 0.73rem; font-weight: 700; border-radius: 8px; padding: 3px 8px; white-space: nowrap; }
 
+    /* ── CHECKBOX HAPUS ── */
+    .check-hapus { width: 1.1rem; height: 1.1rem; cursor: pointer; accent-color: var(--primary-blue); }
+    tr.row-selected td { background: rgba(37,99,235,0.06) !important; }
+
+    /* ── BATCH DELETE BAR ── */
+    #batch-delete-bar {
+      position: sticky;
+      bottom: 1rem;
+      z-index: 500;
+      display: none;
+    }
+    .batch-bar-inner {
+      background: #1e293b;
+      color: #fff;
+      border-radius: 16px;
+      padding: 0.85rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+      flex-wrap: wrap;
+    }
+
     @media print {
       .topnav, #login-gate, #toast-guru, .theme-toggle, .btn { display: none !important; }
       #print-area { display: block !important; padding: 20px; color: #000; background: #fff;}
@@ -502,30 +526,89 @@
             <select id="filter-range-sampai" class="form-select fw-semibold border-2 rounded-3 py-2" onchange="renderHasil()"></select>
           </div>
         </div>
+
+        <!-- ── BATCH DELETE CONTROLS ── -->
+        <div class="mt-3 pt-3 border-top d-flex flex-wrap align-items-center gap-2" id="batch-controls">
+          <button class="btn btn-outline-secondary btn-sm fw-bold rounded-3" onclick="toggleSelectAll()">
+            <i class="bi bi-check2-square me-1"></i><span id="select-all-label">Pilih Semua</span>
+          </button>
+          <div class="dropdown">
+            <button class="btn btn-outline-danger btn-sm fw-bold rounded-3 dropdown-toggle" data-bs-toggle="dropdown">
+              <i class="bi bi-trash3 me-1"></i>Hapus Per Kelas
+            </button>
+            <ul class="dropdown-menu shadow" id="dropdown-hapus-kelas">
+              <li><span class="dropdown-item-text text-muted small">Memuat daftar kelas...</span></li>
+            </ul>
+          </div>
+          <button class="btn btn-outline-danger btn-sm fw-bold rounded-3" onclick="hapusSemuaFilter()">
+            <i class="bi bi-trash3-fill me-1"></i>Hapus Semua Hasil Filter
+          </button>
+        </div>
       </div>
 
-      <!-- Tabel Hasil — ditambah kolom Integritas -->
+      <!-- Tabel Hasil -->
       <div class="table-responsive shadow-sm border-0 rounded-4">
         <table class="table table-hover align-middle mb-0 text-nowrap" id="table-hasil-siswa">
           <thead class="table-light">
             <tr>
-              <th class="ps-4">Nama Siswa</th>
+              <th class="ps-3" style="width:40px;">
+                <input type="checkbox" class="check-hapus" id="check-all-header" onchange="onCheckAllHeader(this)" title="Pilih semua">
+              </th>
+              <th class="ps-2">Nama Siswa</th>
               <th>Kelas</th>
               <th class="text-center">Nilai</th>
               <th class="text-center">Benar/Total</th>
               <th class="text-center">Integritas</th>
               <th>Waktu Pengumpulan</th>
+              <th class="text-center">Aksi</th>
             </tr>
           </thead>
           <tbody id="tbody-hasil">
-            <tr><td colspan="6" class="text-center text-muted py-5"><div class="spinner-border text-primary mb-2" role="status"></div><br>Memuat data...</td></tr>
+            <tr><td colspan="8" class="text-center text-muted py-5"><div class="spinner-border text-primary mb-2" role="status"></div><br>Memuat data...</td></tr>
           </tbody>
         </table>
       </div>
-    </div>
+
+      <!-- Sticky batch delete bar -->
+      <div id="batch-delete-bar">
+        <div class="batch-bar-inner">
+          <div class="fw-bold"><i class="bi bi-check2-circle me-2 text-info"></i><span id="selected-count-label">0 data dipilih</span></div>
+          <div class="d-flex gap-2">
+            <button class="btn btn-outline-light btn-sm fw-bold rounded-3" onclick="clearSelection()">
+              <i class="bi bi-x-lg me-1"></i>Batal
+            </button>
+            <button class="btn btn-danger btn-sm fw-bold rounded-3" onclick="hapusYangDipilih()">
+              <i class="bi bi-trash3-fill me-1"></i>Hapus Terpilih
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /hasil-panel -->
 
   </div><!-- /main-content -->
 </div><!-- /guru-content -->
+
+<!-- Modal Konfirmasi Hapus -->
+<div class="modal fade" id="modalKonfirmasiHapus" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4 border-0 shadow-lg">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold text-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i>Konfirmasi Hapus</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p id="modal-hapus-pesan" class="mb-0">Yakin ingin menghapus data ini?</p>
+      </div>
+      <div class="modal-footer border-0 pt-0 gap-2">
+        <button type="button" class="btn btn-secondary fw-bold rounded-3" data-bs-dismiss="modal">Batal</button>
+        <button type="button" class="btn btn-danger fw-bold rounded-3" id="btn-konfirmasi-hapus">
+          <i class="bi bi-trash3-fill me-1"></i>Ya, Hapus
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div id="toast-guru" class="toast align-items-center text-bg-dark border-0 shadow-lg" role="alert" data-bs-delay="3000">
   <div class="d-flex p-2">
@@ -576,17 +659,9 @@ function esc(s) { return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;"
 function cheatBadgeHtml(h) {
   const count    = Number(h.cheat_count) || 0;
   const autoSub  = Boolean(h.auto_submit_cheat);
-
-  if (count === 0) {
-    return `<span class="badge-jujur">✓ Jujur</span>`;
-  }
-  if (autoSub) {
-    return `<span class="badge-autosubmit" title="${count}x pelanggaran — Auto Submit">🔴 Auto Submit (${count}x)</span>`;
-  }
-  if (count >= 2) {
-    return `<span class="badge-curang" title="${count}x pelanggaran terdeteksi">🚨 Curang ${count}x</span>`;
-  }
-  // count === 1
+  if (count === 0) return `<span class="badge-jujur">✓ Jujur</span>`;
+  if (autoSub)     return `<span class="badge-autosubmit" title="${count}x pelanggaran — Auto Submit">🔴 Auto Submit (${count}x)</span>`;
+  if (count >= 2)  return `<span class="badge-curang" title="${count}x pelanggaran terdeteksi">🚨 Curang ${count}x</span>`;
   return `<span class="badge-warn1c" title="1 peringatan">⚠️ 1 Peringatan</span>`;
 }
 
@@ -753,11 +828,9 @@ async function showSoalPanel(ujian) {
 
   document.getElementById("editor-kunci").value = ujian ? (ujian.kunci||"") : "";
 
-  // ── Pengaturan tambahan ───────────────────────────────────────────────────
   document.getElementById("editor-acak-soal").checked = ujian ? (ujian.acak_soal === true) : false;
   document.getElementById("editor-waktu-menit").value = ujian && ujian.waktu_menit ? ujian.waktu_menit : "";
 
-  // Format ISO → datetime-local (potong detik + timezone)
   const toLocalDT = (iso) => {
     if (!iso) return "";
     const d = new Date(iso);
@@ -848,7 +921,6 @@ function tambahSoalBaru(quantity = 1) {
   }
   renderSoalEditor();
   toast(`${jumlah} soal berhasil ditambahkan!`, "success");
-  // Jangan auto-scroll ke bawah
 }
 
 function showCustomAddSoal() {
@@ -888,7 +960,6 @@ async function simpanUjian() {
     const waktuSelesaiVal = document.getElementById("editor-waktu-selesai").value;
     const waktuMenitVal   = document.getElementById("editor-waktu-menit").value;
 
-    // Validasi: waktu selesai tidak boleh sebelum waktu mulai
     if (waktuMulaiVal && waktuSelesaiVal && new Date(waktuSelesaiVal) <= new Date(waktuMulaiVal)) {
       toast("Waktu selesai harus lebih dari waktu mulai!", "warning");
       return;
@@ -966,6 +1037,23 @@ function updateFilterKelasOptions() {
   if (uniqueKelas.length > 0 && sampaiSelect) {
     sampaiSelect.value = uniqueKelas[uniqueKelas.length - 1];
   }
+
+  // Populate dropdown hapus per kelas
+  const ddKelas = document.getElementById("dropdown-hapus-kelas");
+  if (ddKelas) {
+    if (!uniqueKelas.length) {
+      ddKelas.innerHTML = `<li><span class="dropdown-item-text text-muted small">Tidak ada data kelas.</span></li>`;
+    } else {
+      ddKelas.innerHTML = uniqueKelas.map(k => `
+        <li>
+          <a class="dropdown-item fw-semibold py-2 text-danger" href="#" onclick="hapusPerKelas('${esc(k)}'); return false;">
+            <i class="bi bi-trash3 me-2"></i>Hapus Kelas ${esc(k)}
+          </a>
+        </li>`).join("") +
+        `<li><hr class="dropdown-divider"></li>
+         <li><a class="dropdown-item fw-semibold py-2 text-danger" href="#" onclick="hapusSemuaKelas(); return false;"><i class="bi bi-trash3-fill me-2"></i>Hapus Semua Kelas</a></li>`;
+    }
+  }
 }
 
 function toggleFilterMode() {
@@ -996,24 +1084,44 @@ function getFilteredHasilData() {
   return hasilData;
 }
 
+// ── RENDER HASIL ───────────────────────────────────────────────────────────
+// Menyimpan urutan tampil (reversed filtered) agar index checkbox konsisten
+let currentDisplayData = [];
+
 function renderHasil() {
   const tbody       = document.getElementById("tbody-hasil");
   const filteredData = getFilteredHasilData();
+  currentDisplayData = filteredData.slice().reverse();
+
+  clearSelection();
 
   if (!tbody) return;
-  if (!filteredData.length) {
-    tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-5"><i class="bi bi-inbox fs-1 d-block mb-2 opacity-50"></i>Tidak ada data hasil ujian yang sesuai filter.</td></tr>';
+  if (!currentDisplayData.length) {
+    tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted py-5"><i class="bi bi-inbox fs-1 d-block mb-2 opacity-50"></i>Tidak ada data hasil ujian yang sesuai filter.</td></tr>';
     return;
   }
-  tbody.innerHTML = filteredData.slice().reverse().map(h => `
-    <tr>
-      <td class="ps-4 fw-bold">${esc(h.nama)}</td>
+
+  tbody.innerHTML = currentDisplayData.map((h, idx) => `
+    <tr id="row-${idx}" data-idx="${idx}">
+      <td class="ps-3">
+        <input type="checkbox" class="check-hapus row-check" data-idx="${idx}" onchange="onRowCheckChange()">
+      </td>
+      <td class="ps-2 fw-bold">${esc(h.nama)}</td>
       <td><span class="badge bg-secondary bg-opacity-25 text-secondary border">Kelas ${esc(String(h.kelas))}</span></td>
       <td class="text-center"><span class="badge ${h.nilai>=70?"bg-success":"bg-danger"} fs-6 px-3 py-2 shadow-sm">${h.nilai}</span></td>
       <td class="text-center fw-bold"><span class="text-success">${h.benar}</span> <span class="text-muted fw-normal">/ ${h.total}</span></td>
       <td class="text-center">${cheatBadgeHtml(h)}</td>
       <td class="text-muted small"><i class="bi bi-clock me-1"></i>${new Date(h.waktu).toLocaleString("id-ID",{dateStyle:"short",timeStyle:"short"})}</td>
+      <td class="text-center">
+        <button class="btn btn-outline-danger btn-sm fw-bold rounded-3 px-2 py-1" onclick="hapusSatuHasil(${idx})" title="Hapus baris ini">
+          <i class="bi bi-trash3-fill"></i>
+        </button>
+      </td>
     </tr>`).join("");
+
+  // Sync check-all header
+  const headerCheck = document.getElementById("check-all-header");
+  if (headerCheck) headerCheck.checked = false;
 }
 
 function showHasilPanel() {
@@ -1021,6 +1129,196 @@ function showHasilPanel() {
   document.getElementById("soal-panel").style.display = "none";
   document.getElementById("hasil-panel").style.display = "block";
   loadHasil();
+}
+
+// ── DELETE SATU ROW ────────────────────────────────────────────────────────
+function hapusSatuHasil(displayIdx) {
+  const item = currentDisplayData[displayIdx];
+  if (!item) return;
+
+  showKonfirmasiHapus(
+    `Hapus hasil ujian <strong>${esc(item.nama)}</strong> (Kelas ${esc(String(item.kelas))})? Tindakan ini tidak bisa dibatalkan.`,
+    async () => {
+      const ok = await kirimHapusHasil([item]);
+      if (ok) {
+        toast(`Hasil ujian ${item.nama} berhasil dihapus.`, "success");
+        await loadHasil();
+      }
+    }
+  );
+}
+
+// ── CHECKBOX SELECT ────────────────────────────────────────────────────────
+function onCheckAllHeader(cb) {
+  document.querySelectorAll(".row-check").forEach(el => {
+    el.checked = cb.checked;
+    const row = document.getElementById(`row-${el.dataset.idx}`);
+    if (row) row.classList.toggle("row-selected", cb.checked);
+  });
+  updateBatchBar();
+}
+
+function onRowCheckChange() {
+  const allChecks = document.querySelectorAll(".row-check");
+  const checkedChecks = document.querySelectorAll(".row-check:checked");
+  const headerCheck = document.getElementById("check-all-header");
+
+  allChecks.forEach(el => {
+    const row = document.getElementById(`row-${el.dataset.idx}`);
+    if (row) row.classList.toggle("row-selected", el.checked);
+  });
+
+  if (headerCheck) {
+    headerCheck.checked = allChecks.length > 0 && checkedChecks.length === allChecks.length;
+    headerCheck.indeterminate = checkedChecks.length > 0 && checkedChecks.length < allChecks.length;
+  }
+  updateBatchBar();
+}
+
+function getSelectedItems() {
+  return [...document.querySelectorAll(".row-check:checked")].map(el => currentDisplayData[parseInt(el.dataset.idx)]).filter(Boolean);
+}
+
+function updateBatchBar() {
+  const selected = getSelectedItems();
+  const bar = document.getElementById("batch-delete-bar");
+  const label = document.getElementById("selected-count-label");
+  if (selected.length > 0) {
+    bar.style.display = "block";
+    label.textContent = `${selected.length} data dipilih`;
+  } else {
+    bar.style.display = "none";
+  }
+}
+
+function clearSelection() {
+  document.querySelectorAll(".row-check").forEach(el => { el.checked = false; });
+  const headerCheck = document.getElementById("check-all-header");
+  if (headerCheck) { headerCheck.checked = false; headerCheck.indeterminate = false; }
+  document.querySelectorAll(".row-selected").forEach(el => el.classList.remove("row-selected"));
+  document.getElementById("batch-delete-bar").style.display = "none";
+}
+
+function toggleSelectAll() {
+  const allChecks = document.querySelectorAll(".row-check");
+  const checkedCount = document.querySelectorAll(".row-check:checked").length;
+  const shouldCheck = checkedCount < allChecks.length;
+  allChecks.forEach(el => {
+    el.checked = shouldCheck;
+    const row = document.getElementById(`row-${el.dataset.idx}`);
+    if (row) row.classList.toggle("row-selected", shouldCheck);
+  });
+  const headerCheck = document.getElementById("check-all-header");
+  if (headerCheck) { headerCheck.checked = shouldCheck; headerCheck.indeterminate = false; }
+  const label = document.getElementById("select-all-label");
+  if (label) label.textContent = shouldCheck ? "Batal Pilih" : "Pilih Semua";
+  updateBatchBar();
+}
+
+// ── HAPUS YANG DIPILIH (BATCH CHECKBOX) ───────────────────────────────────
+function hapusYangDipilih() {
+  const selected = getSelectedItems();
+  if (!selected.length) { toast("Belum ada data yang dipilih!", "warning"); return; }
+
+  showKonfirmasiHapus(
+    `Hapus <strong>${selected.length} data</strong> hasil ujian yang dipilih? Tindakan ini tidak bisa dibatalkan.`,
+    async () => {
+      const ok = await kirimHapusHasil(selected);
+      if (ok) {
+        toast(`${selected.length} data berhasil dihapus.`, "success");
+        await loadHasil();
+      }
+    }
+  );
+}
+
+// ── HAPUS PER KELAS (DROPDOWN) ─────────────────────────────────────────────
+function hapusPerKelas(kelas) {
+  const items = hasilData.filter(h => String(h.kelas) === String(kelas));
+  if (!items.length) { toast(`Tidak ada data untuk Kelas ${kelas}.`, "warning"); return; }
+
+  showKonfirmasiHapus(
+    `Hapus <strong>seluruh ${items.length} data</strong> hasil ujian Kelas <strong>${esc(kelas)}</strong>? Tindakan ini tidak bisa dibatalkan.`,
+    async () => {
+      const ok = await kirimHapusHasil(items);
+      if (ok) {
+        toast(`Semua data Kelas ${kelas} berhasil dihapus.`, "success");
+        await loadHasil();
+      }
+    }
+  );
+}
+
+// ── HAPUS SEMUA KELAS ──────────────────────────────────────────────────────
+function hapusSemuaKelas() {
+  if (!hasilData.length) { toast("Tidak ada data untuk dihapus.", "warning"); return; }
+  showKonfirmasiHapus(
+    `Hapus <strong>SELURUH ${hasilData.length} data</strong> hasil ujian dari semua kelas? Tindakan ini PERMANEN dan tidak bisa dibatalkan.`,
+    async () => {
+      const ok = await kirimHapusHasil(hasilData);
+      if (ok) {
+        toast(`Semua data hasil ujian berhasil dihapus.`, "success");
+        await loadHasil();
+      }
+    }
+  );
+}
+
+// ── HAPUS SEMUA HASIL FILTER ───────────────────────────────────────────────
+function hapusSemuaFilter() {
+  const filtered = getFilteredHasilData();
+  if (!filtered.length) { toast("Tidak ada data pada filter aktif.", "warning"); return; }
+  const ctx = getExportContextInfo();
+  showKonfirmasiHapus(
+    `Hapus <strong>seluruh ${filtered.length} data</strong> hasil ujian pada filter <strong>${esc(ctx.label)}</strong>? Tindakan ini tidak bisa dibatalkan.`,
+    async () => {
+      const ok = await kirimHapusHasil(filtered);
+      if (ok) {
+        toast(`${filtered.length} data (${ctx.label}) berhasil dihapus.`, "success");
+        await loadHasil();
+      }
+    }
+  );
+}
+
+// ── MODAL KONFIRMASI ───────────────────────────────────────────────────────
+function showKonfirmasiHapus(pesan, onKonfirmasi) {
+  document.getElementById("modal-hapus-pesan").innerHTML = pesan;
+  const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById("modalKonfirmasiHapus"));
+  const btn = document.getElementById("btn-konfirmasi-hapus");
+  // Hapus listener lama agar tidak double-fire
+  const btnClone = btn.cloneNode(true);
+  btn.parentNode.replaceChild(btnClone, btn);
+  btnClone.addEventListener("click", async () => {
+    modal.hide();
+    await onKonfirmasi();
+  });
+  modal.show();
+}
+
+// ── KIRIM HAPUS KE API ─────────────────────────────────────────────────────
+// Fungsi ini mengirim array item hasil yang akan dihapus ke backend.
+// Sesuaikan payload (ids, timestamps, dsb) sesuai struktur API /api/hasil DELETE milikmu.
+async function kirimHapusHasil(items) {
+  if (!items.length) return false;
+  try {
+    // Mencoba mengirim array id unik; fallback ke field lain jika tidak ada id
+    const ids = items.map(h => h.id || h._id || `${h.nama}__${h.kelas}__${h.waktu}`);
+    const res = await fetch("/api/hasil", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json", "x-guru-key": guruKey },
+      body: JSON.stringify({ ids })
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok || json.error) {
+      toast(json.error || `Gagal menghapus data (HTTP ${res.status}).`, "danger");
+      return false;
+    }
+    return true;
+  } catch (err) {
+    toast("Error jaringan: " + err.message, "danger");
+    return false;
+  }
 }
 
 // ── EXPORT ─────────────────────────────────────────────────────────────────
