@@ -151,19 +151,6 @@
     "auto_submit_cheat": false
   },
   {
-    "id": "1781578547846_hkqh6",
-    "nama": "Muzaki",
-    "kelas": "10.3",
-    "mapel_id": "bindo",
-    "benar": 1,
-    "total": 3,
-    "nilai": 33,
-    "ujian_id": "ujian_1781488439930",
-    "waktu": "2026-06-16T02:55:47.846Z",
-    "cheat_count": 3,
-    "auto_submit_cheat": true
-  },
-  {
     "id": "1781582787094_ypufq",
     "nama": "Ridho",
     "kelas": "11.2",
