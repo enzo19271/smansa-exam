@@ -258,6 +258,45 @@
       flex-wrap: wrap;
     }
 
+    /* ── LOG INTEGRITAS PANEL ── */
+    #integritas-panel { display: none; }
+    .status-jujur      { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+    .status-peringatan { background: #fef9c3; color: #92400e; border: 1px solid #fde68a; }
+    .status-curang     { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+    .status-autosubmit { background: #1e1b4b; color: #c7d2fe; border: 1px solid #3730a3; }
+    .status-badge-lg   { font-size: 0.8rem; font-weight: 700; border-radius: 8px; padding: 4px 10px; white-space: nowrap; display: inline-block; }
+    .integritas-stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1.25rem 1.5rem;
+      text-align: center;
+    }
+    .integritas-stat-card .stat-num { font-size: 2rem; font-weight: 800; line-height: 1; }
+    .integritas-stat-card .stat-lbl { font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+    .filter-integritas-btn {
+      border: 1px solid var(--border-color);
+      background: var(--input-bg);
+      color: var(--text-main);
+      border-radius: 10px;
+      padding: 6px 14px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .filter-integritas-btn.active,
+    .filter-integritas-btn:hover { background: var(--primary-blue); border-color: var(--primary-blue); color: #fff; }
+    .log-search-box { position: relative; }
+    .log-search-box input {
+      width: 100%; padding: 0.7rem 2.5rem 0.7rem 1rem;
+      border: 1px solid var(--border-color); border-radius: 12px;
+      font-size: 0.9rem; font-weight: 500; background: var(--card-bg); color: var(--text-main);
+      transition: all 0.3s;
+    }
+    .log-search-box input:focus { outline: none; border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(37,99,235,0.15); }
+    .log-search-box .si { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+
     @media print {
       .topnav, #login-gate, #toast-guru, .theme-toggle, .btn { display: none !important; }
       #print-area { display: block !important; padding: 20px; color: #000; background: #fff;}
@@ -335,8 +374,8 @@
           </button>
         </div>
         <div class="col-6">
-          <button class="btn btn-warning w-100 fw-bold py-3 rounded-4 shadow-sm text-white" disabled>
-            <i class="bi bi-tools fs-4 d-block mb-1"></i>Pengaturan (Soon)
+          <button class="btn btn-danger w-100 fw-bold py-3 rounded-4 shadow-sm" onclick="showIntegritasPanel()">
+            <i class="bi bi-shield-exclamation fs-4 d-block mb-1"></i>Log Integritas
           </button>
         </div>
       </div>
@@ -585,6 +624,94 @@
       </div>
 
     </div><!-- /hasil-panel -->
+
+    <!-- LOG INTEGRITAS PANEL -->
+    <div id="integritas-panel">
+
+      <!-- Header -->
+      <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+        <div class="d-flex align-items-center gap-3">
+          <button class="btn btn-outline-secondary rounded-circle p-2 d-flex align-items-center justify-content-center" style="width:40px;height:40px;" onclick="backToMain()">
+            <i class="bi bi-arrow-left fs-5"></i>
+          </button>
+          <div>
+            <h5 class="fw-bold mb-0">Log Integritas Ujian</h5>
+            <div class="small text-muted">Rekap aktivitas kecurangan siswa</div>
+          </div>
+        </div>
+        <button class="btn btn-outline-danger fw-bold rounded-3 shadow-sm" onclick="exportIntegritasExcel()">
+          <i class="bi bi-file-earmark-excel me-1"></i>Export Excel
+        </button>
+      </div>
+
+      <!-- Stat Cards -->
+      <div class="row g-3 mb-4" id="integritas-stats">
+        <div class="col-6 col-md-3">
+          <div class="integritas-stat-card shadow-sm">
+            <div class="stat-num text-success" id="stat-jujur">—</div>
+            <div class="stat-lbl text-success">✓ Jujur</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="integritas-stat-card shadow-sm">
+            <div class="stat-num" style="color:#92400e;" id="stat-peringatan">—</div>
+            <div class="stat-lbl" style="color:#92400e;">⚠ 1 Peringatan</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="integritas-stat-card shadow-sm">
+            <div class="stat-num text-danger" id="stat-curang">—</div>
+            <div class="stat-lbl text-danger">🚨 Curang ≥2x</div>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="integritas-stat-card shadow-sm">
+            <div class="stat-num" style="color:#c7d2fe;" id="stat-autosubmit">—</div>
+            <div class="stat-lbl" style="color:#818cf8;">🔴 Auto Submit</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter & Search -->
+      <div class="filter-card shadow-sm mb-4">
+        <div class="d-flex flex-wrap gap-2 align-items-center justify-content-between">
+          <div class="d-flex flex-wrap gap-2" id="integritas-filter-btns">
+            <button class="filter-integritas-btn active" data-filter="semua" onclick="setIntegritasFilter('semua', this)">Semua</button>
+            <button class="filter-integritas-btn" data-filter="peringatan" onclick="setIntegritasFilter('peringatan', this)">⚠ 1 Peringatan</button>
+            <button class="filter-integritas-btn" data-filter="curang" onclick="setIntegritasFilter('curang', this)">🚨 Curang ≥2x</button>
+            <button class="filter-integritas-btn" data-filter="autosubmit" onclick="setIntegritasFilter('autosubmit', this)">🔴 Auto Submit</button>
+            <button class="filter-integritas-btn" data-filter="tidakjujur" onclick="setIntegritasFilter('tidakjujur', this)">Semua Pelanggar</button>
+          </div>
+          <div class="log-search-box" style="min-width:200px;">
+            <input type="text" id="integritas-search" placeholder="Cari nama / kelas..." oninput="renderIntegritasTable()"/>
+            <i class="bi bi-search si"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabel Log -->
+      <div class="table-responsive shadow-sm border-0 rounded-4">
+        <table class="table table-hover align-middle mb-0 text-nowrap">
+          <thead class="table-light">
+            <tr>
+              <th class="ps-4">Waktu Submit</th>
+              <th>Nama Siswa</th>
+              <th>Kelas</th>
+              <th>Mata Pelajaran</th>
+              <th class="text-center">Jml Pelanggaran</th>
+              <th class="text-center">Status Integritas</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-integritas">
+            <tr><td colspan="6" class="text-center text-muted py-5">
+              <div class="spinner-border text-primary mb-2" role="status"></div><br>Memuat data...
+            </td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="text-muted small mt-2 ps-1" id="integritas-count-label"></div>
+
+    </div><!-- /integritas-panel -->
 
   </div><!-- /main-content -->
 </div><!-- /guru-content -->
@@ -1445,6 +1572,147 @@ function exportPdf() {
       <th style="border:1px solid #000;padding:6px;text-align:center;">Integritas</th>
     </tr></thead><tbody>${rows}</tbody></table>`;
   window.print();
+}
+
+// ── LOG INTEGRITAS PANEL ───────────────────────────────────────────────────
+let integritasFilter = "semua";
+
+function showIntegritasPanel() {
+  document.getElementById("main-panel").style.display    = "none";
+  document.getElementById("soal-panel").style.display    = "none";
+  document.getElementById("hasil-panel").style.display   = "none";
+  document.getElementById("integritas-panel").style.display = "block";
+  renderIntegritasPanel();
+}
+
+// Juga update backToMain agar menutup panel integritas
+const _origBackToMain = backToMain;
+function backToMain() {
+  document.getElementById("soal-panel").style.display         = "none";
+  document.getElementById("hasil-panel").style.display        = "none";
+  document.getElementById("integritas-panel").style.display   = "none";
+  document.getElementById("main-panel").style.display         = "block";
+}
+
+function getIntegritasStatusInfo(h) {
+  const count   = Number(h.cheat_count) || 0;
+  const autoSub = Boolean(h.auto_submit_cheat);
+  if (count === 0)  return { label: "✓ Jujur",             cls: "status-jujur",      tier: "jujur" };
+  if (autoSub)      return { label: `🔴 Auto Submit (${count}x)`, cls: "status-autosubmit", tier: "autosubmit" };
+  if (count >= 2)   return { label: `🚨 Curang ${count}x`,  cls: "status-curang",     tier: "curang" };
+  return              { label: "⚠️ 1 Peringatan",           cls: "status-peringatan", tier: "peringatan" };
+}
+
+function getIntegritasData() {
+  // Urutkan: terbaru dulu
+  return hasilData.slice().sort((a, b) => new Date(b.waktu) - new Date(a.waktu));
+}
+
+function applyIntegritasFilter(data) {
+  const keyword = (document.getElementById("integritas-search")?.value || "").toLowerCase().trim();
+  return data.filter(h => {
+    const { tier } = getIntegritasStatusInfo(h);
+    const matchFilter =
+      integritasFilter === "semua"       ? true :
+      integritasFilter === "tidakjujur"  ? tier !== "jujur" :
+      tier === integritasFilter;
+    const matchSearch = !keyword ||
+      h.nama?.toLowerCase().includes(keyword) ||
+      String(h.kelas).toLowerCase().includes(keyword) ||
+      h.mapel_id?.toLowerCase().includes(keyword);
+    return matchFilter && matchSearch;
+  });
+}
+
+function renderIntegritasPanel() {
+  const allData = getIntegritasData();
+
+  // Hitung stats
+  let cJujur = 0, cPeringatan = 0, cCurang = 0, cAutoSubmit = 0;
+  allData.forEach(h => {
+    const { tier } = getIntegritasStatusInfo(h);
+    if (tier === "jujur")       cJujur++;
+    else if (tier === "peringatan") cPeringatan++;
+    else if (tier === "curang")     cCurang++;
+    else if (tier === "autosubmit") cAutoSubmit++;
+  });
+  document.getElementById("stat-jujur").textContent      = cJujur;
+  document.getElementById("stat-peringatan").textContent = cPeringatan;
+  document.getElementById("stat-curang").textContent     = cCurang;
+  document.getElementById("stat-autosubmit").textContent = cAutoSubmit;
+
+  renderIntegritasTable();
+}
+
+function renderIntegritasTable() {
+  const allData   = getIntegritasData();
+  const filtered  = applyIntegritasFilter(allData);
+  const tbody     = document.getElementById("tbody-integritas");
+  const countLbl  = document.getElementById("integritas-count-label");
+
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-5">
+      <i class="bi bi-shield-check fs-1 d-block mb-2 opacity-40"></i>
+      Tidak ada data yang sesuai filter.
+    </td></tr>`;
+    if (countLbl) countLbl.textContent = "";
+    return;
+  }
+
+  tbody.innerHTML = filtered.map((h, i) => {
+    const { label, cls } = getIntegritasStatusInfo(h);
+    const waktuFmt = new Date(h.waktu).toLocaleString("id-ID", { dateStyle: "short", timeStyle: "short" });
+    const count    = Number(h.cheat_count) || 0;
+    return `<tr>
+      <td class="ps-4 text-muted small"><i class="bi bi-clock me-1"></i>${waktuFmt}</td>
+      <td class="fw-bold">${esc(h.nama)}</td>
+      <td><span class="badge bg-secondary bg-opacity-25 text-secondary border">Kelas ${esc(String(h.kelas))}</span></td>
+      <td class="fw-semibold">${esc(h.mapel_id || "—")}</td>
+      <td class="text-center">
+        ${count === 0
+          ? `<span class="text-muted">—</span>`
+          : `<span class="fw-bold ${count >= 3 ? "text-danger" : count >= 2 ? "text-danger" : "text-warning"}">${count}x</span>`
+        }
+      </td>
+      <td class="text-center">
+        <span class="status-badge-lg ${cls}">${label}</span>
+      </td>
+    </tr>`;
+  }).join("");
+
+  if (countLbl) countLbl.textContent = `Menampilkan ${filtered.length} dari ${allData.length} data`;
+}
+
+function setIntegritasFilter(filter, btn) {
+  integritasFilter = filter;
+  document.querySelectorAll(".filter-integritas-btn").forEach(b => b.classList.remove("active"));
+  if (btn) btn.classList.add("active");
+  renderIntegritasTable();
+}
+
+function exportIntegritasExcel() {
+  const allData  = getIntegritasData();
+  const filtered = applyIntegritasFilter(allData);
+  if (!filtered.length) { toast("Tidak ada data untuk diekspor!", "warning"); return; }
+
+  const ws = XLSX.utils.json_to_sheet(filtered.map((h, i) => {
+    const { label } = getIntegritasStatusInfo(h);
+    return {
+      No:               i + 1,
+      Waktu:            new Date(h.waktu).toLocaleString("id-ID"),
+      Nama:             h.nama,
+      Kelas:            `Kelas ${h.kelas}`,
+      "Mata Pelajaran": h.mapel_id || "—",
+      "Jml Pelanggaran": Number(h.cheat_count) || 0,
+      "Status Integritas": label,
+    };
+  }));
+
+  // Warnai header
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Log Integritas");
+  XLSX.writeFile(wb, `Log-Integritas-${new Date().toISOString().slice(0,10)}.xlsx`);
+  toast("Log integritas berhasil diunduh!", "success");
 }
 </script>
 </body>
