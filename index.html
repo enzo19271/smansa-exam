@@ -2,7 +2,7 @@
 <html lang="id" data-bs-theme="light">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
   <title>Smansanam Exam Portal | Dashboard</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,63 +13,88 @@
 
   <style>
     :root {
-      /* Light Mode Palette */
       --primary-blue: #2563eb;
       --secondary-blue: #60a5fa;
-      --bg-dashboard: #f8fafc;
-      --sidebar-bg: #ffffff;
-      --card-bg: #ffffff;
+      --bg-base: #f1f5f9;
       --text-main: #1e293b;
       --text-muted: #64748b;
-      --border-color: #e2e8f0;
-      --glass-bg: rgba(255, 255, 255, 0.7);
+      
+      /* Glassmorphism Variables */
+      --glass-bg: rgba(255, 255, 255, 0.45);
+      --glass-border: rgba(255, 255, 255, 0.6);
+      --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+      --sidebar-glass: rgba(255, 255, 255, 0.85);
     }
 
     [data-bs-theme="dark"] {
-      /* Dark Mode Palette */
       --primary-blue: #3b82f6;
       --secondary-blue: #93c5fd;
-      --bg-dashboard: #0f172a;
-      --sidebar-bg: #1e293b;
-      --card-bg: #1e293b;
+      --bg-base: #0f172a;
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
-      --border-color: #334155;
-      --glass-bg: rgba(30, 41, 59, 0.7);
+      
+      /* Glassmorphism Dark */
+      --glass-bg: rgba(30, 41, 59, 0.5);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+      --sidebar-glass: rgba(15, 23, 42, 0.85);
     }
 
     body {
-      background-color: var(--bg-dashboard);
+      background-color: var(--bg-base);
       font-family: 'Plus Jakarta Sans', sans-serif;
       color: var(--text-main);
-      transition: all 0.3s ease;
       min-height: 100vh;
       overflow-x: hidden;
+      position: relative;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    /* Scrollbar Customization */
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: var(--bg-dashboard); }
-    ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+    /* COLORFUL ANIMATED BLOBS (BACKGROUND) */
+    .bg-blobs {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.6;
+      animation: float 10s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .blob-1 { top: -10%; left: -10%; width: 40vw; height: 40vw; background: #ff007f; }
+    .blob-2 { bottom: -20%; right: -10%; width: 50vw; height: 50vw; background: #00f2fe; animation-delay: -3s; }
+    .blob-3 { top: 30%; left: 40%; width: 35vw; height: 35vw; background: #4facfe; animation-delay: -6s; }
 
-    /* LAYOUT STRUCTURE */
-    .dashboard-wrapper {
-      display: flex;
+    @keyframes float {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(50px, 50px) scale(1.1); }
     }
 
-    /* SIDEBAR CUSTOMIZATION */
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 10px; }
+
+    /* SIDEBAR (GLASSMORPHISM) */
     .offcanvas-sidebar {
       width: 280px !important;
-      background: var(--sidebar-bg);
-      border-right: 1px solid var(--border-color);
-      transition: all 0.3s ease;
+      background: var(--sidebar-glass);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-right: 1px solid var(--glass-border);
     }
 
     .sidebar-brand {
       padding: 2rem 1.5rem;
       font-weight: 800;
       font-size: 1.25rem;
-      color: var(--primary-blue);
+      background: linear-gradient(90deg, #ff007f, #4facfe);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
       display: flex;
       align-items: center;
       gap: 10px;
@@ -88,30 +113,20 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 0.8rem 1.2rem;
-      margin: 0.2rem 1rem;
+      padding: 0.9rem 1.2rem;
+      margin: 0.3rem 1rem;
       color: var(--text-muted);
       text-decoration: none;
       font-weight: 600;
-      border-radius: 12px;
-      transition: all 0.2s ease;
+      border-radius: 16px;
+      transition: all 0.3s ease;
     }
 
     .sidebar-link:hover, .sidebar-link.active {
       background: var(--primary-blue);
       color: #fff !important;
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-    }
-
-    /* TOP NAVBAR */
-    .top-nav {
-      background: var(--glass-bg);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border-color);
-      padding: 0.75rem 1.5rem;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+      transform: translateX(5px);
     }
 
     /* MAIN CONTENT */
@@ -124,104 +139,118 @@
 
     /* HERO SECTION */
     .hero-banner {
-      background: linear-gradient(135deg, var(--primary-blue) 0%, #1d4ed8 100%);
-      border-radius: 24px;
-      padding: 3rem;
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.8) 0%, rgba(139, 92, 246, 0.8) 100%);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
+      border-radius: 28px;
+      padding: 3.5rem 2.5rem;
       color: white;
       position: relative;
       overflow: hidden;
       margin-bottom: 2rem;
-      box-shadow: 0 20px 40px -10px rgba(37, 99, 235, 0.3);
+      box-shadow: var(--glass-shadow);
     }
 
-    .hero-banner::after {
+    .hero-banner::before {
       content: "";
       position: absolute;
-      width: 300px;
-      height: 300px;
-      background: rgba(255,255,255,0.1);
-      border-radius: 50%;
-      top: -100px;
-      right: -100px;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: url('https://www.transparenttextures.com/patterns/cubes.png');
+      opacity: 0.1;
+      z-index: 0;
     }
 
-    .hero-banner h1 { font-weight: 800; letter-spacing: -1px; }
-    .hero-banner p { opacity: 0.9; font-weight: 500; max-width: 600px; }
+    .hero-banner h1, .hero-banner p { position: relative; z-index: 1; }
+    .hero-banner h1 { font-weight: 800; font-size: 2.2rem; letter-spacing: -1px; margin-bottom: 10px;}
+    .hero-banner p { opacity: 0.9; font-weight: 500; max-width: 600px; font-size: 1rem; }
 
     /* SEARCH WRAPPER */
     .search-box-container {
       position: relative;
-      margin-top: -50px;
+      margin-top: -55px;
       padding: 0 2rem;
       margin-bottom: 3rem;
       z-index: 10;
     }
 
     .search-input-group {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      padding: 0.5rem 1rem;
-      border-radius: 18px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      padding: 0.4rem 1.2rem;
+      border-radius: 24px;
       display: flex;
       align-items: center;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-      transition: border 0.3s ease;
+      box-shadow: var(--glass-shadow);
+      transition: all 0.3s ease;
     }
 
     .search-input-group:focus-within {
       border-color: var(--primary-blue);
-      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.1);
+      box-shadow: 0 10px 30px rgba(37, 99, 235, 0.2);
+      transform: translateY(-2px);
     }
 
     .search-input-group input {
       border: none;
       background: transparent;
-      padding: 0.8rem;
+      padding: 1rem;
       color: var(--text-main);
       width: 100%;
-      font-weight: 500;
+      font-weight: 600;
+      font-size: 1rem;
     }
 
     .search-input-group input:focus { outline: none; }
-    .search-input-group i { color: var(--text-muted); font-size: 1.2rem; }
+    .search-input-group i { color: var(--primary-blue); font-size: 1.3rem; font-weight: bold; }
 
-    /* SUBJECT CARDS */
+    /* SUBJECT CARDS (GLASSMORPHISM) */
     .card-subject {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 20px;
-      padding: 1.5rem;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 1.25rem 1.5rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
       text-decoration: none !important;
       color: var(--text-main) !important;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      margin-bottom: 1rem;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      margin-bottom: 0.5rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
     }
+
+    .card-subject:active { transform: scale(0.96); }
 
     .card-subject:hover {
       transform: translateY(-5px);
-      border-color: var(--primary-blue);
-      box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+      border-color: var(--secondary-blue);
+      box-shadow: var(--glass-shadow);
+      background: var(--sidebar-glass);
     }
 
     .subject-icon {
-      width: 56px;
-      height: 56px;
-      background: rgba(37, 99, 235, 0.1);
-      color: var(--primary-blue);
-      border-radius: 14px;
+      width: 60px;
+      height: 60px;
+      border-radius: 18px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.5rem;
+      font-size: 1.8rem;
       margin-right: 1.5rem;
+      flex-shrink: 0;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.2);
     }
 
+    .subject-info { flex-grow: 1; }
+    
     .subject-info h4 {
-      margin: 0;
-      font-weight: 700;
+      margin: 0 0 4px 0;
+      font-weight: 800;
       font-size: 1.15rem;
       letter-spacing: -0.3px;
     }
@@ -230,60 +259,74 @@
       margin: 0;
       font-size: 0.85rem;
       color: var(--text-muted);
-      font-weight: 500;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .btn-go {
-      width: 40px;
-      height: 40px;
+      width: 45px;
+      height: 45px;
       border-radius: 50%;
-      background: var(--bg-dashboard);
+      background: rgba(255,255,255,0.1);
+      border: 1px solid var(--glass-border);
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.3s ease;
-      color: var(--text-muted);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      color: var(--text-main);
     }
 
     .card-subject:hover .btn-go {
       background: var(--primary-blue);
       color: #fff;
-      transform: rotate(-45deg);
+      transform: rotate(-45deg) scale(1.1);
+      border-color: var(--primary-blue);
     }
 
     /* THEME TOGGLE */
     .theme-toggle {
-      background: var(--border-color);
-      border: none;
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
+      width: 45px;
+      height: 45px;
+      border-radius: 14px;
       color: var(--text-main);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       transition: all 0.3s ease;
+      box-shadow: var(--glass-shadow);
     }
+    .theme-toggle:active { transform: scale(0.9); }
 
     /* ANIMATIONS */
-    .fade-in-up {
-      animation: fadeInUp 0.6s ease both;
-    }
-
+    .fade-in-up { animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; }
+    
     @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
+      from { opacity: 0; transform: translateY(30px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
     @media (max-width: 768px) {
-      .hero-banner { padding: 2rem; }
-      .hero-banner h1 { font-size: 1.75rem; }
-      .search-box-container { padding: 0 1rem; }
+      .hero-banner { padding: 2.5rem 1.5rem; border-radius: 24px; }
+      .hero-banner h1 { font-size: 1.8rem; }
+      .search-box-container { padding: 0 1rem; margin-top: -40px; }
+      .card-subject { padding: 1rem; }
+      .subject-icon { width: 50px; height: 50px; font-size: 1.5rem; margin-right: 1rem; }
     }
   </style>
 </head>
 <body>
+
+<div class="bg-blobs">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
 
 <div class="offcanvas offcanvas-start offcanvas-sidebar" tabindex="-1" id="sidebarMenu">
   <div class="sidebar-brand">
@@ -298,7 +341,7 @@
     <a href="admin.html" class="sidebar-link"><i class="bi bi-shield-lock-fill"></i> Sistem Admin</a>
     
     <div class="mt-auto p-4">
-        <div class="card bg-primary bg-opacity-10 border-0 rounded-4 p-3">
+        <div class="card border-0 rounded-4 p-3" style="background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--glass-border) !important;">
             <p class="small fw-bold mb-1 text-primary">Butuh Bantuan?</p>
             <p class="x-small text-muted mb-0" style="font-size: 0.75rem;">Hubungi tim IT jika mengalami kendala login.</p>
         </div>
@@ -309,34 +352,34 @@
 <div class="dashboard-wrapper">
   <main class="main-content">
     
-    <header class="d-flex align-items-center justify-content-between mb-4">
+    <header class="d-flex align-items-center justify-content-between mb-4 fade-in-up">
       <div class="d-flex align-items-center gap-3">
-        <button class="btn border-0 p-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu">
+        <button class="btn border-0 p-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" style="color: var(--text-main);">
           <i class="bi bi-text-left fs-2"></i>
         </button>
-        <h5 class="fw-bold mb-0 d-none d-md-block">Exam Dashboard</h5>
+        <h5 class="fw-bold mb-0 d-none d-md-block" style="letter-spacing: -0.5px;">Exam Dashboard</h5>
       </div>
       
       <div class="d-flex align-items-center gap-3">
         <button class="theme-toggle" id="themeSwitcher" title="Ganti Tema">
-          <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
+          <i class="bi bi-moon-stars-fill fs-5" id="themeIcon"></i>
         </button>
-        <div class="d-flex align-items-center gap-2 border-start ps-3">
+        <div class="d-flex align-items-center gap-2 border-start ps-3" style="border-color: var(--glass-border) !important;">
           <div class="text-end d-none d-sm-block">
             <p class="small fw-bold mb-0">Peserta Ujian</p>
-            <p class="x-small text-muted mb-0" style="font-size: 0.7rem;">Siswa Aktif</p>
+            <p class="text-muted mb-0" style="font-size: 0.7rem; font-weight: 600;">Siswa Aktif</p>
           </div>
           <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white fw-bold" style="width: 40px; height: 40px;">S</div>
         </div>
       </div>
     </header>
 
-    <section class="hero-banner fade-in-up">
+    <section class="hero-banner fade-in-up" style="animation-delay: 0.1s;">
       <h1>Selamat Datang, 👋</h1>
       <p>Pilih mata pelajaran ujian Anda hari ini. Pastikan koneksi internet stabil dan siapkan nomor ujian Anda.</p>
     </section>
 
-    <section class="search-box-container fade-in-up" style="animation-delay: 0.1s;">
+    <section class="search-box-container fade-in-up" style="animation-delay: 0.2s;">
       <div class="search-input-group">
         <i class="bi bi-search"></i>
         <input type="text" id="searchMapel" placeholder="Cari mata pelajaran ujian Anda..." onkeyup="filterMapel()">
@@ -344,26 +387,26 @@
     </section>
 
     <section class="container-fluid px-0">
-      <div class="d-flex align-items-center justify-content-between mb-4 fade-in-up" style="animation-delay: 0.2s;">
-        <h6 class="fw-800 text-uppercase ls-1 mb-0"><i class="bi bi-journal-check text-primary me-2"></i>Jadwal Ujian Tersedia</h6>
-        <span class="badge bg-primary rounded-pill px-3 py-2" id="info-count">0 Mapel</span>
+      <div class="d-flex align-items-center justify-content-between mb-4 fade-in-up" style="animation-delay: 0.3s;">
+        <h6 class="fw-bold text-uppercase mb-0" style="letter-spacing: 1px; font-size: 0.85rem;"><i class="bi bi-journal-check text-primary me-2"></i>Jadwal Ujian Tersedia</h6>
+        <span class="badge rounded-pill px-3 py-2" id="info-count" style="background: var(--glass-bg); color: var(--text-main); border: 1px solid var(--glass-border); backdrop-filter: blur(5px);">0 Mapel</span>
       </div>
 
-      <div id="mapel-container" class="row g-3 fade-in-up" style="animation-delay: 0.3s;">
+      <div id="mapel-container" class="row g-3 fade-in-up" style="animation-delay: 0.4s;">
         </div>
 
-      <div id="empty-state" class="text-center py-5 d-none bg-white bg-opacity-50 border rounded-5 mt-3 fade-in-up">
+      <div id="empty-state" class="text-center py-5 d-none mt-3 fade-in-up" style="background: var(--glass-bg); backdrop-filter: blur(10px); border-radius: 24px; border: 1px solid var(--glass-border);">
         <img src="https://cdn-icons-png.flaticon.com/512/6134/6134065.png" width="120" class="mb-3 opacity-50" alt="Empty">
-        <h5 class="fw-bold">Mata Pelajaran Tidak Ditemukan</h5>
+        <h5 class="fw-bold mt-3">Mata Pelajaran Tidak Ditemukan</h5>
         <p class="text-muted">Periksa kembali kata kunci pencarian Anda.</p>
-        <button class="btn btn-primary rounded-pill px-4" onclick="resetSearch()">
-          <i class="bi bi-arrow-clockwise me-1"></i>Reset Pencarian
+        <button class="btn btn-primary rounded-pill px-4 py-2 mt-2 fw-bold" onclick="resetSearch()">
+          <i class="bi bi-arrow-clockwise me-1"></i> Reset Pencarian
         </button>
       </div>
     </section>
 
-    <footer class="text-center mt-5 pt-4 border-top">
-      <p class="text-muted small">© 2026 SMAN 1 Namang • Portal Ujian Digital v2.0</p>
+    <footer class="text-center mt-5 pt-4 pb-3 fade-in-up" style="animation-delay: 0.5s;">
+      <p class="text-muted fw-semibold" style="font-size: 0.8rem;">© 2026 SMAN 1 Namang • Portal Ujian Digital v2.0</p>
     </footer>
   </main>
 </div>
@@ -372,7 +415,7 @@
 
 <script>
 /**
- * THEME SWITCHER LOGIC
+ * THEME SWITCHER LOGIC (Sesuai aslinya)
  */
 const themeSwitcher = document.getElementById('themeSwitcher');
 const htmlTag = document.documentElement;
@@ -427,20 +470,37 @@ function renderMapel(list) {
   list.forEach((m, index) => {
     const namaGuru = m.guru || "—";
     const col = document.createElement("div");
-    col.className = "col-12 col-lg-6 item-mapel";
+    col.className = "col-12 col-lg-6 item-mapel"; // Tetap mempertahankan class awal
     col.setAttribute("data-nama", m.nama.toLowerCase());
     
-    // subject identification for icons
+    // Logika subject identification for icons dari kode awal ditambah inline style untuk warna dinamis
     let iconClass = "bi-journal-code";
-    if(m.nama.toLowerCase().includes("matematika")) iconClass = "bi-calculator";
-    if(m.nama.toLowerCase().includes("biologi")) iconClass = "bi-capsule";
-    if(m.nama.toLowerCase().includes("inggris")) iconClass = "bi-translate";
-    if(m.nama.toLowerCase().includes("jasmani")) iconClass = "bi-dribbble";
+    let bgStyle = "background: rgba(99, 102, 241, 0.15); color: #6366f1;"; // Default Indigo
 
+    if(m.nama.toLowerCase().includes("matematika")) {
+        iconClass = "bi-calculator";
+        bgStyle = "background: rgba(239, 68, 68, 0.15); color: #ef4444;";
+    }
+    if(m.nama.toLowerCase().includes("biologi")) {
+        iconClass = "bi-capsule"; 
+        bgStyle = "background: rgba(16, 185, 129, 0.15); color: #10b981;";
+    }
+    if(m.nama.toLowerCase().includes("inggris")) {
+        iconClass = "bi-translate";
+        bgStyle = "background: rgba(59, 130, 246, 0.15); color: #3b82f6;";
+    }
+    if(m.nama.toLowerCase().includes("jasmani")) {
+        iconClass = "bi-dribbble";
+        bgStyle = "background: rgba(245, 158, 11, 0.15); color: #f59e0b;";
+    }
+
+    const animDelay = (index * 0.1) + 0.4;
+
+    // Inner HTML disesuaikan untuk menerapkan style Glassmorphism, tapi atribut onclick tetap utuh
     col.innerHTML = `
-      <a href="#" class="card-subject" onclick="pilihMapel('${m.id}', '${m.nama}'); return false;">
-        <div class="d-flex align-items-center">
-            <div class="subject-icon">
+      <a href="#" class="card-subject" style="animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: ${animDelay}s;" onclick="pilihMapel('${m.id}', '${m.nama}'); return false;">
+        <div class="d-flex align-items-center w-100">
+            <div class="subject-icon" style="${bgStyle}">
                 <i class="bi ${iconClass}"></i>
             </div>
             <div class="subject-info">
@@ -449,7 +509,7 @@ function renderMapel(list) {
             </div>
         </div>
         <div class="btn-go">
-            <i class="bi bi-arrow-right-short fs-3"></i>
+            <i class="bi bi-arrow-right-short fs-2"></i>
         </div>
       </a>`;
     container.appendChild(col);
