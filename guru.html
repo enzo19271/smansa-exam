@@ -772,6 +772,7 @@ let ujianList   = [];
 let soalDraft   = [];
 let editUjianId = null;
 let hasilData   = [];
+let cheatLogData = [];  // REVISI: Data curang dari cheat_log.json
 
 // ── UTILS ──────────────────────────────────────────────────────────────────
 function toast(msg, type="success") {
@@ -1140,6 +1141,13 @@ async function loadHasil() {
     hasilData = await res.json();
     if (!Array.isArray(hasilData)) hasilData = [];
   } catch { hasilData = []; }
+  
+  // REVISI: Fetch cheat_log untuk mendapat history waktu deteksi curang
+  try {
+    const resCheat = await fetch("/api/cheat-report", {headers:{"x-guru-key":guruKey}});
+    cheatLogData = await resCheat.json();
+    if (!Array.isArray(cheatLogData)) cheatLogData = [];
+  } catch { cheatLogData = []; }
   
   updateFilterKelasOptions();
   renderHasil();
@@ -1604,8 +1612,30 @@ function getIntegritasStatusInfo(h) {
 }
 
 function getIntegritasData() {
-  // Urutkan: terbaru dulu
-  return hasilData.slice().sort((a, b) => new Date(b.waktu) - new Date(a.waktu));
+  // REVISI: Merge dengan cheatLogData untuk mendapat waktu deteksi curang
+  return hasilData.slice().map(h => {
+    // Cari entry di cheat_log
+    const cheatEntry = cheatLogData.find(c => 
+      c.nama === h.nama && 
+      String(c.kelas) === String(h.kelas) && 
+      c.mapel_id === h.mapel_id
+    );
+    
+    // Jika ada history, gunakan waktu deteksi pertama (bukan submit)
+    if (cheatEntry && cheatEntry.history && cheatEntry.history.length > 0) {
+      return {
+        ...h,
+        waktu_integritas: cheatEntry.history[0].waktu_deteksi,  // Waktu deteksi PERTAMA
+        history: cheatEntry.history  // Simpan history lengkap
+      };
+    }
+    
+    // Jika tidak ada history, gunakan waktu submit original
+    return {
+      ...h,
+      waktu_integritas: h.waktu  // Default ke waktu submit
+    };
+  }).sort((a, b) => new Date(b.waktu_integritas) - new Date(a.waktu_integritas));
 }
 
 function applyIntegritasFilter(data) {
@@ -1661,10 +1691,15 @@ function renderIntegritasTable() {
 
   tbody.innerHTML = filtered.map((h, i) => {
     const { label, cls } = getIntegritasStatusInfo(h);
-    const waktuFmt = new Date(h.waktu).toLocaleString("id-ID", { dateStyle: "short", timeStyle: "short" });
+    const waktuFmt = new Date(h.waktu_integritas).toLocaleString("id-ID", { dateStyle: "short", timeStyle: "short" });
+    // Tampilkan timeline history jika ada
+    let historyHtml = "";
+    if (h.history && h.history.length > 0) {
+      historyHtml = ` <small class="text-muted">(${h.history.map(hist => new Date(hist.waktu_deteksi).toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'})).join(", ")})</small>`;
+    }
     const count    = Number(h.cheat_count) || 0;
     return `<tr>
-      <td class="ps-4 text-muted small"><i class="bi bi-clock me-1"></i>${waktuFmt}</td>
+      <td class="ps-4 text-muted small"><i class="bi bi-clock me-1"></i>${waktuFmt}${historyHtml}</td>
       <td class="fw-bold">${esc(h.nama)}</td>
       <td><span class="badge bg-secondary bg-opacity-25 text-secondary border">Kelas ${esc(String(h.kelas))}</span></td>
       <td class="fw-semibold">${esc(h.mapel_id || "—")}</td>
