@@ -694,16 +694,15 @@
         <table class="table table-hover align-middle mb-0 text-nowrap">
           <thead class="table-light">
             <tr>
-              <th class="ps-4">Waktu Submit</th>
+              <th class="ps-4">Waktu Curang</th>
               <th>Nama Siswa</th>
               <th>Kelas</th>
               <th>Mata Pelajaran</th>
-              <th class="text-center">Jml Pelanggaran</th>
-              <th class="text-center">Status Integritas</th>
+              <th class="text-center">Status</th>
             </tr>
           </thead>
           <tbody id="tbody-integritas">
-            <tr><td colspan="6" class="text-center text-muted py-5">
+            <tr><td colspan="5" class="text-center text-muted py-5">
               <div class="spinner-border text-primary mb-2" role="status"></div><br>Memuat data...
             </td></tr>
           </tbody>
@@ -1638,18 +1637,62 @@ function getIntegritasData() {
   }).sort((a, b) => new Date(b.waktu_integritas) - new Date(a.waktu_integritas));
 }
 
-function applyIntegritasFilter(data) {
+// REVISI: Bangun log AKTIVITAS curang (1 baris = 1 kejadian curang terdeteksi),
+// bukan 1 baris per siswa/submission lagi. Diambil dari history di cheat_log.json.
+function getIntegritasLogRows() {
+  const rows = [];
+
+  cheatLogData.forEach(c => {
+    // Cari hasil ujian terkait, untuk tahu apakah kejadian ini berujung Auto Submit
+    const hasil = hasilData.find(h =>
+      h.nama === c.nama &&
+      String(h.kelas) === String(c.kelas) &&
+      h.mapel_id === c.mapel_id
+    );
+    const isAutoSubmit = Boolean(hasil?.auto_submit_cheat);
+
+    // Jika belum punya history granular (data lama), fallback ke 1 entry dari cheat_count
+    const events = (c.history && c.history.length > 0)
+      ? c.history
+      : [{ waktu_deteksi: c.waktu_terakhir, cheat_number: c.cheat_count }];
+
+    events.forEach((ev, idx) => {
+      const isLastEvent = idx === events.length - 1;
+      const n            = Number(ev.cheat_number) || 0;
+      const isAutoNow    = isLastEvent && isAutoSubmit && n >= 3;
+
+      rows.push({
+        waktu:        ev.waktu_deteksi,
+        nama:         c.nama,
+        kelas:        c.kelas,
+        mapel_id:     c.mapel_id,
+        cheat_number: n,
+        tier:         isAutoNow ? "autosubmit" : "curang",
+        label:        isAutoNow
+          ? `🔴 Percobaan curang ke-${n}x (Auto Submit)`
+          : `🚨 Percobaan curang ke-${n}x`,
+        cls:          isAutoNow ? "status-autosubmit" : "status-curang",
+      });
+    });
+  });
+
+  return rows.sort((a, b) => new Date(b.waktu) - new Date(a.waktu));
+}
+
+function applyIntegritasFilter(rows) {
   const keyword = (document.getElementById("integritas-search")?.value || "").toLowerCase().trim();
-  return data.filter(h => {
-    const { tier } = getIntegritasStatusInfo(h);
+  return rows.filter(r => {
     const matchFilter =
       integritasFilter === "semua"       ? true :
-      integritasFilter === "tidakjujur"  ? tier !== "jujur" :
-      tier === integritasFilter;
+      integritasFilter === "tidakjujur"  ? true : // semua row di log ini sudah pasti pelanggaran
+      integritasFilter === "peringatan"  ? false : // peringatan ke-1 tidak pernah dicatat ke log
+      integritasFilter === "curang"      ? true :  // semua kejadian di log = curang ≥2x
+      integritasFilter === "autosubmit"  ? r.tier === "autosubmit" :
+      true;
     const matchSearch = !keyword ||
-      h.nama?.toLowerCase().includes(keyword) ||
-      String(h.kelas).toLowerCase().includes(keyword) ||
-      h.mapel_id?.toLowerCase().includes(keyword);
+      r.nama?.toLowerCase().includes(keyword) ||
+      String(r.kelas).toLowerCase().includes(keyword) ||
+      r.mapel_id?.toLowerCase().includes(keyword);
     return matchFilter && matchSearch;
   });
 }
@@ -1657,7 +1700,7 @@ function applyIntegritasFilter(data) {
 function renderIntegritasPanel() {
   const allData = getIntegritasData();
 
-  // Hitung stats
+  // Hitung stats (tetap per-siswa, bukan per-kejadian)
   let cJujur = 0, cPeringatan = 0, cCurang = 0, cAutoSubmit = 0;
   allData.forEach(h => {
     const { tier } = getIntegritasStatusInfo(h);
@@ -1675,47 +1718,34 @@ function renderIntegritasPanel() {
 }
 
 function renderIntegritasTable() {
-  const allData   = getIntegritasData();
-  const filtered  = applyIntegritasFilter(allData);
-  const tbody     = document.getElementById("tbody-integritas");
-  const countLbl  = document.getElementById("integritas-count-label");
+  const allRows  = getIntegritasLogRows();
+  const filtered = applyIntegritasFilter(allRows);
+  const tbody    = document.getElementById("tbody-integritas");
+  const countLbl = document.getElementById("integritas-count-label");
 
   if (!filtered.length) {
-    tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-5">
+    tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted py-5">
       <i class="bi bi-shield-check fs-1 d-block mb-2 opacity-40"></i>
-      Tidak ada data yang sesuai filter.
+      Tidak ada aktivitas kecurangan yang sesuai filter.
     </td></tr>`;
     if (countLbl) countLbl.textContent = "";
     return;
   }
 
-  tbody.innerHTML = filtered.map((h, i) => {
-    const { label, cls } = getIntegritasStatusInfo(h);
-    const waktuFmt = new Date(h.waktu_integritas).toLocaleString("id-ID", { dateStyle: "short", timeStyle: "short" });
-    // Tampilkan timeline history jika ada
-    let historyHtml = "";
-    if (h.history && h.history.length > 0) {
-      historyHtml = ` <small class="text-muted">(${h.history.map(hist => new Date(hist.waktu_deteksi).toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'})).join(", ")})</small>`;
-    }
-    const count    = Number(h.cheat_count) || 0;
+  tbody.innerHTML = filtered.map(r => {
+    const waktuFmt = new Date(r.waktu).toLocaleString("id-ID", { dateStyle: "short", timeStyle: "short" });
     return `<tr>
-      <td class="ps-4 text-muted small"><i class="bi bi-clock me-1"></i>${waktuFmt}${historyHtml}</td>
-      <td class="fw-bold">${esc(h.nama)}</td>
-      <td><span class="badge bg-secondary bg-opacity-25 text-secondary border">Kelas ${esc(String(h.kelas))}</span></td>
-      <td class="fw-semibold">${esc(h.mapel_id || "—")}</td>
+      <td class="ps-4 text-muted small"><i class="bi bi-clock me-1"></i>${waktuFmt}</td>
+      <td class="fw-bold">${esc(r.nama)}</td>
+      <td><span class="badge bg-secondary bg-opacity-25 text-secondary border">Kelas ${esc(String(r.kelas))}</span></td>
+      <td class="fw-semibold">${esc(r.mapel_id || "—")}</td>
       <td class="text-center">
-        ${count === 0
-          ? `<span class="text-muted">—</span>`
-          : `<span class="fw-bold ${count >= 3 ? "text-danger" : count >= 2 ? "text-danger" : "text-warning"}">${count}x</span>`
-        }
-      </td>
-      <td class="text-center">
-        <span class="status-badge-lg ${cls}">${label}</span>
+        <span class="status-badge-lg ${r.cls}">${r.label}</span>
       </td>
     </tr>`;
   }).join("");
 
-  if (countLbl) countLbl.textContent = `Menampilkan ${filtered.length} dari ${allData.length} data`;
+  if (countLbl) countLbl.textContent = `Menampilkan ${filtered.length} dari ${allRows.length} aktivitas`;
 }
 
 function setIntegritasFilter(filter, btn) {
@@ -1726,29 +1756,25 @@ function setIntegritasFilter(filter, btn) {
 }
 
 function exportIntegritasExcel() {
-  const allData  = getIntegritasData();
-  const filtered = applyIntegritasFilter(allData);
+  const allRows  = getIntegritasLogRows();
+  const filtered = applyIntegritasFilter(allRows);
   if (!filtered.length) { toast("Tidak ada data untuk diekspor!", "warning"); return; }
 
-  const ws = XLSX.utils.json_to_sheet(filtered.map((h, i) => {
-    const { label } = getIntegritasStatusInfo(h);
-    return {
-      No:               i + 1,
-      Waktu:            new Date(h.waktu).toLocaleString("id-ID"),
-      Nama:             h.nama,
-      Kelas:            `Kelas ${h.kelas}`,
-      "Mata Pelajaran": h.mapel_id || "—",
-      "Jml Pelanggaran": Number(h.cheat_count) || 0,
-      "Status Integritas": label,
-    };
-  }));
+  const ws = XLSX.utils.json_to_sheet(filtered.map((r, i) => ({
+    No:               i + 1,
+    "Waktu Curang":   new Date(r.waktu).toLocaleString("id-ID"),
+    Nama:             r.nama,
+    Kelas:            `Kelas ${r.kelas}`,
+    "Mata Pelajaran": r.mapel_id || "—",
+    Status:           r.label,
+  })));
 
-  // Warnai header
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "Log Integritas");
   XLSX.writeFile(wb, `Log-Integritas-${new Date().toISOString().slice(0,10)}.xlsx`);
   toast("Log integritas berhasil diunduh!", "success");
 }
+
 </script>
 </body>
 </html>
