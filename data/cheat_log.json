@@ -82,5 +82,19 @@
         "cheat_number": 2
       }
     ]
+  },
+  {
+    "nama": "ivan",
+    "kelas": "10.3",
+    "mapel_id": "bindo",
+    "ujian_id": "ujian_1782461237657",
+    "cheat_count": 2,
+    "waktu_terakhir": "2026-06-28T03:50:36.700Z",
+    "history": [
+      {
+        "waktu_deteksi": "2026-06-28T03:50:36.700Z",
+        "cheat_number": 2
+      }
+    ]
   }
 ]
