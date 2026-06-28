@@ -148,5 +148,18 @@
     "waktu": "2026-06-28T02:09:32.962Z",
     "cheat_count": 2,
     "auto_submit_cheat": false
+  },
+  {
+    "id": "1782618645661_d6kdv",
+    "nama": "ivan",
+    "kelas": "10.3",
+    "mapel_id": "bindo",
+    "benar": 2,
+    "total": 2,
+    "nilai": 100,
+    "ujian_id": "ujian_1782461237657",
+    "waktu": "2026-06-28T03:50:45.661Z",
+    "cheat_count": 3,
+    "auto_submit_cheat": true
   }
 ]
