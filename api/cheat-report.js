@@ -4,9 +4,21 @@ const { readFile, writeFile } = require("./lib/github");
 
 module.exports = async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   if (req.method === "OPTIONS") return res.status(200).end();
+
+  // ── GET: Retrieve cheat_log data (untuk guru dashboard) ─────────────────
+  if (req.method === "GET") {
+    try {
+      const { data: cheatLog } = await readFile("data/cheat_log.json", []);
+      return res.status(200).json(Array.isArray(cheatLog) ? cheatLog : []);
+    } catch (err) {
+      return res.status(500).json({ error: err.message });
+    }
+  }
+
+  // ── POST: Log cheat report dari ujian ────────────────────────────────────
   if (req.method !== "POST") return res.status(405).end();
 
   try {
