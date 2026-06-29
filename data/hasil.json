@@ -174,5 +174,18 @@
     "waktu": "2026-06-28T05:28:05.022Z",
     "cheat_count": 2,
     "auto_submit_cheat": false
+  },
+  {
+    "id": "1782705580086_bphex",
+    "nama": "Via",
+    "kelas": "10.3",
+    "mapel_id": "bindo",
+    "benar": 1,
+    "total": 2,
+    "nilai": 50,
+    "ujian_id": "ujian_1782461237657",
+    "waktu": "2026-06-29T03:59:40.086Z",
+    "cheat_count": 1,
+    "auto_submit_cheat": false
   }
 ]
