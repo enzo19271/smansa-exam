@@ -1,341 +1,592 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Hasil Ujian — Smansanam Exam Portal</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hasil Ujian — Smansanam Exam Portal</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"/>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <style>
-    :root {
-      --bg-body: #f8fafc;
-      --blue-gradient: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-      --blue-accent: #3b82f6;
-      --text-dark: #0f172a;
-      --text-muted: #64748b;
-      --border-color: #e2e8f0;
-    }
-    body {
-      background: var(--bg-body);
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      color: var(--text-dark);
-      -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-    }
+    <!-- Bootstrap 5 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
 
-    /* TOPBAR */
-    .topbar {
-      background: #fff;
-      border-bottom: 1px solid var(--border-color);
-      padding: 0.85rem 1.25rem;
-      display: flex; align-items: center;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-    }
-    .topbar .brand { font-weight: 500; font-size: 1rem; }
-    .topbar .brand span {
-      font-style: italic; font-weight: 800;
-      background: var(--blue-gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
+    <!-- Font Awesome 6 (Free) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
-    /* HERO RESULT */
-    .result-hero {
-      background: var(--blue-gradient);
-      padding: 3rem 1rem 5.5rem;
-      text-align: center;
-      color: #fff;
-      position: relative;
-    }
-    
-    .result-hero::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 40px;
-      background: linear-gradient(to top, rgba(0,0,0,0.05), transparent);
-    }
+    <style>
+        /* ── ROOT VARIABLES (Glassmorphism) ── */
+        :root {
+            --primary-blue: #4f6ef7;
+            --primary-glow: rgba(79, 110, 247, 0.35);
+            --secondary-blue: #7b93fa;
+            --blue-gradient: linear-gradient(135deg, #4f6ef7 0%, #3b5de7 100%);
+            --bg-body: #eef2f7;
+            --card-bg: rgba(255, 255, 255, 0.55);
+            --glass-border: rgba(255, 255, 255, 0.50);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            --text-dark: #1a2332;
+            --text-muted: #5a6b7f;
+            --border-color: rgba(255, 255, 255, 0.40);
+            --glass-blur: 18px;
+            --card-radius: 24px;
+        }
 
-    .result-hero .student-info {
-      font-size: 0.9rem;
-      opacity: 0.9;
-      margin-bottom: 1.5rem;
-      font-weight: 600;
-      animation: fadeInDown 0.8s ease-out forwards;
-    }
+        [data-bs-theme="dark"] {
+            --bg-body: #0d1421;
+            --card-bg: rgba(25, 35, 55, 0.60);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+            --text-dark: #edf2f7;
+            --text-muted: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.10);
+        }
 
-    /* SCORE CIRCLE */
-    .score-circle-wrap {
-      margin: 0 auto 0.5rem;
-      width: 160px; height: 160px;
-      position: relative;
-      animation: zoomIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-      filter: drop-shadow(0 0 20px rgba(255,255,255,0.2));
-    }
-    .score-circle-wrap svg {
-      transform: rotate(-90deg);
-    }
-    .score-number {
-      position: absolute;
-      inset: 0;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-    }
-    .score-number .val { font-size: 3rem; font-weight: 800; line-height: 1; text-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-    .score-number .lbl { font-size: 0.75rem; opacity: 0.8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
-    
-    .predikat-text { 
-      font-size: 1.25rem; 
-      font-weight: 800; 
-      margin-top: 1rem; 
-      animation: fadeInUp 1s ease-out forwards;
-      opacity: 0;
-      animation-delay: 0.3s;
-    }
+        /* ── GLOBAL ── */
+        body {
+            background: var(--bg-body);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--text-dark);
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            transition: background 0.4s ease, color 0.3s ease;
+            background-image:
+                radial-gradient(ellipse at 10% 20%, rgba(79, 110, 247, 0.06) 0%, transparent 60%),
+                radial-gradient(ellipse at 90% 80%, rgba(79, 110, 247, 0.04) 0%, transparent 60%);
+        }
 
-    /* FLOATING CARD */
-    .result-card-float {
-      background: #fff;
-      border-radius: 24px;
-      box-shadow: 0 12px 40px rgba(0,0,0,0.08);
-      padding: 2rem 1.5rem;
-      margin: -3.5rem 1rem 0;
-      position: relative;
-      z-index: 10;
-      opacity: 0;
-      animation: slideUpFloat 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-      animation-delay: 0.5s;
-    }
-    
-    .message-box {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-    .message-box h4 {
-      font-weight: 800;
-      color: var(--text-dark);
-      font-size: 1.3rem;
-      margin-bottom: 0.5rem;
-    }
-    .message-box p {
-      color: var(--text-muted);
-      font-size: 0.95rem;
-      line-height: 1.5;
-      margin: 0;
-      font-weight: 500;
-    }
+        /* ── GLASS UTILITY ── */
+        .glass {
+            background: var(--card-bg) !important;
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+        }
+        .glass-light {
+            background: rgba(255, 255, 255, 0.30) !important;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+        }
 
-    /* DIVIDER */
-    .section-divider {
-      height: 1.5px; background: var(--border-color);
-      margin: 1.5rem 0;
-      border-radius: 2px;
-    }
+        /* ── TOPBAR ── */
+        .topbar {
+            background: var(--card-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border-bottom: 1px solid var(--glass-border);
+            padding: 0.85rem 1.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+        }
+        .topbar .brand {
+            font-weight: 600;
+            font-size: 1.05rem;
+            color: var(--text-dark);
+            letter-spacing: -0.3px;
+        }
+        .topbar .brand span {
+            font-weight: 800;
+            background: var(--blue-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .topbar .brand i {
+            -webkit-text-fill-color: var(--primary-blue);
+            margin-right: 8px;
+            font-size: 1.2rem;
+        }
 
-    /* ACTIONS */
-    .btn-home {
-      background: var(--blue-gradient);
-      border: none; color: #fff;
-      font-weight: 700; border-radius: 16px;
-      padding: 0.85rem;
-      width: 100%;
-      font-size: 1rem;
-      box-shadow: 0 8px 20px rgba(37,99,235,0.25);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      display: flex; justify-content: center; align-items: center;
-    }
-    .btn-home:hover { 
-      transform: translateY(-3px); 
-      box-shadow: 0 12px 25px rgba(37,99,235,0.35); 
-    }
-    .btn-home:active {
-      transform: translateY(0);
-    }
+        .theme-toggle {
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--glass-border);
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+        }
+        .theme-toggle:hover {
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+            box-shadow: 0 0 0 4px var(--primary-glow);
+            transform: scale(1.03);
+        }
 
-    /* ANIMATIONS */
-    @keyframes slideUpFloat {
-      from { opacity: 0; transform: translateY(40px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes zoomIn {
-      from { opacity: 0; transform: scale(0.5); }
-      to   { opacity: 1; transform: scale(1); }
-    }
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes fadeInDown {
-      from { opacity: 0; transform: translateY(-20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+        /* ── HERO RESULT ── */
+        .result-hero {
+            background: var(--blue-gradient);
+            padding: 3.5rem 1rem 6rem;
+            text-align: center;
+            color: #fff;
+            position: relative;
+            border-radius: 0 0 40px 40px;
+            box-shadow: 0 12px 40px var(--primary-glow);
+        }
+        .result-hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.06), transparent);
+            pointer-events: none;
+        }
 
-    /* CONFETTI (Pure CSS) */
-    .confetti-bar {
-      display: flex; justify-content: center; gap: 8px;
-      margin-bottom: 1rem;
-    }
-    .confetti-bar span {
-      width: 10px; height: 10px; border-radius: 50%;
-      animation: confettiFall 1.5s cubic-bezier(0.25, 1, 0.5, 1) both;
-    }
-    @keyframes confettiFall {
-      0%   { transform: translateY(-30px) scale(0) rotate(0deg); opacity: 0; }
-      50%  { opacity: 1; }
-      100% { transform: translateY(20px) scale(1.2) rotate(360deg); opacity: 0; }
-    }
+        .student-info {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            margin-bottom: 1.8rem;
+            font-weight: 600;
+            animation: fadeInDown 0.8s ease-out forwards;
+        }
+        .student-info .badge-guru {
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 40px;
+            padding: 0.4rem 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #fff;
+        }
 
-    @media (max-width: 480px) {
-      .result-hero { padding: 2.5rem 1rem 5rem; }
-      .result-card-float { margin: -3rem 1rem 0; padding: 1.5rem; }
-      .score-circle-wrap { width: 140px; height: 140px; }
-      .score-number .val { font-size: 2.6rem; }
-    }
-  </style>
+        /* ── SCORE CIRCLE ── */
+        .score-circle-wrap {
+            margin: 0 auto 0.5rem;
+            width: 170px;
+            height: 170px;
+            position: relative;
+            animation: zoomIn 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.25));
+        }
+        .score-circle-wrap svg {
+            transform: rotate(-90deg);
+        }
+        .score-number {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .score-number .val {
+            font-size: 3.2rem;
+            font-weight: 800;
+            line-height: 1;
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+        }
+        .score-number .lbl {
+            font-size: 0.7rem;
+            opacity: 0.8;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 4px;
+        }
+
+        .predikat-text {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-top: 1.2rem;
+            animation: fadeInUp 1s ease-out forwards;
+            opacity: 0;
+            animation-delay: 0.3s;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        /* ── FLOATING CARD ── */
+        .result-card-float {
+            background: var(--card-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--glass-border);
+            border-radius: var(--card-radius);
+            box-shadow: var(--glass-shadow), 0 16px 48px rgba(0, 0, 0, 0.05);
+            padding: 2.2rem 2rem;
+            margin: -4rem 1rem 0;
+            position: relative;
+            z-index: 10;
+            opacity: 0;
+            animation: slideUpFloat 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation-delay: 0.5s;
+            max-width: 480px;
+            margin-left: auto;
+            margin-right: auto;
+            color: var(--text-dark);
+        }
+
+        .message-box {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .message-box .emoji-big {
+            font-size: 3rem;
+            line-height: 1;
+            animation: zoomIn 1s cubic-bezier(0.34, 1.56, 0.64, 1) 0.6s both;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        .message-box h4 {
+            font-weight: 800;
+            color: var(--text-dark);
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+        }
+        .message-box p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        .section-divider {
+            height: 1.5px;
+            background: var(--glass-border);
+            margin: 1.5rem 0;
+            border-radius: 2px;
+        }
+
+        /* ── BUTTON ── */
+        .btn-home {
+            background: var(--blue-gradient);
+            border: none;
+            color: #fff;
+            font-weight: 700;
+            border-radius: 16px;
+            padding: 0.9rem 1.5rem;
+            width: 100%;
+            font-size: 1rem;
+            box-shadow: 0 8px 24px var(--primary-glow);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-home:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 36px var(--primary-glow);
+        }
+        .btn-home:active {
+            transform: translateY(0);
+        }
+
+        /* ── ANIMATIONS ── */
+        @keyframes slideUpFloat {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes zoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ── CONFETTI ── */
+        .confetti-bar {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 1.2rem;
+        }
+        .confetti-bar span {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: confettiFall 1.6s cubic-bezier(0.25, 1, 0.5, 1) both;
+        }
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-30px) scale(0) rotate(0deg);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(25px) scale(1.3) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 480px) {
+            .result-hero {
+                padding: 2.5rem 1rem 5.5rem;
+                border-radius: 0 0 28px 28px;
+            }
+            .result-card-float {
+                padding: 1.6rem 1.2rem;
+                margin: -3.5rem 0.8rem 0;
+            }
+            .score-circle-wrap {
+                width: 150px;
+                height: 150px;
+            }
+            .score-number .val {
+                font-size: 2.6rem;
+            }
+            .topbar {
+                padding: 0.6rem 1rem;
+            }
+            .topbar .brand {
+                font-size: 0.95rem;
+            }
+            .message-box h4 {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* ── DARK THEME OVERRIDES ── */
+        [data-bs-theme="dark"] .topbar {
+            background: rgba(20, 30, 50, 0.70);
+        }
+        [data-bs-theme="dark"] .result-hero {
+            box-shadow: 0 12px 40px rgba(79, 110, 247, 0.25);
+        }
+        [data-bs-theme="dark"] .student-info .badge-guru {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.06);
+        }
+    </style>
 </head>
 <body>
 
-<div class="topbar">
-  <span class="brand"><span>Smansanam</span> Exam Portal</span>
-</div>
-
-<div class="result-hero" id="result-hero">
-  <div class="confetti-bar" id="confetti-bar"></div>
-  <div class="student-info" id="sub-info">—</div>
-
-  <div class="score-circle-wrap">
-    <svg width="100%" height="100%" viewBox="0 0 160 160">
-      <circle cx="80" cy="80" r="70" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="12"/>
-      <circle cx="80" cy="80" r="70" fill="none"
-        stroke="#ffffff" stroke-width="12"
-        stroke-linecap="round"
-        id="score-arc"
-        stroke-dasharray="439.8"
-        stroke-dashoffset="439.8"
-        style="transition: stroke-dashoffset 1.5s cubic-bezier(0.34,1.56,0.64,1) 0.2s"/>
-    </svg>
-    <div class="score-number">
-      <span class="val" id="nilai-text">0</span>
-      <span class="lbl">Nilai Akhir</span>
+    <!-- ====== TOPBAR ====== -->
+    <div class="topbar">
+        <span class="brand">
+            <i class="fa-solid fa-graduation-cap"></i><span>Smansanam</span> Exam Portal
+        </span>
+        <button class="theme-toggle" id="themeSwitcher" title="Ganti Tema">
+            <i class="fa-solid fa-moon" id="themeIcon"></i>
+        </button>
     </div>
-  </div>
 
-  <div class="predikat-text" id="predikat-text">—</div>
-</div>
+    <!-- ====== HERO ====== -->
+    <div class="result-hero" id="result-hero">
+        <div class="confetti-bar" id="confetti-bar"></div>
+        <div class="student-info" id="sub-info">—</div>
 
-<div class="result-card-float mx-auto" style="max-width:420px">
-  
-  <div class="message-box">
-    <div class="mb-2" style="font-size:3rem; line-height: 1; animation: zoomIn 1s cubic-bezier(0.34, 1.56, 0.64, 1) 0.6s both;">✨</div>
-    <h4 id="greeting-name">Kerja Bagus!</h4>
-    <p>Ujian telah berhasil diselesaikan. Jadikan hasil ini sebagai motivasi untuk terus belajar dan meraih prestasi yang lebih tinggi.</p>
-  </div>
+        <div class="score-circle-wrap">
+            <svg width="100%" height="100%" viewBox="0 0 160 160">
+                <circle cx="80" cy="80" r="70" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="12" />
+                <circle cx="80" cy="80" r="70" fill="none"
+                stroke="#ffffff" stroke-width="12"
+                stroke-linecap="round"
+                id="score-arc"
+                stroke-dasharray="439.8"
+                stroke-dashoffset="439.8"
+                style="transition: stroke-dashoffset 1.5s cubic-bezier(0.34,1.56,0.64,1) 0.2s" />
+            </svg>
+            <div class="score-number">
+                <span class="val" id="nilai-text">0</span>
+                <span class="lbl">Nilai Akhir</span>
+            </div>
+        </div>
 
-  <div class="section-divider"></div>
+        <div class="predikat-text" id="predikat-text">—</div>
+    </div>
 
-  <button class="btn-home" onclick="clearSession()">
-    <i class="bi bi-house-door-fill me-2 fs-5"></i> Kembali ke Beranda
-  </button>
-</div>
+    <!-- ====== FLOATING CARD ====== -->
+    <div class="result-card-float">
 
-<div style="height:4rem"></div>
+        <div class="message-box">
+            <span class="emoji-big">✨</span>
+            <h4 id="greeting-name">Kerja Bagus!</h4>
+            <p>Ujian telah berhasil diselesaikan. Jadikan hasil ini sebagai motivasi untuk terus belajar dan meraih prestasi yang lebih tinggi.</p>
+        </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-// ── Ambil data hasil dari session ──────────────────────────────────────────
-const raw  = sessionStorage.getItem("hasil_ujian");
-const nama = sessionStorage.getItem("siswa_nama") || "Siswa";
-const kel  = sessionStorage.getItem("siswa_kelas") || "—";
-const mapN = sessionStorage.getItem("exam_mapel_nama") || "Mata Pelajaran";
+        <div class="section-divider"></div>
 
-let hasil = {};
-if (raw) {
-  try { hasil = JSON.parse(raw); } catch { hasil = {}; }
-}
+        <button class="btn-home" onclick="clearSession()">
+            <i class="fa-solid fa-house"></i> Kembali ke Beranda
+        </button>
+    </div>
 
-const nilai = hasil.nilai ?? hasil.score ?? null;
+    <div style="height:3rem"></div>
 
-// Sapaan personal di floating card
-document.getElementById("greeting-name").textContent = `Kerja Bagus, ${nama.split(' ')[0]}!`;
+    <!-- ====== SCRIPTS ====== -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+    </script>
+    <script>
+        // ── THEME SWITCHER ─────────────────────────────────────────────────────────
+        const themeSwitcher = document.getElementById('themeSwitcher');
+        const htmlTag = document.documentElement;
+        const themeIcon = document.getElementById('themeIcon');
 
-// Jika tidak ada data
-if (nilai === null) {
-  document.getElementById("nilai-text").textContent = "—";
-  document.getElementById("sub-info").textContent   = "Data hasil tidak ditemukan";
-  document.getElementById("predikat-text").textContent = "Hubungi guru kamu";
-} else {
-  // ── Tampilkan data & Animasi ────────────────────────────────────────────
-  document.getElementById("sub-info").innerHTML = `<i class="bi bi-person-fill me-1"></i> ${nama} &nbsp;&bull;&nbsp; Kelas ${kel} <br> <span class="badge bg-white text-primary mt-2 ps-2 pe-2 py-1 rounded-pill"><i class="bi bi-book-half me-1"></i> ${mapN}</span>`;
-  
-  const n = parseFloat(nilai) || 0;
-  
-  // Animasi angka (Counting Up)
-  const duration = 1500; 
-  const start = performance.now();
-  const nilaiEl = document.getElementById("nilai-text");
+        if (themeSwitcher) {
+            themeSwitcher.addEventListener('click', () => {
+                const currentTheme = htmlTag.getAttribute('data-bs-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                htmlTag.setAttribute('data-bs-theme', newTheme);
+                themeIcon.className = newTheme === 'light' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+                localStorage.setItem('theme', newTheme);
+            });
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            htmlTag.setAttribute('data-bs-theme', savedTheme);
+            themeIcon.className = savedTheme === 'light' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+        }
 
-  function animateScore(time) {
-    let progress = (time - start) / duration;
-    if (progress > 1) progress = 1;
-    // Ease out cubic
-    const easeProgress = 1 - Math.pow(1 - progress, 3);
-    const currentScore = (easeProgress * n).toFixed(n % 1 === 0 ? 0 : 1);
-    
-    nilaiEl.textContent = currentScore;
-    
-    if (progress < 1) {
-      requestAnimationFrame(animateScore);
-    } else {
-      nilaiEl.textContent = n; // Pastikan hasil akhirnya tepat
-    }
-  }
-  requestAnimationFrame(animateScore);
+        // ── AMBIL DATA DARI SESSION ──────────────────────────────────────────────
+        const raw = sessionStorage.getItem("hasil_ujian");
+        const nama = sessionStorage.getItem("siswa_nama") || "Siswa";
+        const kel = sessionStorage.getItem("siswa_kelas") || "—";
+        const mapN = sessionStorage.getItem("exam_mapel_nama") || "Mata Pelajaran";
+        const guruN = sessionStorage.getItem("exam_guru_nama") || "Guru";
 
-  // Animasi Lingkaran (SVG Stroke Dashoffset)
-  const arc = document.getElementById("score-arc");
-  const circumference = 439.8; // 2 * pi * r (r=70)
-  setTimeout(() => {
-    arc.style.strokeDashoffset = circumference - (circumference * (n / 100));
-  }, 100);
+        let hasil = {};
+        if (raw) {
+            try { hasil = JSON.parse(raw); } catch { hasil = {}; }
+        }
 
-  // ── Predikat & Confetti ────────────────────────────────────────────────
-  let predikat, emoji, confettiColors;
-  if (n >= 90)      { predikat = "Luar Biasa!";    emoji = "🏆"; confettiColors = ["#fbbf24","#f59e0b","#fcd34d","#ffffff","#fbbf24"]; }
-  else if (n >= 80) { predikat = "Sangat Baik";    emoji = "⭐"; confettiColors = ["#60a5fa","#3b82f6","#93c5fd","#ffffff","#60a5fa"]; }
-  else if (n >= 70) { predikat = "Baik";           emoji = "👍"; confettiColors = ["#34d399","#10b981","#6ee7b7","#ffffff","#34d399"]; }
-  else if (n >= 60) { predikat = "Cukup";          emoji = "📚"; confettiColors = ["#fbbf24","#d97706","#fde68a","#ffffff","#fbbf24"]; }
-  else              { predikat = "Tetap Semangat!"; emoji = "💪"; confettiColors = ["#f87171","#ef4444","#fca5a5","#ffffff","#f87171"]; }
+        const nilai = hasil.nilai ?? hasil.score ?? null;
 
-  document.getElementById("predikat-text").innerHTML = `${emoji} ${predikat}`;
+        // Sapaan personal
+        document.getElementById("greeting-name").textContent = `Kerja Bagus, ${nama.split(' ')[0]}!`;
 
-  // Generate Confetti
-  const bar = document.getElementById("confetti-bar");
-  confettiColors.forEach((c, i) => {
-    const s = document.createElement("span");
-    s.style.background = c;
-    s.style.animationDelay = `${i * 150}ms`;
-    // Memberikan variasi ukuran
-    if(i % 2 === 0) s.style.width = "12px", s.style.height = "12px";
-    bar.appendChild(s);
-  });
-}
+        if (nilai === null) {
+            document.getElementById("nilai-text").textContent = "—";
+            document.getElementById("sub-info").innerHTML =
+                `<i class="fa-regular fa-circle-question me-1"></i> Data hasil tidak ditemukan`;
+            document.getElementById("predikat-text").textContent = "Hubungi guru kamu";
+        } else {
+            // ── TAMPILKAN DATA & ANIMASI ──────────────────────────────────────────
+            document.getElementById("sub-info").innerHTML = `
+                <i class="fa-regular fa-user me-1"></i> ${nama} &nbsp;&bull;&nbsp; Kelas ${kel}
+                <br>
+                <span class="badge-guru mt-2">
+                    <i class="fa-regular fa-book-open me-1"></i> ${mapN}
+                    <span class="mx-1 opacity-25">|</span>
+                    <i class="fa-regular fa-user me-1"></i> ${guruN}
+                </span>
+            `;
 
-// ── Clear Session & Kembali ke Home ──────────────────────────────────────
-function clearSession() {
-  const btn = document.querySelector('.btn-home');
-  btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Mengalihkan...';
-  
-  setTimeout(() => {
-    ["exam_mapel_id","exam_mapel_nama","exam_kelas","siswa_nama","siswa_kelas",
-     "siswa_kelas_main","exam_guru_nama","hasil_ujian"].forEach(k => sessionStorage.removeItem(k));
-    location.href = "index.html";
-  }, 600); // Jeda singkat agar animasi loading tombol terlihat premium
-}
-</script>
+            const n = parseFloat(nilai) || 0;
+
+            // Animasi angka (Counting Up)
+            const duration = 1500;
+            const start = performance.now();
+            const nilaiEl = document.getElementById("nilai-text");
+
+            function animateScore(time) {
+                let progress = (time - start) / duration;
+                if (progress > 1) progress = 1;
+                const easeProgress = 1 - Math.pow(1 - progress, 3);
+                const currentScore = (easeProgress * n).toFixed(n % 1 === 0 ? 0 : 1);
+                nilaiEl.textContent = currentScore;
+                if (progress < 1) {
+                    requestAnimationFrame(animateScore);
+                } else {
+                    nilaiEl.textContent = n;
+                }
+            }
+            requestAnimationFrame(animateScore);
+
+            // Animasi Lingkaran (SVG Stroke Dashoffset)
+            const arc = document.getElementById("score-arc");
+            const circumference = 439.8;
+            setTimeout(() => {
+                arc.style.strokeDashoffset = circumference - (circumference * (n / 100));
+            }, 100);
+
+            // ── PREDIKAT & CONFETTI ──────────────────────────────────────────────
+            let predikat, emoji, confettiColors;
+            if (n >= 90) { predikat = "Luar Biasa!";
+                emoji = "🏆";
+                confettiColors = ["#fbbf24", "#f59e0b", "#fcd34d", "#ffffff", "#fbbf24"]; } else if (n >= 80) { predikat =
+                    "Sangat Baik";
+                emoji = "⭐";
+                confettiColors = ["#60a5fa", "#3b82f6", "#93c5fd", "#ffffff", "#60a5fa"]; } else if (n >= 70) { predikat =
+                    "Baik";
+                emoji = "👍";
+                confettiColors = ["#34d399", "#10b981", "#6ee7b7", "#ffffff", "#34d399"]; } else if (n >= 60) { predikat =
+                    "Cukup";
+                emoji = "📚";
+                confettiColors = ["#fbbf24", "#d97706", "#fde68a", "#ffffff", "#fbbf24"]; } else { predikat =
+                    "Tetap Semangat!";
+                emoji = "💪";
+                confettiColors = ["#f87171", "#ef4444", "#fca5a5", "#ffffff", "#f87171"]; }
+
+            document.getElementById("predikat-text").innerHTML = `${emoji} ${predikat}`;
+
+            // Generate Confetti
+            const bar = document.getElementById("confetti-bar");
+            confettiColors.forEach((c, i) => {
+                const s = document.createElement("span");
+                s.style.background = c;
+                s.style.animationDelay = `${i * 150}ms`;
+                if (i % 2 === 0) { s.style.width = "14px";
+                    s.style.height = "14px"; }
+                bar.appendChild(s);
+            });
+        }
+
+        // ── CLEAR SESSION & KEMBALI KE HOME ──────────────────────────────────────
+        function clearSession() {
+            const btn = document.querySelector('.btn-home');
+            btn.innerHTML =
+                '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Mengalihkan...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                ["exam_mapel_id", "exam_mapel_nama", "exam_kelas", "siswa_nama", "siswa_kelas",
+                    "siswa_kelas_main", "exam_guru_nama", "hasil_ujian"
+                ].forEach(k => sessionStorage.removeItem(k));
+                location.href = "index.html";
+            }, 600);
+        }
+    </script>
 </body>
 </html>
