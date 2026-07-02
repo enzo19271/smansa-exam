@@ -69,4 +69,48 @@ async function writeFile(path, data, sha = null) {
   return true;
 }
 
-module.exports = { readFile, writeFile, parseBody };
+/**
+ * Write / overwrite a BINARY file in the repo (mis. gambar soal).
+ * `base64Content` harus berupa string base64 MURNI (tanpa prefix "data:image/...;base64,").
+ * Mengembalikan { sha } dari file yang baru dibuat/diupdate.
+ */
+async function writeBinaryFile(path, base64Content, sha = null) {
+  const body = {
+    message: `upload ${path}`,
+    content: base64Content,
+    branch: getBranch(),
+    ...(sha ? { sha } : {}),
+  };
+  const res = await fetch(`${BASE}/repos/${getRepo()}/contents/${path}`, {
+    method: "PUT",
+    headers: getHeaders(),
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`GitHub write error ${res.status}: ${errText}`);
+  }
+  const json = await res.json();
+  return { sha: json.content ? json.content.sha : null };
+}
+
+/**
+ * Baca file APAPUN (termasuk binary/gambar) dan kembalikan base64 mentahnya.
+ * Berbeda dengan readFile(), fungsi ini TIDAK melakukan JSON.parse.
+ * Return null jika file tidak ditemukan (404).
+ */
+async function readFileRaw(path) {
+  const res = await fetch(
+    `${BASE}/repos/${getRepo()}/contents/${path}?ref=${getBranch()}`,
+    { headers: getHeaders() }
+  );
+  if (res.status === 404) return null;
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`GitHub read error ${res.status}: ${errText}`);
+  }
+  const json = await res.json();
+  return { base64: String(json.content || "").replace(/\n/g, ""), sha: json.sha };
+}
+
+module.exports = { readFile, writeFile, parseBody, writeBinaryFile, readFileRaw };
