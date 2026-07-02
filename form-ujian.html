@@ -14,12 +14,27 @@
   <style>
     :root {
       --primary-blue: #2563eb;
-      --bg-base: #f1f5f9;
-      --text-main: #1e293b;
+      --bg-base: #f8fafc;
+      --card-bg: #ffffff;
+      --card-border: #e2e8f0;
+      --text-main: #0f172a;
       --text-muted: #64748b;
-      --glass-bg: rgba(255, 255, 255, 0.6);
-      --glass-border: rgba(255, 255, 255, 0.8);
-      --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+      
+      /* Subtle Lightweight Shadows */
+      --light-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      --hover-shadow: 0 12px 25px -5px rgba(37, 99, 235, 0.1), 0 8px 10px -6px rgba(37, 99, 235, 0.05);
+    }
+
+    [data-bs-theme="dark"] {
+      --primary-blue: #3b82f6;
+      --bg-base: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      
+      --light-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+      --hover-shadow: 0 12px 25px -5px rgba(0, 0, 0, 0.4);
     }
 
     body { 
@@ -27,81 +42,150 @@
       font-family: 'Plus Jakarta Sans', sans-serif;
       color: var(--text-main);
       min-height: 100vh;
-      background-image: radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.1) 0px, transparent 50%),
-                        radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.1) 0px, transparent 50%);
+      transition: background-color 0.3s ease;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
+    /* NAVBAR (CLEAN & FLAT) */
     .navbar { 
-      background: rgba(255, 255, 255, 0.7);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--glass-border);
-      padding: 1rem;
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--card-border);
+      padding: 0.85rem 1rem;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
     }
 
     .btn-back-arrow {
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
       color: var(--text-main);
       width: 40px; height: 40px;
       border-radius: 12px;
       display: flex; align-items: center; justify-content: center;
       transition: all 0.2s ease;
+      box-shadow: var(--light-shadow);
     }
-    .btn-back-arrow:hover { background: #fff; transform: translateX(-3px); }
+    .btn-back-arrow:hover { 
+      border-color: var(--primary-blue);
+      color: var(--primary-blue);
+      transform: translateX(-3px); 
+    }
 
+    /* DYNAMIC PILL ACCENT */
     .mapel-pill {
-      background: rgba(37, 99, 235, 0.1); color: var(--primary-blue);
-      border: 1px solid rgba(37, 99, 235, 0.2);
-      border-radius: 50px; padding: 0.4rem 1.2rem;
-      font-weight: 700; display: inline-block; font-size: .85rem;
+      background: rgba(37, 99, 235, 0.08); 
+      color: var(--primary-blue);
+      border: 1px solid rgba(37, 99, 235, 0.15);
+      border-radius: 12px; 
+      padding: 0.5rem 1.2rem;
+      font-weight: 700; 
+      display: inline-flex; 
+      align-items: center;
+      gap: 8px;
+      font-size: .9rem;
     }
 
+    /* COMPACT SOLID CARD */
     .form-card {
-      background: var(--glass-bg);
-      backdrop-filter: blur(15px);
-      border: 1px solid var(--glass-border);
-      border-radius: 28px; padding: 2rem;
-      box-shadow: var(--glass-shadow);
-      animation: fadeInUp 0.6s cubic-bezier(0.16,1,0.3,1) both;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px; 
+      padding: 2.25rem 2rem;
+      box-shadow: var(--light-shadow);
+      animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
     }
 
+    /* STEP CHIPS WITHOUT EMOJI */
     .step-badge {
-      width: 32px; height: 32px; border-radius: 12px;
-      background: var(--primary-blue); color: white;
+      width: 34px; height: 34px; 
+      border-radius: 10px;
+      background: rgba(37, 99, 235, 0.1); 
+      color: var(--primary-blue);
       display: inline-flex; align-items: center; justify-content: center;
-      font-weight: 800; font-size: .9rem; flex-shrink: 0;
+      font-weight: 800; font-size: .95rem; flex-shrink: 0;
+      border: 1px solid rgba(37, 99, 235, 0.15);
+      transition: all 0.2s ease;
+    }
+    
+    .d-flex:focus-within .step-badge {
+      background: var(--primary-blue);
+      color: #ffffff;
+      border-color: var(--primary-blue);
+      transform: scale(1.05);
     }
 
-    .form-label { font-size: 0.85rem; font-weight: 700; color: var(--text-main); }
+    .form-label { 
+      font-size: 0.85rem; 
+      font-weight: 700; 
+      color: var(--text-main); 
+      margin-left: 2px;
+    }
     
+    /* INPUT & SELECT ELEMENTS */
     .form-control, .form-select {
       padding: 0.8rem 1rem;
-      background: rgba(255, 255, 255, 0.5);
-      border: 1px solid var(--glass-border);
-      border-radius: 16px; font-weight: 500;
+      background: var(--bg-base);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      border-radius: 14px; 
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
     }
     
     .form-control:focus, .form-select:focus {
-      background: #fff;
+      background: var(--card-bg);
       border-color: var(--primary-blue);
-      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+      color: var(--text-main);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
     }
 
+    .form-control::placeholder {
+      color: var(--text-muted);
+      opacity: 0.6;
+    }
+
+    /* SNAPPY BUTTON */
     #btn-submit { 
-      background: var(--primary-blue); border: none; 
-      font-weight: 800; padding: 0.9rem;
-      border-radius: 16px; transition: all 0.3s ease;
+      background: var(--primary-blue); 
+      border: none; 
+      font-weight: 700; 
+      padding: 0.9rem;
+      border-radius: 14px; 
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
     }
-    #btn-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3); }
+    #btn-submit:hover { 
+      background: #1d4ed8;
+      transform: translateY(-2px); 
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25); 
+    }
+    #btn-submit:active {
+      transform: translateY(0);
+    }
 
+    /* ALERT & ERROR BOXES */
     .alert-dup {
-      background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2);
-      border-radius: 16px; padding: 1rem;
+      background: rgba(239, 68, 68, 0.08); 
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: 14px; 
+      padding: 1rem;
+    }
+
+    .icon-header-div {
+      display: inline-flex;
+      background: rgba(37, 99, 235, 0.06);
+      padding: 12px;
+      border-radius: 16px;
+      color: var(--primary-blue);
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    /* FAST SUBTLE ANIMATION */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(15px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
@@ -110,18 +194,23 @@
 <nav class="navbar sticky-top">
   <div class="container-fluid d-flex align-items-center">
     <a href="index.html" class="btn-back-arrow" title="Kembali">
-      <i class="bi bi-arrow-left"></i>
+      <i class="bi bi-arrow-left fs-5"></i>
     </a>
-    <div class="fw-bold fs-5 mx-auto">Portal Ujian</div>
+    <div class="fw-bold fs-5 mx-auto" style="letter-spacing: -0.3px;">Portal Ujian</div>
     <div style="width:40px;"></div>
   </div>
 </nav>
 
 <div class="container py-5" style="max-width:500px">
-  <div class="text-center mb-4" style="animation:fadeInUp 0.4s ease both">
-    <h3 class="fw-bolder mb-2">Formulir Pendaftaran</h3>
-    <p class="text-muted small">Lengkapi data untuk memulai ujian</p>
-    <span class="mapel-pill" id="info-mapel">—</span>
+  <div class="text-center mb-4" style="animation: fadeInUp 0.4s ease both">
+    <div class="icon-header-div">
+        <i class="bi bi-file-earmark-text-fill"></i>
+    </div>
+    <h3 class="fw-extrabold mb-1" style="letter-spacing: -0.5px;">Formulir Pendaftaran</h3>
+    <p class="text-muted small fw-medium mb-3">Lengkapi data untuk memulai sesi ujian</p>
+    <span class="mapel-pill" id="info-mapel">
+        <i class="bi bi-journal-bookmark-fill small"></i> —
+    </span>
   </div>
 
   <div class="form-card">
@@ -129,8 +218,8 @@
       <span class="step-badge">1</span>
       <div class="w-100">
         <label class="form-label mb-1">Nama Lengkap</label>
-        <input type="text" id="inp-nama" class="form-control" placeholder="Nama sesuai absen" autocomplete="off"/>
-        <div class="invalid-feedback">Nama wajib diisi.</div>
+        <input type="text" id="inp-nama" class="form-control" placeholder="Nama sesuai absensi kelas" autocomplete="off"/>
+        <div class="invalid-feedback fw-semibold small mt-1">Nama wajib diisi secara lengkap.</div>
       </div>
     </div>
 
@@ -153,6 +242,7 @@
             <option value="12.4">12.4</option><option value="12.5">12.5</option><option value="12.6">12.6</option>
           </optgroup>
         </select>
+        <div class="invalid-feedback fw-semibold small mt-1">Silakan pilih opsi kelas Anda.</div>
       </div>
     </div>
 
@@ -160,20 +250,25 @@
       <span class="step-badge">3</span>
       <div class="w-100">
         <label class="form-label mb-1">Key Ujian</label>
-        <input type="text" id="inp-key" class="form-control" placeholder="CONTOH: XYZ123" autocomplete="off"/>
+        <input type="text" id="inp-key" class="form-control" placeholder="Masukkan token, misal: XYZ123" autocomplete="off"/>
+        <div class="invalid-feedback fw-semibold small mt-1">Key atau token ujian wajib diisi.</div>
         <div id="key-error" class="text-danger small mt-2 d-none fw-bold"><i class="bi bi-x-circle-fill me-1"></i>Key tidak valid.</div>
-        <div id="deadline-error" class="mt-2 d-none p-3 rounded-3 bg-warning-subtle text-warning-emphasis">
-          <div class="fw-bold mb-1" id="deadline-title"></div>
-          <div class="small" id="deadline-desc"></div>
+        
+        <div id="deadline-error" class="mt-3 d-none p-3 rounded-3 bg-warning-subtle text-warning-emphasis border border-warning-subtle">
+          <div class="fw-bold mb-1 d-flex align-items-center gap-2" id="deadline-title"></div>
+          <div class="small fw-semibold" id="deadline-desc"></div>
         </div>
+        
         <div id="duplicate-error" class="alert-dup mt-3 d-none">
-          <div class="fw-bold text-danger mb-1"><i class="bi bi-slash-circle-fill me-1"></i>Sudah Dikerjakan</div>
-          <div class="small text-danger" id="duplicate-msg"></div>
+          <div class="fw-bold text-danger mb-1 d-flex align-items-center gap-2">
+            <i class="bi bi-slash-circle-fill"></i> Sudah Dikerjakan
+          </div>
+          <div class="small text-danger fw-semibold" id="duplicate-msg"></div>
         </div>
       </div>
     </div>
 
-    <button class="btn btn-primary w-100" id="btn-submit" onclick="submitForm()">
+    <button class="btn btn-primary w-100 shadow-sm" id="btn-submit" onclick="submitForm()">
       <span id="btn-text"><i class="bi bi-arrow-right-circle-fill me-2"></i>Lanjut ke Instruksi</span>
       <span id="btn-loading" class="d-none">
         <span class="spinner-border spinner-border-sm me-2"></span><span id="loading-msg">Memeriksa...</span>
@@ -190,7 +285,8 @@ const mapelNama = sessionStorage.getItem("exam_mapel_nama");
 
 if (!mapelId) location.href = "index.html";
 
-document.getElementById("info-mapel").textContent = mapelNama || mapelId;
+// Menambahkan icon b-icon statis di depan nama mapel dinamis
+document.getElementById("info-mapel").innerHTML = `<i class="bi bi-journal-bookmark-fill small"></i> ${mapelNama || mapelId}`;
 
 function setLoading(on, msg = "Memeriksa...") {
   document.getElementById("btn-text").classList.toggle("d-none", on);
@@ -233,12 +329,12 @@ async function submitForm() {
     if (!keyJson.valid) {
       if (keyJson.code === "BELUM_MULAI") {
         const fmt = keyJson.waktu_mulai ? new Date(keyJson.waktu_mulai).toLocaleString("id-ID") : "—";
-        document.getElementById("deadline-title").innerHTML = `<i class="bi bi-clock me-1"></i>Ujian Belum Dimulai`;
+        document.getElementById("deadline-title").innerHTML = `<i class="bi bi-clock-fill me-1"></i>Ujian Belum Dimulai`;
         document.getElementById("deadline-desc").textContent = `Ujian mulai: ${fmt}.`;
         document.getElementById("deadline-error").classList.remove("d-none");
       } else if (keyJson.code === "SUDAH_SELESAI") {
         const fmt = keyJson.waktu_selesai ? new Date(keyJson.waktu_selesai).toLocaleString("id-ID") : "—";
-        document.getElementById("deadline-title").innerHTML = `<i class="bi bi-calendar-x me-1"></i>Ujian Berakhir`;
+        document.getElementById("deadline-title").innerHTML = `<i class="bi bi-calendar-x-fill me-1"></i>Ujian Berakhir`;
         document.getElementById("deadline-desc").textContent = `Ujian ditutup sejak: ${fmt}.`;
         document.getElementById("deadline-error").classList.remove("d-none");
       } else {
@@ -274,6 +370,10 @@ async function submitForm() {
 }
 
 document.addEventListener("keydown", e => { if (e.key === "Enter") submitForm(); });
+
+// Integrasi otomatis untuk memantau status dark mode dari halaman sebelumnya via LocalStorage
+const savedTheme = localStorage.getItem('theme') || 'light';
+document.documentElement.setAttribute('data-bs-theme', savedTheme);
 </script>
 </body>
 </html>
