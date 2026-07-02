@@ -200,5 +200,18 @@
     "waktu": "2026-07-02T10:12:40.814Z",
     "cheat_count": 3,
     "auto_submit_cheat": true
+  },
+  {
+    "id": "1782988927015_lxf5u",
+    "nama": "Gio",
+    "kelas": "10.3",
+    "mapel_id": "bindo",
+    "benar": 1,
+    "total": 2,
+    "nilai": 50,
+    "ujian_id": "ujian_1782461237657",
+    "waktu": "2026-07-02T10:42:07.015Z",
+    "cheat_count": 2,
+    "auto_submit_cheat": false
   }
 ]
