@@ -141,7 +141,8 @@
           "C": "galow",
           "D": "gelwo"
         },
-        "jawaban": "A"
+        "jawaban": "A",
+        "gambar": "/api/soal?gambar=data%2Fgambar-soal%2Fbindo%2F1782987081739_166710.jpg"
       },
       {
         "id": "s17826126869240",
@@ -161,6 +162,6 @@
     "waktu_selesai": "2026-09-30T08:06:00.000Z",
     "waktu_menit": null,
     "created_at": "2026-06-26T08:07:17.657Z",
-    "updated_at": "2026-06-29T13:39:20.598Z"
+    "updated_at": "2026-07-02T10:11:35.276Z"
   }
 ]
