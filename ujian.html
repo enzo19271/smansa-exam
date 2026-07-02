@@ -386,6 +386,7 @@
       <div class="q-number" id="q-num">1</div>
       <p class="mb-0 q-text-style" id="q-text">Memuat daftar pertanyaan ujian, harap tunggu...</p>
     </div>
+    <div id="q-image" class="mb-3" style="display:none;"></div>
     <div id="q-options" class="mt-2"></div>
   </div>
 
@@ -744,6 +745,15 @@ function renderSoal(idx) {
   document.getElementById("q-num").textContent  = idx + 1;
   document.getElementById("q-text").textContent = s.pertanyaan;
   document.getElementById("tb-progress").textContent = `Soal ${idx + 1} dari ${soalList.length}`;
+
+  const imgWrap = document.getElementById("q-image");
+  if (s.gambar) {
+    imgWrap.innerHTML = `<img src="${s.gambar}" alt="Gambar soal" class="img-fluid rounded-3 border" style="max-height:360px;object-fit:contain;display:block;margin:0 auto;"/>`;
+    imgWrap.style.display = "block";
+  } else {
+    imgWrap.innerHTML = "";
+    imgWrap.style.display = "none";
+  }
 
   document.getElementById("progress-fill").style.width =
     `${Math.round(((idx + 1) / soalList.length) * 100)}%`;
