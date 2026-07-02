@@ -187,5 +187,18 @@
     "waktu": "2026-06-29T03:59:40.086Z",
     "cheat_count": 1,
     "auto_submit_cheat": false
+  },
+  {
+    "id": "1782987160814_y1kfh",
+    "nama": "Ghofur",
+    "kelas": "10.3",
+    "mapel_id": "bindo",
+    "benar": 0,
+    "total": 2,
+    "nilai": 0,
+    "ujian_id": "ujian_1782461237657",
+    "waktu": "2026-07-02T10:12:40.814Z",
+    "cheat_count": 3,
+    "auto_submit_cheat": true
   }
 ]
