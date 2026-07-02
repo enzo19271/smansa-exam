@@ -1014,8 +1014,29 @@ function renderSoalEditor() {
         <span class="fw-bold text-primary fs-6"><i class="bi bi-list-ol me-2"></i>Butir Pertanyaan ${i+1}</span>
         <button class="btn btn-sm btn-outline-danger fw-bold rounded-pill" onclick="hapusSoalItem(${i})"><i class="bi bi-trash"></i> Hapus Baris</button>
       </div>
-      <textarea class="form-control-soal form-control mb-4" rows="3" placeholder="Tuliskan pertanyaan disini..."
+      <textarea class="form-control-soal form-control mb-3" rows="3" placeholder="Tuliskan pertanyaan disini..."
         onchange="soalDraft[${i}].pertanyaan=this.value">${esc(s.pertanyaan||"")}</textarea>
+
+      <div class="gambar-soal-box mb-4">
+        ${s.gambar ? `
+          <div class="d-flex align-items-center gap-3 p-2 border rounded-3 bg-light bg-opacity-50 flex-wrap">
+            <img src="${esc(s.gambar)}" alt="Gambar soal" style="max-width:180px;max-height:130px;object-fit:contain;border-radius:8px;border:1px solid #dee2e6;background:#fff;"/>
+            <div class="flex-grow-1 small text-muted"><i class="bi bi-image me-1"></i>Gambar terlampir pada soal ini</div>
+            <div class="d-flex gap-2">
+              <label class="btn btn-sm btn-outline-secondary rounded-pill mb-0">
+                <i class="bi bi-arrow-repeat me-1"></i>Ganti
+                <input type="file" accept="image/png,image/jpeg,image/gif,image/webp" class="d-none" onchange="uploadGambarSoal(${i}, this)"/>
+              </label>
+              <button type="button" class="btn btn-sm btn-outline-danger rounded-pill" onclick="hapusGambarSoal(${i})"><i class="bi bi-trash"></i> Hapus Gambar</button>
+            </div>
+          </div>` : `
+          <label class="btn btn-sm btn-outline-primary rounded-pill mb-0">
+            <i class="bi bi-image me-1"></i> Tambah Gambar Soal (opsional)
+            <input type="file" accept="image/png,image/jpeg,image/gif,image/webp" class="d-none" onchange="uploadGambarSoal(${i}, this)"/>
+          </label>`}
+        <div class="mt-2 small" id="gstatus-${i}"></div>
+      </div>
+
       <div class="row g-3">
       ${["A","B","C","D"].map(l => `
         <div class="col-12 col-md-6">
@@ -1033,6 +1054,98 @@ function renderSoalEditor() {
         </div>`).join("")}
       </div>
     </div>`).join("");
+}
+
+// ── UPLOAD GAMBAR SOAL ────────────────────────────────────────────────────
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload  = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+// Kompres & resize gambar di sisi browser sebelum upload (max 1280px, JPEG q=0.82)
+// agar tidak melebihi batas ±900KB dari GitHub Contents API dan lebih cepat dimuat siswa.
+function resizeImageToBase64(file, maxDim = 1280, quality = 0.82) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onerror = reject;
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > maxDim || height > maxDim) {
+          const scale = maxDim / Math.max(width, height);
+          width  = Math.round(width * scale);
+          height = Math.round(height * scale);
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width; canvas.height = height;
+        canvas.getContext("2d").drawImage(img, 0, 0, width, height);
+        // Pertahankan PNG untuk file kecil (mis. diagram/screenshot transparan)
+        const keepPng = file.type === "image/png" && file.size < 300 * 1024;
+        resolve(canvas.toDataURL(keepPng ? "image/png" : "image/jpeg", quality));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+async function uploadGambarSoal(i, inputEl) {
+  const file = inputEl.files[0];
+  inputEl.value = "";
+  if (!file) return;
+  if (!/^image\/(png|jpe?g|gif|webp)$/.test(file.type)) {
+    toast("Format gambar harus PNG, JPG, GIF, atau WEBP!", "warning");
+    return;
+  }
+
+  const statusEl = document.getElementById(`gstatus-${i}`);
+  if (statusEl) statusEl.innerHTML = `<span class="text-muted"><span class="spinner-border spinner-border-sm me-1"></span>Memproses & mengunggah gambar...</span>`;
+
+  try {
+    let base64;
+    if (file.type === "image/gif") {
+      // GIF tidak di-resize (agar animasi tidak rusak), cukup batasi ukurannya
+      if (file.size > 900 * 1024) throw new Error("Ukuran GIF maksimal 900KB (tidak dikompres agar animasi tetap utuh)");
+      base64 = await fileToBase64(file);
+    } else {
+      base64 = await resizeImageToBase64(file);
+    }
+
+    const res = await fetch("/api/soal", {
+      method: "POST",
+      headers: {"Content-Type":"application/json","x-guru-key":guruKey},
+      body: JSON.stringify({
+        action: "upload_gambar",
+        gambar_base64: base64,
+        filename: file.name,
+        mapel_id: guruInfo.mapel_id
+      })
+    });
+    const json = await res.json();
+    if (json.ok) {
+      soalDraft[i].gambar = json.url;
+      renderSoalEditor();
+      toast("Gambar berhasil diunggah ✓", "success");
+    } else {
+      toast(json.error || "Gagal mengunggah gambar", "danger");
+      renderSoalEditor();
+    }
+  } catch (err) {
+    toast(err.message, "danger");
+    renderSoalEditor();
+  }
+}
+
+function hapusGambarSoal(i) {
+  if (!confirm("Hapus gambar dari soal ini?")) return;
+  delete soalDraft[i].gambar;
+  renderSoalEditor();
 }
 
 // ── TAMBAH SOAL BARU (DENGAN BATCH SUPPORT) ──────────────────────────────
