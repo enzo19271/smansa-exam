@@ -134,26 +134,25 @@
     "soal": [
       {
         "id": "s17824612176340",
-        "pertanyaan": "Test doang",
+        "pertanyaan": "Mengapa seorang guru perlu memiliki kompetensi?",
         "opsi": {
-          "A": "anjay",
-          "B": "gawt",
-          "C": "galow",
-          "D": "gelwo"
+          "A": "Agar ditakuti siswa",
+          "B": "Agar dapat menjalankan tugas dengan benar",
+          "C": "Agar Disanjung",
+          "D": "Agar Agar"
         },
-        "jawaban": "A",
-        "gambar": "/api/soal?gambar=data%2Fgambar-soal%2Fbindo%2F1782987081739_166710.jpg"
+        "jawaban": "B"
       },
       {
         "id": "s17826126869240",
-        "pertanyaan": "halowhaa",
+        "pertanyaan": "Kompetensi pedagogik berkaitan dengan kemampuan guru dalam...",
         "opsi": {
-          "A": "anjay",
-          "B": "ridoa",
-          "C": "dhakna",
-          "D": "xhjasj"
+          "A": "Mengelola proses pembelajaran dan memahami peserta didik",
+          "B": "Menjual buku pelajaran yang diajarkan",
+          "C": "Memberikan tugas dan duduk dikantor",
+          "D": "Menjadi teladan"
         },
-        "jawaban": "B"
+        "jawaban": "A"
       }
     ],
     "aktif": true,
@@ -162,6 +161,6 @@
     "waktu_selesai": "2026-09-30T08:06:00.000Z",
     "waktu_menit": null,
     "created_at": "2026-06-26T08:07:17.657Z",
-    "updated_at": "2026-07-02T10:11:35.276Z"
+    "updated_at": "2026-07-02T23:58:02.749Z"
   }
 ]
