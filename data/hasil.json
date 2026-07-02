@@ -226,5 +226,18 @@
     "waktu": "2026-07-02T23:46:09.994Z",
     "cheat_count": 1,
     "auto_submit_cheat": false
+  },
+  {
+    "id": "1783036305345_du9xg",
+    "nama": "Tiyo",
+    "kelas": "10.3",
+    "mapel_id": "bindo",
+    "benar": 1,
+    "total": 2,
+    "nilai": 50,
+    "ujian_id": "ujian_1782461237657",
+    "waktu": "2026-07-02T23:51:45.345Z",
+    "cheat_count": 0,
+    "auto_submit_cheat": false
   }
 ]
