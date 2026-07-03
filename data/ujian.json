@@ -153,6 +153,204 @@
           "D": "Menjadi teladan"
         },
         "jawaban": "A"
+      },
+      {
+        "id": "s17830373245130194",
+        "pertanyaan": "Manakah yang paling tepat menggambarkan kompetensi pedagogik seorang guru?",
+        "opsi": {
+          "A": "Kemampuan mengelola pembelajaran sesuai karakteristik peserta didik",
+          "B": "Kemampuan menyusun laporan keuangan sekolah",
+          "C": "Kemampuan mengelola sarana dan prasarana sekolah",
+          "D": "Kemampuan memasarkan sekolah kepada masyarakat"
+        },
+        "jawaban": "A"
+      },
+      {
+        "id": "s17830373245131720",
+        "pertanyaan": "Seorang guru terus memperbarui pengetahuan sesuai perkembangan ilmu dan teknologi. Hal tersebut merupakan wujud dari kompetensi...",
+        "opsi": {
+          "A": "Sosial",
+          "B": "Kepribadian",
+          "C": "Profesional",
+          "D": "Kewirausahaan"
+        },
+        "jawaban": "C"
+      },
+      {
+        "id": "s17830373245132172",
+        "pertanyaan": "Guru yang bersikap jujur, disiplin, dan menjadi teladan bagi peserta didik menunjukkan kompetensi...",
+        "opsi": {
+          "A": "Pedagogik",
+          "B": "Profesional",
+          "C": "Sosial",
+          "D": "Kepribadian"
+        },
+        "jawaban": "D"
+      },
+      {
+        "id": "s17830373245133626",
+        "pertanyaan": "Kemampuan guru menjalin komunikasi yang baik dengan peserta didik, orang tua, dan masyarakat termasuk kompetensi...",
+        "opsi": {
+          "A": "Profesional",
+          "B": "Sosial",
+          "C": "Pedagogik",
+          "D": "Administratif"
+        },
+        "jawaban": "B"
+      },
+      {
+        "id": "s17830373245134343",
+        "pertanyaan": "Sebelum memulai pembelajaran, guru melakukan identifikasi kemampuan awal peserta didik. Tindakan tersebut bertujuan untuk...",
+        "opsi": {
+          "A": "Menentukan hukuman bagi peserta didik",
+          "B": "Menyesuaikan strategi pembelajaran dengan kebutuhan peserta didik",
+          "C": "Mengurangi jumlah materi yang diajarkan",
+          "D": "Membandingkan kemampuan antar kelas"
+        },
+        "jawaban": "B"
+      },
+      {
+        "id": "s17830373245135103",
+        "pertanyaan": "Mengapa penguasaan materi pelajaran sangat penting bagi seorang guru?",
+        "opsi": {
+          "A": "Agar dapat memberikan pembelajaran yang benar dan mendalam",
+          "B": "Agar memperoleh jabatan lebih tinggi",
+          "C": "Agar menjadi guru paling populer",
+          "D": "Agar mengurangi waktu belajar di kelas"
+        },
+        "jawaban": "A"
+      },
+      {
+        "id": "s17830373245136812",
+        "pertanyaan": "Guru yang memberikan kesempatan kepada seluruh peserta didik untuk menyampaikan pendapat tanpa membeda-bedakan telah menerapkan prinsip...",
+        "opsi": {
+          "A": "Diskriminasi",
+          "B": "Keadilan dan penghargaan terhadap keberagaman",
+          "C": "Persaingan bebas",
+          "D": "Otoritas mutlak guru"
+        },
+        "jawaban": "B"
+      },
+      {
+        "id": "s17830373245137312",
+        "pertanyaan": "Apabila hasil evaluasi menunjukkan banyak peserta didik belum memahami materi, tindakan yang paling tepat dilakukan guru adalah...",
+        "opsi": {
+          "A": "Mengulang pembelajaran dengan pendekatan yang lebih sesuai",
+          "B": "Mengurangi nilai seluruh peserta didik",
+          "C": "Mengabaikan hasil evaluasi",
+          "D": "Langsung melanjutkan materi berikutnya"
+        },
+        "jawaban": "A"
+      },
+      {
+        "id": "s17830373245138610",
+        "pertanyaan": "Salah satu ciri guru yang memiliki kompetensi profesional adalah...",
+        "opsi": {
+          "A": "Mengajar tanpa perencanaan",
+          "B": "Menguasai materi ajar dan terus mengembangkan diri",
+          "C": "Hanya menggunakan satu metode pembelajaran",
+          "D": "Menghindari pelatihan atau seminar"
+        },
+        "jawaban": "B"
+      },
+      {
+        "id": "s17830373245139463",
+        "pertanyaan": "Dalam pembelajaran, guru menggunakan berbagai metode agar peserta didik lebih aktif. Hal ini menunjukkan bahwa guru...",
+        "opsi": {
+          "A": "Mengutamakan variasi pembelajaran sesuai kebutuhan",
+          "B": "Menghindari keterlibatan peserta didik",
+          "C": "Mengurangi tanggung jawab mengajar",
+          "D": "Mengabaikan tujuan pembelajaran"
+        },
+        "jawaban": "A"
+      },
+      {
+        "id": "s178303732451310722",
+        "pertanyaan": "Sikap terbuka terhadap kritik dan saran dari rekan kerja merupakan contoh penerapan kompetensi...",
+        "opsi": {
+          "A": "Kepribadian",
+          "B": "Pedagogik",
+          "C": "Administratif",
+          "D": "Teknis"
+        },
+        "jawaban": "A"
+      },
+      {
+        "id": "s178303732451311737",
+        "pertanyaan": "Tujuan utama guru melakukan penilaian hasil belajar adalah...",
+        "opsi": {
+          "A": "Menentukan peserta didik yang paling disukai",
+          "B": "Mengetahui ketercapaian tujuan pembelajaran dan memperbaiki proses belajar",
+          "C": "Mengurangi jumlah tugas peserta didik",
+          "D": "Memberikan hukuman kepada peserta didik"
+        },
+        "jawaban": "B"
+      },
+      {
+        "id": "s178303732451312798",
+        "pertanyaan": "Guru yang mampu bekerja sama dengan sesama guru dalam merancang kegiatan sekolah menunjukkan kompetensi...",
+        "opsi": {
+          "A": "Profesional",
+          "B": "Pedagogik",
+          "C": "Sosial",
+          "D": "Kepribadian"
+        },
+        "jawaban": "C"
+      },
+      {
+        "id": "s17830373245131398",
+        "pertanyaan": "Menggunakan teknologi dalam pembelajaran secara tepat merupakan salah satu upaya guru untuk...",
+        "opsi": {
+          "A": "Menggantikan seluruh peran guru",
+          "B": "Meningkatkan efektivitas dan kualitas pembelajaran",
+          "C": "Mengurangi interaksi dengan peserta didik",
+          "D": "Mempermudah pemberian hukuman"
+        },
+        "jawaban": "B"
+      },
+      {
+        "id": "s178303732451314572",
+        "pertanyaan": "Mengapa seorang guru perlu menguasai keempat kompetensi guru secara seimbang?",
+        "opsi": {
+          "A": "Agar dapat melaksanakan tugas sebagai pendidik secara profesional dan menyeluruh",
+          "B": "Agar memperoleh penghargaan setiap tahun",
+          "C": "Agar dapat mengurangi beban kerja",
+          "D": "Agar hanya fokus pada penyampaian materi"
+        },
+        "jawaban": "A"
+      },
+      {
+        "id": "s17830373497760",
+        "pertanyaan": "Bonus A",
+        "opsi": {
+          "A": "",
+          "B": "",
+          "C": "",
+          "D": ""
+        },
+        "jawaban": "A"
+      },
+      {
+        "id": "s17830373509040",
+        "pertanyaan": "Bonus B",
+        "opsi": {
+          "A": "",
+          "B": "",
+          "C": "",
+          "D": ""
+        },
+        "jawaban": "B"
+      },
+      {
+        "id": "s17830373520880",
+        "pertanyaan": "Bonus C",
+        "opsi": {
+          "A": "",
+          "B": "",
+          "C": "",
+          "D": ""
+        },
+        "jawaban": "C"
       }
     ],
     "aktif": true,
@@ -161,6 +359,6 @@
     "waktu_selesai": "2026-09-30T08:06:00.000Z",
     "waktu_menit": null,
     "created_at": "2026-06-26T08:07:17.657Z",
-    "updated_at": "2026-07-02T23:58:02.749Z"
+    "updated_at": "2026-07-03T00:10:16.477Z"
   }
 ]
