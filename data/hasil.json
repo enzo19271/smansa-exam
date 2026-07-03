@@ -252,5 +252,18 @@
     "waktu": "2026-07-03T00:14:15.763Z",
     "cheat_count": 2,
     "auto_submit_cheat": false
+  },
+  {
+    "id": "1783037846797_8op93",
+    "nama": "Jeryyan",
+    "kelas": "10.3",
+    "mapel_id": "bindo",
+    "benar": 1,
+    "total": 20,
+    "nilai": 5,
+    "ujian_id": "ujian_1782461237657",
+    "waktu": "2026-07-03T00:17:26.797Z",
+    "cheat_count": 3,
+    "auto_submit_cheat": true
   }
 ]
