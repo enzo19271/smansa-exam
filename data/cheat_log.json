@@ -82,12 +82,16 @@
     "kelas": "10.3",
     "mapel_id": "bindo",
     "ujian_id": "ujian_1782461237657",
-    "cheat_count": 2,
-    "waktu_terakhir": "2026-07-03T00:17:02.862Z",
+    "cheat_count": 3,
+    "waktu_terakhir": "2026-07-03T00:17:22.669Z",
     "history": [
       {
         "waktu_deteksi": "2026-07-03T00:17:02.862Z",
         "cheat_number": 2
+      },
+      {
+        "waktu_deteksi": "2026-07-03T00:17:22.669Z",
+        "cheat_number": 3
       }
     ]
   }
