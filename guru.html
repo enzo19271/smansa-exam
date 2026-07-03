@@ -492,6 +492,65 @@
         </button>
       </div>
 
+      <div class="d-flex flex-column flex-md-row gap-3 mb-4">
+        <button type="button" class="btn btn-outline-primary fw-bold py-3 px-4 rounded-4 shadow-sm flex-grow-1" onclick="showFormatAI()">
+          <i class="bi bi-robot me-2"></i>Format &amp; Prompt untuk AI
+        </button>
+        <button type="button" class="btn btn-primary fw-bold py-3 px-4 rounded-4 shadow-sm flex-grow-1" onclick="bukaUploadAI()">
+          <i class="bi bi-upload me-2"></i>Upload Soal dari AI (.json)
+        </button>
+        <input type="file" id="inputUploadAI" accept="application/json,.json" class="d-none" onchange="handleUploadSoalAI(this)"/>
+      </div>
+
+      <!-- Modal Format & Prompt AI -->
+      <div class="modal fade" id="modalFormatAI" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content rounded-4 border-0 shadow-lg">
+            <div class="modal-header border-0 pb-0">
+              <h5 class="modal-title fw-bold"><i class="bi bi-robot text-primary me-2"></i>Buat Soal Otomatis dengan AI</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <ol class="small text-muted ps-3 mb-4">
+                <li class="mb-1">Isi detail di bawah, lalu tekan <strong>Salin Prompt</strong>.</li>
+                <li class="mb-1">Tempel prompt itu ke chat AI apa pun (ChatGPT, Claude, Gemini, dll).</li>
+                <li class="mb-1">Simpan balasan AI sebagai file <code>.json</code> (pastikan isinya JSON murni, tanpa teks tambahan di luar JSON).</li>
+                <li>Kembali ke sini, tekan tombol <strong>Upload Soal dari AI (.json)</strong>, lalu pilih file tadi.</li>
+              </ol>
+
+              <div class="row g-3 mb-3">
+                <div class="col-12 col-md-6">
+                  <label class="fw-bold text-muted small mb-1 text-uppercase d-block">Topik / Materi</label>
+                  <input type="text" id="aiTopik" class="form-control-soal form-control" placeholder="mis. Sistem Pencernaan Manusia" oninput="refreshPromptPreview()">
+                </div>
+                <div class="col-6 col-md-3">
+                  <label class="fw-bold text-muted small mb-1 text-uppercase d-block">Jumlah Soal</label>
+                  <input type="number" id="aiJumlah" class="form-control-soal form-control" value="10" min="1" max="100" oninput="refreshPromptPreview()">
+                </div>
+                <div class="col-6 col-md-3">
+                  <label class="fw-bold text-muted small mb-1 text-uppercase d-block">Tingkat</label>
+                  <select id="aiTingkat" class="form-control-soal form-select" onchange="refreshPromptPreview()">
+                    <option value="mudah">Mudah</option>
+                    <option value="sedang" selected>Sedang</option>
+                    <option value="sulit">Sulit</option>
+                    <option value="campuran">Campuran</option>
+                  </select>
+                </div>
+              </div>
+
+              <label class="fw-bold text-muted small mb-1 text-uppercase d-block">Preview Prompt (otomatis update)</label>
+              <textarea id="aiPromptPreview" class="form-control-soal form-control" rows="12" readonly style="font-family:monospace; font-size:.8rem;"></textarea>
+            </div>
+            <div class="modal-footer border-0 pt-0 gap-2">
+              <button type="button" class="btn btn-secondary fw-bold rounded-3" data-bs-dismiss="modal">Tutup</button>
+              <button type="button" class="btn btn-primary fw-bold rounded-3" onclick="salinPromptAI()">
+                <i class="bi bi-clipboard-check me-1"></i>Salin Prompt
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Modal Custom Add Soal -->
       <div class="modal fade" id="modalCustomAddSoal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
@@ -1185,6 +1244,142 @@ function hapusSoalItem(i) {
   if (!confirm("Hapus soal ini secara permanen?")) return;
   soalDraft.splice(i, 1);
   renderSoalEditor();
+}
+
+// ── FORMAT & PROMPT UNTUK AI ─────────────────────────────────────────────
+function buildPromptAI() {
+  const topikInput = document.getElementById("aiTopik").value.trim();
+  const topik = topikInput || "[isi topik di atas]";
+  const jumlah = Math.min(Math.max(parseInt(document.getElementById("aiJumlah").value) || 10, 1), 100);
+  const tingkat = document.getElementById("aiTingkat").value;
+
+  return `Kamu adalah pembuat soal pilihan ganda. Buatkan saya ${jumlah} soal pilihan ganda tentang topik "${topik}", tingkat kesulitan ${tingkat}.
+
+ATURAN OUTPUT (WAJIB DIIKUTI PERSIS):
+1. Jawab HANYA dengan JSON murni. Jangan tambahkan penjelasan, catatan, atau markdown code fence (backtick tiga kali). Jangan ada teks apa pun di luar JSON.
+2. Gunakan format JSON PERSIS seperti ini:
+
+{
+  "soal": [
+    {
+      "pertanyaan": "Teks pertanyaan di sini",
+      "opsi": { "A": "Pilihan A", "B": "Pilihan B", "C": "Pilihan C", "D": "Pilihan D" },
+      "jawaban": "A"
+    }
+  ]
+}
+
+3. Field "jawaban" wajib salah satu dari "A", "B", "C", atau "D", sesuai opsi yang benar.
+4. Setiap soal wajib punya PERSIS 4 opsi (A, B, C, D) dan tidak boleh ada yang kosong.
+5. Buat tepat ${jumlah} objek di dalam array "soal".
+6. Gunakan Bahasa Indonesia yang baik dan benar.
+
+Setelah AI membalas, salin SELURUH balasan tersebut apa adanya, simpan sebagai file berekstensi .json, lalu upload file itu ke sistem.`;
+}
+
+function refreshPromptPreview() {
+  document.getElementById("aiPromptPreview").value = buildPromptAI();
+}
+
+function showFormatAI() {
+  refreshPromptPreview();
+  bootstrap.Modal.getOrCreateInstance(document.getElementById("modalFormatAI")).show();
+}
+
+async function salinPromptAI() {
+  const text = buildPromptAI();
+  document.getElementById("aiPromptPreview").value = text;
+  try {
+    await navigator.clipboard.writeText(text);
+    toast("Prompt disalin ke clipboard ✓", "success");
+  } catch (err) {
+    const ta = document.getElementById("aiPromptPreview");
+    ta.focus();
+    ta.select();
+    toast("Gagal auto-copy. Teks sudah ter-seleksi, salin manual (Ctrl+C).", "warning");
+  }
+}
+
+// ── UPLOAD SOAL DARI FILE JSON HASIL AI ──────────────────────────────────
+function bukaUploadAI() {
+  document.getElementById("inputUploadAI").click();
+}
+
+async function handleUploadSoalAI(inputEl) {
+  const file = inputEl.files[0];
+  inputEl.value = "";
+  if (!file) return;
+
+  if (!/\.json$/i.test(file.name)) {
+    toast("File harus berformat .json", "warning");
+    return;
+  }
+
+  let raw;
+  try {
+    raw = await file.text();
+  } catch (err) {
+    toast("Gagal membaca file", "danger");
+    return;
+  }
+
+  let parsed;
+  try {
+    parsed = JSON.parse(raw);
+  } catch (err) {
+    toast("File bukan JSON valid. Pastikan balasan AI disalin utuh, tanpa teks tambahan di luar JSON.", "danger");
+    return;
+  }
+
+  const list = Array.isArray(parsed) ? parsed
+             : (parsed && Array.isArray(parsed.soal)) ? parsed.soal
+             : null;
+
+  if (!list) {
+    toast("Format JSON tidak dikenali. Gunakan array soal atau objek {\"soal\":[...]}.", "danger");
+    return;
+  }
+
+  const valid = [];
+  const errors = [];
+  list.forEach((item, idx) => {
+    const no = idx + 1;
+    const pertanyaan = (item && typeof item.pertanyaan === "string") ? item.pertanyaan.trim() : "";
+    const opsiSrc = (item && typeof item.opsi === "object" && item.opsi) ? item.opsi : {};
+    const A = (opsiSrc.A ?? "").toString().trim();
+    const B = (opsiSrc.B ?? "").toString().trim();
+    const C = (opsiSrc.C ?? "").toString().trim();
+    const D = (opsiSrc.D ?? "").toString().trim();
+    const jawabanRaw = (item && item.jawaban != null) ? String(item.jawaban).trim().toUpperCase() : "";
+
+    if (!pertanyaan) { errors.push(`Soal #${no}: teks pertanyaan kosong`); return; }
+    if (!A || !B || !C || !D) { errors.push(`Soal #${no}: opsi A/B/C/D harus lengkap (tidak boleh kosong)`); return; }
+    if (!["A","B","C","D"].includes(jawabanRaw)) { errors.push(`Soal #${no}: field jawaban harus A/B/C/D`); return; }
+
+    valid.push({
+      id: "s" + Date.now() + idx + Math.floor(Math.random() * 1000),
+      pertanyaan,
+      opsi: { A, B, C, D },
+      jawaban: jawabanRaw
+    });
+  });
+
+  if (!valid.length) {
+    toast(`Tidak ada soal valid pada file ini (${errors.length} soal gagal diparse).`, "danger");
+    if (errors.length) console.warn("Detail soal gagal diparse:\n" + errors.join("\n"));
+    return;
+  }
+
+  let pesan = `File berisi ${valid.length} soal valid`;
+  if (errors.length) pesan += ` (${errors.length} soal dilewati karena formatnya salah)`;
+  pesan += `.\n\nSaat ini editor sudah punya ${soalDraft.length} soal.\nTambahkan ${valid.length} soal dari AI ke daftar ini?`;
+
+  if (!confirm(pesan)) return;
+
+  soalDraft.push(...valid);
+  renderSoalEditor();
+  toast(`${valid.length} soal dari AI berhasil ditambahkan ✓`, "success");
+  if (errors.length) console.warn("Detail soal gagal diparse:\n" + errors.join("\n"));
 }
 
 async function simpanUjian() {
