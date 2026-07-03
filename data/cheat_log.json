@@ -62,5 +62,19 @@
         "cheat_number": 2
       }
     ]
+  },
+  {
+    "nama": "Sipitri",
+    "kelas": "10.3",
+    "mapel_id": "bindo",
+    "ujian_id": "ujian_1782461237657",
+    "cheat_count": 2,
+    "waktu_terakhir": "2026-07-03T00:13:10.963Z",
+    "history": [
+      {
+        "waktu_deteksi": "2026-07-03T00:13:10.963Z",
+        "cheat_number": 2
+      }
+    ]
   }
 ]
