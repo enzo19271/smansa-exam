@@ -265,5 +265,18 @@
     "waktu": "2026-07-03T00:17:26.797Z",
     "cheat_count": 3,
     "auto_submit_cheat": true
+  },
+  {
+    "id": "1783147240036_au7ru",
+    "nama": "Nina",
+    "kelas": "10.3",
+    "mapel_id": "bindo",
+    "benar": 5,
+    "total": 20,
+    "nilai": 25,
+    "ujian_id": "ujian_1782461237657",
+    "waktu": "2026-07-04T06:40:40.036Z",
+    "cheat_count": 1,
+    "auto_submit_cheat": false
   }
 ]
